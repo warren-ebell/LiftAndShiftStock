@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" ng-app="liftandshift">
+    <head>
+        <meta charset="utf-8">
+        <title>Lift and Shift Stock System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+    	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="css/signin.css">
+        <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="css/app.css"/>
+
+        <link rel="shortcut icon" href="ico/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="ico/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="ico/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="ico/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="ico/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="ico/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="ico/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="ico/apple-touch-icon-152x152.png" />
+
+    </head>
+    <body ng-controller="HeaderController">
+        <div ng-show="showMenu==1" class="navbar navbar-default navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#/home">Lift and Shift Stock System</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li ng-class="{ active: isActive('/home')}">
+                            <a href="#/home"><i class="glyphicon glyphicon-home"></i> Home</a>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> Quotes<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/quote"><i class="glyphicon glyphicon-file"></i> New Quote</a></li>
+                                <li><a href="#/quoteHistory"><i class="glyphicon glyphicon-list-alt"></i> Quote History</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="showAdmin==1">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> Admin<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/user"><i class="glyphicon glyphicon-user"></i> User Admin</a></li>
+                                <li><a href="#/stock"><i class="glyphicon glyphicon-book"></i> Stock Management</a></li>
+                                <!--li><a href="#/defaults"><i class="glyphicon glyphicon-globe"></i> Default Admin</a></li-->
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> Logged in as: {{ userName }}</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" ng-click="goLogout()"><i class="glyphicon glyphicon-off"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div ng-view></div>
+
+        <br>
+        <div class="container" >
+            <div>Lift and Shift Stock System Version: v <span app-version></span></div>
+        </div>
+
+        <script src="jquery/jquery.js"></script>
+
+        <script src="lib/angular/angular.js"></script>
+        <script src="lib/angular/angular-route.js"></script>
+        <script src="lib/angular/angular-resource.js"></script>
+        <script src="lib/angular/angular-sanitize.js"></script>
+
+        <script src="lib/textAngular.js"></script>
+
+        <script src="js/app.js"></script>
+        <script src="js/services.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="js/filters.js"></script>
+        <script src="js/directives.js"></script>
+        <script src="js/datamanager.js"></script>
+
+        <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    	<!--script type="text/javascript" src="bootstrap/js/bootstrap-collapse.js"></script>
+    	<script type="text/javascript" src="bootstrap/js/bootstrap-typeahead.js"></script-->
+    </body>
+</html>

@@ -1,0 +1,106 @@
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Stock Item Edit</h4>
+            <p class="text-muted">Please complete the fields below.</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.category">Stock Category:</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.category" type="text" ng-model="selectedStockItem.stockCategory" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.modelName">Model Name:</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.modelName" type="text" ng-model="selectedStockItem.modelName" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.pricing">Pricing:</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.pricing" type="text" ng-model="selectedStockItem.pricing" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.stockCode">Stock Code:</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.stockCode" type="text" ng-model="selectedStockItem.stockCode" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label">Stock Description:</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.description" type="text" ng-model="selectedStockItem.stockDescription" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label">Technical Specifications:</label>
+                </td>
+                <td>
+                    <!--input class="input" id="stock.technicalSpecs" type="text" ng-model="selectedStockItem.technicalSpecs" ng-model-instant-->
+                </td>
+            </tr>
+
+        </table>
+        <text-angular ng-model="htmlTechnicalSpecs"></text-angular>
+        <br>
+        <div ng-show="showSerialSection==1">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Status</th>
+                    <th>Remove</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="stockLevel in selectedStockItem.stockLevel">
+                    <td>
+                        {{ stockLevel.serialNumber }}
+                    </td>
+                    <td>
+                        {{ stockLevel.status }}
+                    </td>
+                    <td>
+                        <button class="btn" ng-click="removeSerialNumber(stockLevel.serialNumber, stock.stockId, stockLevel.status)">X</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="showAddSerial==1">
+                <table>
+                    <tr>
+                        <td>
+                            <label class="control-label" for="serialNumber">Serial Number:</label>
+                        </td>
+                        <td>
+                            <input class="input" id="serialNumber" type="text" ng-model="serialNumber" ng-model-instant>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber, stock.stockId)">+</button>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+            </div>
+        </div>
+        <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddSerialNumber()">Add Serial</button>
+        <button type="button" class="btn btn-default" ng-click="saveStockItem()">Save</button>
+        <button ng-show="showDelete==1" type="button" class="btn btn-info" ng-click="delete()">Delete</button>
+        <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>
+    </div>
+</div>

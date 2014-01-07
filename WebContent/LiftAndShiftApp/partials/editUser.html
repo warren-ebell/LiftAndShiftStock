@@ -1,0 +1,71 @@
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>User Edit</h4>
+            <p class="text-muted">Please complete the fields below.</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.userName">Username:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.userName" type="text" ng-model="selectedUser.userName" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.userPassword">Password:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.userPassword" type="password" ng-model="selectedUser.userPassword" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.displayName">Display Name:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.displayName" type="text" ng-model="selectedUser.displayName" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.emailAddress">Email Address:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.emailAddress" type="text" ng-model="selectedUser.emailAddress" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.contactNumber">Contact Number:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.contactNumber" type="text" ng-model="selectedUser.contactNumber" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.admin">User Admin:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.admin" type="checkbox" ng-model="userAdmin" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="user.enabled">User Enabled:</label>
+                </td>
+                <td>
+                    <input class="input" id="user.enabled" type="checkbox" ng-model="userEnabled" ng-model-instant>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="button" class="btn btn-default" ng-click="saveUser()">Save</button>
+        <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>
+        <!--button type="button" class="btn btn-info" ng-click="delete()">Delete</button-->
+    </div>
+</div>

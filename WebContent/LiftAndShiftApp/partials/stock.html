@@ -1,0 +1,44 @@
+
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Stock List</h4>
+            <p class="text-muted">Select a stock category to view all stock items in that category. Click on the stock id button to edit the stock item, or click the 'Add' button to add a new stock item.</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    Select the category for stock items :
+                </td>
+                <td>
+                    <select ng-model="selectedCategory" ng-options="stock.category for stock in stockCategories" ng-change="getStockItemsForCategory()"></select>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Model Name</th>
+                <th>Stock Code</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="stock in stockItems">
+                <td>
+                    {{ stock.modelName }}
+                </td>
+                <td>
+                    {{ stock.stockCode }}
+                </td>
+                <td>
+                    <button class="btn" ng-click="getStockForStockId(stock.stockId)">{{stock.stockId}}</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <button type="button" class="btn btn-default" ng-click="addStockItem()">Add</button>
+    </div>
+</div>
