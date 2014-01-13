@@ -23,9 +23,12 @@ function HeaderController($scope, $location) {
     $scope.setShowAdmin = function(value) {
         $scope.showAdmin = value;
     }
+<<<<<<< HEAD
     $scope.convertArrayToString = function(array) {
         return array + "";
     }
+=======
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
 }
 
 function MainCtrl($scope, $location, Util) {
@@ -116,6 +119,7 @@ function QuoteCtrl($scope, StockService) {
     };
     $scope.selectSerialForQuote = function(serialNumber, stockId) {
         DataManager.getInstance().selectedSerialNumber = serialNumber;
+<<<<<<< HEAD
         $scope.setRoute('/quoteAccessories');
     }
 }
@@ -189,6 +193,18 @@ function QuoteNotesCtrl($scope, QuoteService) {
 
         var serialNumber = DataManager.getInstance().selectedSerialNumber;
         QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation},
+=======
+        $scope.setRoute('/quoteCustomer');
+    }
+}
+
+function QuoteCustomerCtrl($scope, QuoteService) {
+    $scope.saveQuote = function() {
+        var stockId = DataManager.getInstance().selectedStockItem.stockId;
+        var userId = DataManager.getInstance().user.userId;
+        var serialNumber = DataManager.getInstance().selectedSerialNumber
+        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:$scope.customerName, address:$scope.customerAddress, emailAddress:$scope.customerEmailAddress, phoneNumber:$scope.customerPhoneNumber, attention:$scope.customerAttention, userId:userId, serialNumber:serialNumber, pricing:DataManager.getInstance().selectedStockItem.pricing},
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
             function(result) {
                 var serverResult = result;
                 if (serverResult.quoteId === '0') {
@@ -208,6 +224,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
             }
         );
     }
+<<<<<<< HEAD
 }
 
 function QuoteCustomerCtrl($scope, QuoteService) {
@@ -220,6 +237,8 @@ function QuoteCustomerCtrl($scope, QuoteService) {
 
         $scope.setRoute('/quoteNotes');
     }
+=======
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
     $scope.cancel = function() {
         $scope.setRoute('/home');
     }
@@ -240,6 +259,7 @@ function QuoteHistoryCtrl($scope, QuoteService) {
         DataManager.getInstance().quoteHistory = 1;
         $scope.setRoute('/document');
     }
+<<<<<<< HEAD
     $scope.declineQuote = function(quotationId) {
         QuoteService.declineQuote({serverMethod:'declineQuote', quotationId:quotationId},
             function(result) {
@@ -309,6 +329,19 @@ function QuoteHistoryCtrl($scope, QuoteService) {
             },
             function(error) {
                 alert('Error completing quote.');
+=======
+    $scope.returnStock = function(quotationId) {
+        QuoteService.returnStock({serverMethod:'returnStock', quotationId:quotationId},
+            function(result) {
+                var serverResult = result;
+                if (serverResult.result == '1')
+                    alert('Stock returned successfully');
+                else
+                    alert('Error returning stock: '+serverResult.message);
+            },
+            function(error) {
+                alert('Error returning stock.');
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
             }
         );
     }

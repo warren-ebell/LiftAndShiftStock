@@ -6,9 +6,13 @@ angular.module('liftandshift', ['ngRoute', 'liftandshift.filters', 'liftandshift
     $routeProvider.when('/login', {templateUrl: 'partials/login.html', controller: LoginCtrl});
     $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: HomeCtrl});
     $routeProvider.when('/quote', {templateUrl: 'partials/quoteStart.html', controller: QuoteCtrl});
+<<<<<<< HEAD
     $routeProvider.when('/quoteAccessories', {templateUrl: 'partials/quoteAccessories.html', controller: QuoteAccessoriesCtrl});
     $routeProvider.when('/quoteCustomer', {templateUrl: 'partials/quoteCustomer.html', controller: QuoteCustomerCtrl});
     $routeProvider.when('/quoteNotes', {templateUrl: 'partials/quoteNotes.html', controller: QuoteNotesCtrl});
+=======
+    $routeProvider.when('/quoteCustomer', {templateUrl: 'partials/quoteCustomer.html', controller: QuoteCustomerCtrl});
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
     $routeProvider.when('/document', {templateUrl: 'partials/document.html', controller: DocumentViewCtrl});
     $routeProvider.when('/quoteHistory', {templateUrl: 'partials/quoteHistory.html', controller: QuoteHistoryCtrl});
     $routeProvider.when('/user', {templateUrl: 'partials/user.html', controller: UserCtrl});

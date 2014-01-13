@@ -7,7 +7,11 @@ var serverURL = '/LiftAndShiftStock';
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('liftandshift.services', ['ngResource']).
+<<<<<<< HEAD
     value('version', '0.2').
+=======
+    value('version', '0.1').
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
     service('Util',function Util() {
         this.checkLoggedIn = function($scope){
             /*if (!DataManager.getInstance().validUser){
@@ -60,15 +64,23 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('QuoteService', function($resource){
         return $resource(serverURL+'/quote',
+<<<<<<< HEAD
             {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', accessories:'', notes:'', delivery:'', installation:'', callback:'JSON_CALLBACK'},
+=======
+            {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', callback:'JSON_CALLBACK'},
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
             {
                 saveQuote: {method: 'JSONP', isArray:false},
                 getMiniQuotes: {method: 'JSONP', isArray:true},
                 sendEMail: {method: 'JSONP', isArray:false},
+<<<<<<< HEAD
                 acceptQuote: {method: 'JSONP', isArray:false},
                 declineQuote: {method: 'JSONP', isArray:false},
                 completeQuote: {method: 'JSONP', isArray:false},
                 getQuoteDefaults: {method: 'JSONP', isArray:false}
+=======
+                returnStock: {method: 'JSONP', isArray:false}
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
             }
         );
     })

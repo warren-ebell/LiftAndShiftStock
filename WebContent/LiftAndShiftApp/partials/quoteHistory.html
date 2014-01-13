@@ -10,12 +10,17 @@
             <tr>
                 <th>Customer Name</th>
                 <th>Quotation Date</th>
+<<<<<<< HEAD
                 <th>ID</th>
                 <th>Status</th>
                 <th>View</th>
                 <th>Accept</th>
                 <th>Decline</th>
                 <th>Complete</th>
+=======
+                <th>View</th>
+                <th>Return Stock</th>
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
             </tr>
             </thead>
             <tbody>
@@ -27,6 +32,7 @@
                     {{ quote.quotationDate }}
                 </td>
                 <td>
+<<<<<<< HEAD
                     {{ quote.quotationId }}
                 </td>
                 <td>
@@ -43,6 +49,12 @@
                 </td>
                 <td>
                     <button ng-show="quote.status=='Accepted'" class="btn" ng-click="completeQuote(quote.quotationId)"><i class="glyphicon glyphicon glyphicon-download"></i></button>
+=======
+                    <button class="btn" ng-click="viewQuotation(quote.quotationId)">View</button>
+                </td>
+                <td>
+                    <button class="btn" ng-click="returnStock(quote.quotationId)">Return</button>
+>>>>>>> d46e86d4273e29e6e4b52788af7fe8ad02dfdb1d
                 </td>
             </tr>
             </tbody>
