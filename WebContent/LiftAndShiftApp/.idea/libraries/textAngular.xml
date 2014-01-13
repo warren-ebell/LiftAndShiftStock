@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="textAngular" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/lib/textAngular.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/textAngular.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

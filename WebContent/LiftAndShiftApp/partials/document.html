@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Generated Document</h4>
+        </div>
+        <div>
+            <button class="btn btn-info" ng-click="sendEMail(quoteId)">Email</button>
+            <button class="btn btn-default" ng-click="done()">Done</button>
+        </div>
+        <br>
+        <div class="row-fluid">
+            <iframe class="container well well-lg col-md-6"
+                    style="height: 400px;"
+                    src="{{url}}">
+            </iframe>
+        </div>
+    </div>
+</div>

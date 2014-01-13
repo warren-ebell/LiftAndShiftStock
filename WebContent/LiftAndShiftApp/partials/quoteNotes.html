@@ -1,0 +1,24 @@
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Notes for Quotation</h4>
+            <p class="text-muted">Complete the notes for the quotation.</p>
+        </div>
+        <div>
+            <h5>General Notes</h5>
+            <text-angular ng-model="htmlNotes"></text-angular>
+            <br>
+            <h5>Delivery Notes</h5>
+            <text-angular ng-model="htmlDelivery"></text-angular>
+            <br>
+            <h5>Installation Notes</h5>
+            <text-angular ng-model="htmlInstallation"></text-angular>
+            <br>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button type="button" class="btn btn-default" ng-click="saveQuote()">Done</button>
+        </div>
+    </div>
+</div>

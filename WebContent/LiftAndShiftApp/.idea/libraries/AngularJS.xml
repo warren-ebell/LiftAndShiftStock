@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="AngularJS" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/lib/angular/angular-loader.js" />
+        <item url="file://$PROJECT_DIR$/lib/angular/angular-resource.js" />
+        <item url="file://$PROJECT_DIR$/lib/angular/angular-cookies.js" />
+        <item url="file://$PROJECT_DIR$/lib/angular/angular.js" />
+        <item url="file://$PROJECT_DIR$/lib/angular/angular-sanitize.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-loader.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-resource.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-cookies.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-loader.min.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-resource.min.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-sanitize.min.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-sanitize.js" />
+      <root url="file://$PROJECT_DIR$/lib/angular/angular-cookies.min.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

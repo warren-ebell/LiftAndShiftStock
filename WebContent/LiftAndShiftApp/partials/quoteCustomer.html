@@ -1,0 +1,58 @@
+
+
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Customer information</h4>
+            <p class="text-muted">Complete the customer information below, and then click 'Done' to complete the quotation.</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <label class="control-label" for="customerName">Customer Name:</label>
+                </td>
+                <td>
+                    <input class="input" id="customerName" type="text" ng-model="customerName" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="customerAddress">Customer Address:</label>
+                </td>
+                <td>
+                    <input class="input" id="customerAddress" type="text" ng-model="customerAddress" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="customerEmailAddress">Customer Email Address:</label>
+                </td>
+                <td>
+                    <input class="input" id="customerEmailAddress" type="text" ng-model="customerEmailAddress" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="customerPhoneNumber">Customer Phone Number:</label>
+                </td>
+                <td>
+                    <input class="input" id="customerPhoneNumber" type="text" ng-model="customerPhoneNumber" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="customerAttention">Customer Attention:</label>
+                </td>
+                <td>
+                    <input class="input" id="customerAttention" type="text" ng-model="customerAttention" ng-model-instant>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div>
+            <button type="button" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button type="button" class="btn btn-default" ng-click="next()">Next</button>
+        </div>
+    </div>
+</div>
