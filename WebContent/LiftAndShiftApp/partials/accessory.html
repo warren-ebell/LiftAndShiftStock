@@ -1,0 +1,44 @@
+
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Accessory List</h4>
+            <p class="text-muted">Select a stock category to view all stock items in that category. Click on the stock id button to edit the stock item, or click the 'Add' button to add a new stock item.</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    Select the accessory item manufacturer :
+                </td>
+                <td>
+                    <select ng-model="selectedManufacturer" ng-options="accessory.manufacturer for accessory in accessoryManufacturers" ng-change="getAccessoryItemsForManufacturer()"></select>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Model</th>
+                <th>Accessory Code</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="accessory in accessoryItems">
+                <td>
+                    {{ accessory.accessoryModel }}
+                </td>
+                <td>
+                    {{ accessory.accessoryCode }}
+                </td>
+                <td>
+                    <button class="btn" ng-click="getAccessoryForAccessoryId(accessory.accessoryId)">{{accessory.accessoryId}}</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <button type="button" class="btn btn-default" ng-click="addAccessoryItem()">Add</button>
+    </div>
+</div>

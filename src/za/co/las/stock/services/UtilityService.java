@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import za.co.las.stock.object.Accessory;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Stock;
@@ -54,6 +55,20 @@ public class UtilityService {
 		return stockJSONString;
 	}
 	
+	public String convertListOfAccessoryToJSONString(ArrayList<Accessory> accessoryItemList) {
+		String stockJSONString = "[";
+		for (Accessory a:accessoryItemList) {
+			if (stockJSONString.length() == 1) {
+				stockJSONString += a.toJSONString();
+			}
+			else {
+				stockJSONString += "," + a.toJSONString();
+			}
+		}		
+		stockJSONString += "]";
+		return stockJSONString;
+	}
+	
 	public String convertListOfStockLevelToJSONString(ArrayList<StockLevel> stockLevelItemList) {
 		String stockLevelJSONString = "[";
 		for (StockLevel s:stockLevelItemList) {
@@ -68,14 +83,28 @@ public class UtilityService {
 		return stockLevelJSONString;
 	}
 	
-	public String convertListOfStockCategoriesToJSONString(ArrayList<String> stockItemList) {
+	public String convertListOfStockManufacturersToJSONString(ArrayList<String> stockManufacturerList) {
 		String stockJSONString = "[";
-		for (String s:stockItemList) {
+		for (String s:stockManufacturerList) {
 			if (stockJSONString.length() == 1) {
-				stockJSONString += "{'category':'"+s+"'}";
+				stockJSONString += "{'manufacturer':'"+s+"'}";
 			}
 			else {
-				stockJSONString += "," + "{'category':'"+s+"'}";
+				stockJSONString += "," + "{'manufacturer':'"+s+"'}";
+			}
+		}		
+		stockJSONString += "]";
+		return stockJSONString;
+	}
+	
+	public String convertListOfStockModelsToJSONString(ArrayList<String> stockModelList) {
+		String stockJSONString = "[";
+		for (String s:stockModelList) {
+			if (stockJSONString.length() == 1) {
+				stockJSONString += "{'model':'"+s+"'}";
+			}
+			else {
+				stockJSONString += "," + "{'model':'"+s+"'}";
 			}
 		}		
 		stockJSONString += "]";

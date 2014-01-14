@@ -78,27 +78,37 @@ function LoginCtrl($scope, AuthenticationService) {
 
 function QuoteCtrl($scope, StockService) {
     $scope.showSerial = 0;
-    StockService.getStockCategories({serverMethod:'getStockCategories'},
+    StockService.getStockManufacturers({serverMethod:'getStockManufacturers'},
         function(result) {
-            var stockCategories = result;
-            $scope.stockCategories = stockCategories;
+            $scope.stockManufacturers = result;
         },
         function(error) {
-            alert('Error getting stock categories');
+            alert('Error getting stock manufacturers');
         }
     );
-    $scope.getStockItemsForCategory = function() {
-        var category = $scope.selectedCategory.category;
-        StockService.getStockItemsForStockCategory({serverMethod:'getStockItemsForStockCategory', stockCategory:category},
+    $scope.getModelsForManufacturer = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        StockService.getStockModelsForManufacturer({serverMethod:'getModelsForManufacturer', stockManufacturer:manufacturer},
             function(result) {
-                var stockItems = result;
-                $scope.stockItems = stockItems;
+                $scope.stockModels = result;
             },
-            function(error){
-                alert('Error getting stock items for category - or no stock items for this category.')
+            function(error) {
+                alert('Error getting stock models');
             }
         );
-    };
+    }
+    $scope.getStockItemsForManufacturerAndModel = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        var model = $scope.selectedModel.model;
+        StockService.getStockItemsForManufacturerAndModel({serverMethod:'getStockItemsForStockManufacturerAndModel', stockManufacturer:manufacturer, stockModel:model},
+            function(result) {
+                $scope.stockItems = result;
+            },
+            function(error){
+                alert('Error getting stock items for make and model - or no stock items for this make and model.')
+            }
+        );
+    }
     $scope.getStockForStockId = function(stockId) {
         StockService.getAvailableStockForStockId({serverMethod:'getAvailableStockForStockId',stockId:stockId},
             function(result) {
@@ -317,8 +327,8 @@ function QuoteHistoryCtrl($scope, QuoteService) {
 function DocumentViewCtrl($scope, QuoteService) {
     var quoteId = DataManager.getInstance().quoteId;
     $scope.quoteId = quoteId;
-    $scope.url = 'http://197.221.7.50:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
-    //$scope.url = 'http://localhost:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
+    //$scope.url = 'http://197.221.7.50:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
+    $scope.url = 'http://localhost:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
     $scope.done = function() {
         if (DataManager.getInstance().quoteHistory === 1) {
             $scope.setRoute('/quoteHistory');
@@ -443,24 +453,34 @@ function UserCtrl($scope, UserService) {
 }
 
 function StockCtrl($scope, StockService) {
-    StockService.getStockCategories({serverMethod:'getStockCategories'},
+    StockService.getStockManufacturers({serverMethod:'getStockManufacturers'},
         function(result) {
-            var stockCategories = result;
-            $scope.stockCategories = stockCategories;
+            $scope.stockManufacturers = result;
         },
         function(error) {
-            alert('Error getting stock categories');
+            alert('Error getting stock manufacturers');
         }
     );
-    $scope.getStockItemsForCategory = function() {
-        var category = $scope.selectedCategory.category;
-        StockService.getStockItemsForStockCategory({serverMethod:'getStockItemsForStockCategory', stockCategory:category},
+    $scope.getModelsForManufacturer = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        StockService.getStockModelsForManufacturer({serverMethod:'getModelsForManufacturer', stockManufacturer:manufacturer},
             function(result) {
-                var stockItems = result;
-                $scope.stockItems = stockItems;
+                $scope.stockModels = result;
+            },
+            function(error) {
+                alert('Error getting stock models');
+            }
+        );
+    }
+    $scope.getStockItemsForManufacturerAndModel = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        var model = $scope.selectedModel.model;
+        StockService.getStockItemsForManufacturerAndModel({serverMethod:'getStockItemsForStockManufacturerAndModel', stockManufacturer:manufacturer, stockModel:model},
+            function(result) {
+                $scope.stockItems = result;
             },
             function(error){
-                alert('Error getting stock items for category - or no stock items for this category.')
+                alert('Error getting stock items for make and model - or no stock items for this make and model.')
             }
         );
     }
@@ -496,7 +516,8 @@ function StockEditCtrl($scope, StockService) {
         $scope.showDelete = 0;
     $scope.saveStockItem = function() {
         var htmlTechSpecs = $scope.htmlTechnicalSpecs;
-        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockCategory:$scope.selectedStockItem.stockCategory, modelName:$scope.selectedStockItem.modelName, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:$scope.selectedStockItem.stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription},
+        var stockCode = $scope.selectedStockItem.stockManufacturer+"-"+$scope.selectedStockItem.stockModel+"-"+$scope.selectedStockItem.stockSeries;
+        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription},
             function(result) {
                 var serverResult = result;
                 if (serverResult.result === '1') {
@@ -539,7 +560,7 @@ function StockEditCtrl($scope, StockService) {
     $scope.showAddSerialNumber = function() {
         $scope.showAddSerial = 1;
     }
-    $scope.addSerialNumber = function(serialNumber, stockId) {
+    $scope.addSerialNumber = function(serialNumber) {
         var serialNumber = $scope.serialNumber;
         StockService.addSerialNumber({serverMethod:'addSerialNumber', stockId:$scope.selectedStockItem.stockId, serialNumber:serialNumber},
             function(result) {
@@ -568,7 +589,7 @@ function StockEditCtrl($scope, StockService) {
             }
         );
     }
-    $scope.removeSerialNumber = function(serialNumber, stockId, status) {
+    $scope.removeSerialNumber = function(serialNumber, status) {
         if (status == 'Available') {
             StockService.deleteSerialNumber({serverMethod:'deleteSerialNumber', stockId:$scope.selectedStockItem.stockId, serialNumber:serialNumber},
                 function(result) {
@@ -599,6 +620,162 @@ function StockEditCtrl($scope, StockService) {
         }
         else {
             alert('Stock serial number cannot be removed if it has been quoted on, or is unavailable.')
+        }
+    }
+}
+
+function AccessoryCtrl($scope, AccessoryService) {
+    AccessoryService.getAccessoryManufacturers({serverMethod:'getAccessoryManufacturers'},
+        function(result) {
+            $scope.accessoryManufacturers = result;
+        },
+        function(error) {
+            alert('Error getting accessory manufacturers');
+        }
+    );
+    $scope.getAccessoryItemsForManufacturer = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        AccessoryService.getAccessoryItemsForAccessoryManufacturer({serverMethod:'getAccessoryItemsForAccessoryManufacturer', accessoryManufacturer:manufacturer},
+            function(result) {
+                $scope.accessoryItems = result;
+            },
+            function(error){
+                alert('Error getting accessory items for manufacturer - or no accessory items for this manufacturer.')
+            }
+        );
+    }
+    $scope.getAccessoryForAccessoryId = function(accessoryId) {
+        AccessoryService.getAccessoryForAccessoryId({serverMethod:'getAccessoryForAccessoryId',accessoryId:accessoryId},
+            function(result) {
+                DataManager.getInstance().selectedAccessoryItem = result;
+                $scope.setRoute('/accessoryEdit');
+            },
+            function(error) {
+                alert('Error getting the accessory item');
+            }
+        );
+    };
+    $scope.addAccessoryItem = function() {
+        DataManager.getInstance().selectedAccessoryItem = null;
+        $scope.setRoute('/accessoryEdit');
+    }
+}
+
+function AccessoryEditCtrl($scope, AccessoryService) {
+    $scope.showAddSerial = 0;
+    $scope.showSerialSection = 0;
+    if (DataManager.getInstance().selectedAccessoryItem) {
+        $scope.selectedAccessoryItem = DataManager.getInstance().selectedAccessoryItem;
+        $scope.showDelete = 1;
+        $scope.showSerialSection = 1;
+    }
+    else
+        $scope.showDelete = 0;
+    $scope.saveAccessoryItem = function() {
+        var stockCode = $scope.selectedAccessoryItem.accessoryManufacturer+"-"+$scope.selectedAccessoryItem.accessoryModel;
+        AccessoryService.saveAccessoryItem({serverMethod:'saveAccessoryItem', accessoryId:$scope.selectedAccessoryItem.accessoryId, accessoryManufacturer:$scope.selectedAccessoryItem.accessoryManufacturer, accessoryModel:$scope.selectedAccessoryItem.accessoryModel, pricing:$scope.selectedAccessoryItem.pricing, accessoryCode:stockCode, description:$scope.selectedAccessoryItem.accessoryDescription},
+            function(result) {
+                var serverResult = result;
+                if (serverResult.result === '1') {
+                    //everything is done - show alert to say done - then back home...
+                    alert('Accessory Item saved successfully.');
+                    //$scope.setRoute('/stock');
+                }
+                else {
+                    //something has gone wrong with saving the user - need to show that...
+                    alert('Error saving the accessory Item: '+serverResult.message);
+                }
+            },
+            function(error){
+
+            }
+        );
+    }
+    $scope.cancel = function() {
+        $scope.setRoute('/accessory');
+    }
+    $scope.delete = function() {
+        AccessoryService.deleteAccessoryItem({serverMethod:'deleteAccessoryItem', stockId:$scope.selectedAccessoryItem.accessoryId},
+            function(result) {
+                var serverResult = result;
+                if (serverResult.result === '1') {
+                    //everything is done - show alert to say done - then back home...
+                    alert('Accessory Item deleted successfully.');
+                    $scope.setRoute('/accessory');
+                }
+                else {
+                    //something has gone wrong with saving the user - need to show that...
+                    alert('Error deleting the accessory item: '+serverResult.message);
+                }
+            },
+            function(error) {
+                alert('Error deleting the accessory');
+            }
+        );
+    }
+    $scope.showAddSerialNumber = function() {
+        $scope.showAddSerial = 1;
+    }
+    $scope.addSerialNumber = function(serialNumber, stockId) {
+        var serialNumber = $scope.serialNumber;
+        AccessoryService.addSerialNumber({serverMethod:'addSerialNumber', accessoryId:$scope.selectedAccessoryItem.accessoryId, serialNumber:serialNumber},
+            function(result) {
+                var serverResult = result;
+                if (serverResult.result === '1') {
+                    //everything is done - show alert to say done - then back home...
+                    alert('Serial Number added successfully.');
+                    AccessoryService.getAccessoryForAccessoryId({serverMethod:'getAccessoryForAccessoryId',accessoryId:$scope.selectedAccessoryItem.accessoryId},
+                        function(result) {
+                            var stockItem = result;
+                            DataManager.getInstance().selectedAccessoryItem = stockItem;
+                            $scope.selectedAccessoryItem = stockItem;
+                            $scope.serialNumber = '';
+                            $scope.showAddSerial = 0;
+                        },
+                        function(error) { }
+                    );
+                }
+                else {
+                    //something has gone wrong with saving the user - need to show that...
+                    alert('Error adding serial number: '+serverResult.message);
+                }
+            },
+            function(error) {
+                alert('Error adding serial number to accessory item.')
+            }
+        );
+    }
+    $scope.removeSerialNumber = function(serialNumber, status) {
+        if (status == 'Available') {
+            AccessoryService.deleteSerialNumber({serverMethod:'deleteSerialNumber', accessoryId:$scope.selectedAccessoryItem.accessoryId, serialNumber:serialNumber},
+                function(result) {
+                    var serverResult = result;
+                    if (serverResult.result === '1') {
+                        //everything is done - show alert to say done - then back home...
+                        alert('Serial Number removed successfully.');
+                        AccessoryService.getAccessoryForAccessoryId({serverMethod:'getAccessoryForAccessoryId',accessoryId:$scope.selectedAccessoryItem.accessoryId},
+                            function(result) {
+                                var stockItem = result;
+                                DataManager.getInstance().selectedAccessoryItem = stockItem;
+                                $scope.selectedAccessoryItem = stockItem;
+                                $scope.serialNumber = '';
+                                $scope.showAddSerial = 0;
+                            },
+                            function(error) { }
+                        );
+                    }
+                    else {
+                        //something has gone wrong with saving the user - need to show that...
+                        alert('Error removing serial number: '+serverResult.message);
+                    }
+                },
+                function(error) {
+                    alert('Error removing serial number from the accessory item.')
+                }
+            );
+        }
+        else {
+            alert('Accessory serial number cannot be removed if it has been quoted on, or is unavailable.')
         }
     }
 }

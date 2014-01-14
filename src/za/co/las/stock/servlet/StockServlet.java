@@ -32,16 +32,20 @@ public class StockServlet extends HttpServlet{
 		String callBack = req.getParameter("callback");
 		String serverMethod = req.getParameter("serverMethod");
 		String stockId = req.getParameter("stockId");
-		String stockCategory = req.getParameter("stockCategory");
+		String stockManufacturer = req.getParameter("stockManufacturer");
+		String stockModel = req.getParameter("stockModel");
 		
 		PrintWriter out = resp.getWriter();
 		String outputMessage = callBack+"(";
 		
-		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_CATEGORIES)) {
-			outputMessage = outputMessage + utilityService.convertListOfStockCategoriesToJSONString(stockService.getStockCategories());
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_MANUFACTURERS)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockManufacturersToJSONString(stockService.getStockManufacturers());
 		}
-		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_IEMS_FOR_STOCK_CATEGORY)) {
-			outputMessage = outputMessage + utilityService.convertListOfStockToJSONString(stockService.getStockItemsForStockCategories(stockCategory));
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_MODELS_FOR_MANUFACTURER)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockModelsToJSONString(stockService.getStockModelsForManufacturer(stockManufacturer));
+		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_IEMS_FOR_STOCK_MANUFACTURER_AND_MODEL)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockToJSONString(stockService.getStockItemsFromManufacturerAndModel(stockManufacturer, stockModel));
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_FOR_STOCK_ID)) {
 			outputMessage = outputMessage + (stockService.getStockItemForStockId(Integer.parseInt(stockId)).toJSONString());
@@ -60,23 +64,24 @@ public class StockServlet extends HttpServlet{
 			outputMessage = outputMessage + utilityService.buildResponseMessage(result,"");
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SAVE_STOCK_ITEM)) {
-			String modelName = req.getParameter("modelName");
+			
 			String pricing = req.getParameter("pricing");
 			String stockCode = req.getParameter("stockCode");
 			String technicalSpecs = req.getParameter("technicalSpecs");
 			String description = req.getParameter("description");
+			String stockSeries = req.getParameter("stockSeries");
 			int result = 0;
 			if (stockId == null) {		
-				result = stockService.createStockItem(modelName, Double.parseDouble(pricing), stockCategory, stockCode, technicalSpecs, description);
+				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description);
 			}
 			else {
-				result = stockService.updateStockItem(Integer.parseInt(stockId), modelName, Double.parseDouble(pricing), stockCategory, stockCode, technicalSpecs, description);
+				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description);
 			}		
 			
 			if (result == 1)
 				outputMessage = outputMessage + utilityService.buildResponseMessage(result,"");
 			else
-				outputMessage = outputMessage + utilityService.buildResponseMessage(result,"Error saving the user - please check that all fields are completed correctly");
+				outputMessage = outputMessage + utilityService.buildResponseMessage(result,"Error saving the stock item - please check that all fields are completed correctly");
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.DELETE_STOCK_ITEM)) {
 			int result = stockService.deleteStockItem(Integer.parseInt(stockId));

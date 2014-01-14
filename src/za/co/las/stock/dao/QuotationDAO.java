@@ -288,7 +288,7 @@ public class QuotationDAO extends AbstractDAO {
 			//3.1. get the line items that are linked to this quote...
 			ArrayList<Stock> stockItems = new ArrayList<Stock>();
 			statement2 = connection.prepareStatement("select "+
-													"    s.stock_id, qli.serial_number, s.stock_code, s.stock_category, s.model_name, qli.pricing, s.technical_specs, s.stock_description "+ 
+													"    s.stock_id, qli.serial_number, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, qli.pricing, s.technical_specs, s.stock_description "+ 
 													"from "+
 													"    las_stock.quotation_line_item qli, las_stock.stock s "+
 													"where "+ 
@@ -303,10 +303,11 @@ public class QuotationDAO extends AbstractDAO {
 			String serialNumber = "";
 			while (resultSet2.next()) {
 				Stock stock = new Stock();
-				stock.setModelName(resultSet2.getString("model_name"));
 				stock.setPricing(resultSet2.getDouble("pricing"));
 				serialNumber = resultSet2.getString("serial_number");
-				stock.setStockCategory(resultSet2.getString("stock_category"));
+				stock.setStockManufacturer(resultSet2.getString("stock_manufacturer"));
+				stock.setStockModel(resultSet2.getString("stock_model"));
+				stock.setStockSeries(resultSet2.getString("stock_series"));
 				stock.setStockCode(resultSet2.getString("stock_code"));
 				stock.setStockId(resultSet2.getInt("stock_id"));
 				stock.setTechnicalSpecs(resultSet2.getString("technical_specs"));

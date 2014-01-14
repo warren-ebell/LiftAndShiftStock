@@ -27,6 +27,11 @@
    		<servlet-class>za.co.las.stock.servlet.StockServlet</servlet-class>
   	</servlet>
   	<servlet>
+		<display-name>AccessoryServlet</display-name>
+   		<servlet-name>AccessoryServlet</servlet-name>
+   		<servlet-class>za.co.las.stock.servlet.AccessoryServlet</servlet-class>
+  	</servlet>
+  	<servlet>
 		<display-name>QuoteServlet</display-name>
    		<servlet-name>QuoteServlet</servlet-name>
    		<servlet-class>za.co.las.stock.servlet.QuoteServlet</servlet-class>
@@ -51,6 +56,10 @@
  	<servlet-mapping>
     	<servlet-name>StockServlet</servlet-name>
     	<url-pattern>/stock</url-pattern>
+ 	</servlet-mapping>
+ 	<servlet-mapping>
+    	<servlet-name>AccessoryServlet</servlet-name>
+    	<url-pattern>/accessory</url-pattern>
  	</servlet-mapping>
  	<servlet-mapping>
     	<servlet-name>QuoteServlet</servlet-name>

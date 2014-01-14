@@ -50,7 +50,8 @@ public class QuoteServlet extends HttpServlet{
 		String callBack = req.getParameter("callback");
 		String serverMethod = req.getParameter("serverMethod");
 		String stockId = req.getParameter("stockId");
-		String stockCategory = req.getParameter("stockCategory");
+		String stockManufacturer = req.getParameter("stockManufacturer");
+		String stockModel = req.getParameter("stockModel");
 		
 		PrintWriter out = resp.getWriter();
 		String outputMessage = callBack+"(";
@@ -90,12 +91,16 @@ public class QuoteServlet extends HttpServlet{
 				outputMessage = outputMessage + "{'result':'0','message':'Quote update failed.'}";
 			outputMessage = outputMessage + ");";
 		}
-		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_CATEGORIES)) {
-			outputMessage = outputMessage + utilityService.convertListOfStockCategoriesToJSONString(stockService.getStockCategories());
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_MANUFACTURERS)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockManufacturersToJSONString(stockService.getStockManufacturers());
 			outputMessage = outputMessage + ");";
 		}
-		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_IEMS_FOR_STOCK_CATEGORY)) {
-			outputMessage = outputMessage + utilityService.convertListOfStockToJSONString(stockService.getStockItemsForStockCategories(stockCategory));
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_MODELS_FOR_MANUFACTURER)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockModelsToJSONString(stockService.getStockModelsForManufacturer(stockManufacturer));
+			outputMessage = outputMessage + ");";
+		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_IEMS_FOR_STOCK_MANUFACTURER_AND_MODEL)) {
+			outputMessage = outputMessage + utilityService.convertListOfStockToJSONString(stockService.getStockItemsFromManufacturerAndModel(stockManufacturer, stockModel));
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.GET_STOCK_FOR_STOCK_ID)) {

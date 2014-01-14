@@ -37,14 +37,30 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('StockService', function($resource){
         return $resource(serverURL+'/stock',
-            {port: ':8080', serverMethod:'', stockId:'', stockCategory:'', modelName:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', serverMethod:'', stockId:'', stockManufacturer:'', stockSeries:'', stockModel:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', callback:'JSON_CALLBACK'},
             {
-                getStockCategories: {method: 'JSONP', isArray:true},
+                getStockManufacturers: {method: 'JSONP', isArray:true},
+                getStockModelsForManufacturer: {method: 'JSONP', isArray:true},
                 getStockForStockId: {method: 'JSONP', isArray:false},
                 getAvailableStockForStockId: {method: 'JSONP', isArray:false},
-                getStockItemsForStockCategory: {method: 'JSONP', isArray:true},
+                getStockItemsForManufacturerAndModel: {method: 'JSONP', isArray:true},
                 saveStockItem: {method: 'JSONP', isArray:false},
                 deleteStockItem: {method: 'JSONP', isArray:false},
+                addSerialNumber: {method: 'JSONP', isArray:false},
+                deleteSerialNumber: {method:'JSONP', isArray:false}
+            }
+        );
+    }).
+    factory('AccessoryService', function($resource){
+        return $resource(serverURL+'/accessory',
+            {port: ':8080', serverMethod:'', accessoryId:'', accessoryManufacturer:'', pricing:'', serialNumber:'', accessoryCode:'', accessoryModel:'', description:'', callback:'JSON_CALLBACK'},
+            {
+                getAccessoryManufacturers: {method: 'JSONP', isArray:true},
+                getAccessoryForAccessoryId: {method: 'JSONP', isArray:false},
+                getAvailableAccessoryForAccessoryId: {method: 'JSONP', isArray:false},
+                getAccessoryItemsForAccessoryManufacturer: {method: 'JSONP', isArray:true},
+                saveAccessoryItem: {method: 'JSONP', isArray:false},
+                deleteAccessoryItem: {method: 'JSONP', isArray:false},
                 addSerialNumber: {method: 'JSONP', isArray:false},
                 deleteSerialNumber: {method:'JSONP', isArray:false}
             }

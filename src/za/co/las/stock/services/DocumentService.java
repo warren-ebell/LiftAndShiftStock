@@ -60,7 +60,7 @@ public class DocumentService {
 		String formData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
 						"<form1>"+
 						    "<subQuoteHeader>"+
-						        "<txtQuotationType>"+quote.getQuotationLineItems().get(0).getStockCategory()+"</txtQuotationType>"+
+						        "<txtQuotationType>"+quote.getQuotationLineItems().get(0).getStockModel()+"</txtQuotationType>"+
 						    "</subQuoteHeader>"+
 						    "<subCustomerInfo>"+
 						    "    <txtDate>"+quote.getQuotationDate()+"</txtDate>"+
@@ -152,7 +152,7 @@ public class DocumentService {
 		
 		for (Stock s:stockItems) {
 			String lineItem = "        <subLineItem>"+
-						      "            <txtLineItemDescription>"+s.getModelName()+"</txtLineItemDescription>"+
+						      "            <txtLineItemDescription>"+s.getStockModel()+" "+s.getStockSeries()+"</txtLineItemDescription>"+
 						      "            <txtLineItemAmount>"+s.getPricing()+"</txtLineItemAmount>"+
 						      "        </subLineItem>";
 			stockLineItems += lineItem;

@@ -9,10 +9,11 @@ public class Stock {
 	private int stockId;
 	private String stockCode;
 	private String stockDescription;
-	private String modelName;
 	private double pricing;
 	private String technicalSpecs;
-	private String stockCategory;
+	private String stockManufacturer;
+	private String stockSeries;
+	private String stockModel;
 	private ArrayList<StockLevel> stockLevel;
 	
 	private UtilityService utilityService = new UtilityService();
@@ -29,12 +30,6 @@ public class Stock {
 	public void setStockCode(String stockCode) {
 		this.stockCode = stockCode;
 	}
-	public String getModelName() {
-		return modelName;
-	}
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
-	}
 	public double getPricing() {
 		return pricing;
 	}
@@ -46,12 +41,6 @@ public class Stock {
 	}
 	public void setTechnicalSpecs(String technicalSpecs) {
 		this.technicalSpecs = technicalSpecs;
-	}
-	public String getStockCategory() {
-		return stockCategory;
-	}
-	public void setStockCategory(String stockCategory) {
-		this.stockCategory = stockCategory;
 	}
 	public String getStockDescription() {
 		return stockDescription;
@@ -65,17 +54,42 @@ public class Stock {
 	public void setStockLevel(ArrayList<StockLevel> stockLevel) {
 		this.stockLevel = stockLevel;
 	}
+	public String getStockManufacturer() {
+		return stockManufacturer;
+	}
+	public void setStockManufacturer(String stockManufacturer) {
+		this.stockManufacturer = stockManufacturer;
+	}
+	public String getStockSeries() {
+		return stockSeries;
+	}
+	public void setStockSeries(String stockSeries) {
+		this.stockSeries = stockSeries;
+	}
+	public String getStockModel() {
+		return stockModel;
+	}
+	public void setStockModel(String stockModel) {
+		this.stockModel = stockModel;
+	}
+	public UtilityService getUtilityService() {
+		return utilityService;
+	}
+	public void setUtilityService(UtilityService utilityService) {
+		this.utilityService = utilityService;
+	}
 	
 	public String toJSONString() {
-		DecimalFormat df = new DecimalFormat("#.##");
+		DecimalFormat df = new DecimalFormat("0.00");
 		String returnString = "{"
 				+ "'stockId':'"+this.stockId+"', "
 				+ "'stockCode':'"+this.stockCode+"', "
 				+ "'stockDescription':'"+this.stockDescription+"', "
-				+ "'modelName':'"+this.modelName+"', "
+				+ "'stockManufacturer':'"+this.stockManufacturer+"', "
+				+ "'stockModel':'"+this.stockModel+"', "
+				+ "'stockSeries':'"+this.stockSeries+"', "
 				+ "'pricing':'"+df.format(this.pricing)+"', "
-				+ "'technicalSpecs':'"+this.technicalSpecs+"', "
-				+ "'stockCategory':'"+this.stockCategory+"', ";
+				+ "'technicalSpecs':'"+this.technicalSpecs+"', ";
 		if (this.stockLevel != null) {
 			returnString = returnString 
 				+ "'stockLevel':"+utilityService.convertListOfStockLevelToJSONString(this.stockLevel)+" ";

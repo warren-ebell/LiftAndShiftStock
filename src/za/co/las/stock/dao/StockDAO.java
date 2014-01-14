@@ -18,15 +18,16 @@ public class StockDAO extends AbstractDAO {
 		
 		try {
 			//1. update the stock table...
-			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_category = ?, model_name = ?, pricing = ?, technical_specs = ?, stock_description = ? where stock_id = ?");
+			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_manufacturer = ?, stock_model = ?, stock_series = ?, pricing = ?, technical_specs = ?, stock_description = ? where stock_id = ?");
 			
 			statement.setString(1, newStock.getStockCode());
-			statement.setString(2, newStock.getStockCategory());
-			statement.setString(3, newStock.getModelName());
-			statement.setDouble(4, newStock.getPricing());
-			statement.setString(5,  newStock.getTechnicalSpecs());
-			statement.setString(6, newStock.getStockDescription());
-			statement.setInt(7, stockId);
+			statement.setString(2, newStock.getStockManufacturer());
+			statement.setString(3, newStock.getStockModel());
+			statement.setString(4, newStock.getStockSeries());
+			statement.setDouble(5, newStock.getPricing());
+			statement.setString(6,  newStock.getTechnicalSpecs());
+			statement.setString(7, newStock.getStockDescription());
+			statement.setInt(8, stockId);
 			
 			int result = statement.executeUpdate();
 			
@@ -47,14 +48,15 @@ public class StockDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_category, model_name, pricing, technical_specs, stock_description) values (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_manufacturer, stock_model, stock_series, pricing, technical_specs, stock_description) values (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement.setString(1, newStock.getStockCode());
-			statement.setString(2, newStock.getStockCategory());
-			statement.setString(3, newStock.getModelName());
-			statement.setDouble(4, newStock.getPricing());
-			statement.setString(5, newStock.getTechnicalSpecs());
-			statement.setString(6, newStock.getStockDescription());
+			statement.setString(2, newStock.getStockManufacturer());
+			statement.setString(3, newStock.getStockModel());
+			statement.setString(4, newStock.getStockSeries());
+			statement.setDouble(5, newStock.getPricing());
+			statement.setString(6, newStock.getTechnicalSpecs());
+			statement.setString(7, newStock.getStockDescription());
 			
 			int result = statement.executeUpdate();			
 			
@@ -93,20 +95,20 @@ public class StockDAO extends AbstractDAO {
 		return -1;
 	}
 	
-	public ArrayList<String> getStockCategories() {
+	public ArrayList<String> getStockManufacturers() {
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		ArrayList<String> stockCategories = new ArrayList<String>();
+		ArrayList<String> stockManufacturers = new ArrayList<String>();
 		
 		try {
-			statement = connection.prepareStatement("select distinct stock_category from las_stock.stock");
+			statement = connection.prepareStatement("select distinct stock_manufacturer from las_stock.stock");
 			
 			resultSet = statement.executeQuery();
 			
 			while (resultSet.next()) {
-				String tempCat = resultSet.getString("stock_category");
-				stockCategories.add(tempCat);
+				String tempMan = resultSet.getString("stock_manufacturer");
+				stockManufacturers.add(tempMan);
 			}
 		}
 		catch (Exception e) {
@@ -117,26 +119,56 @@ public class StockDAO extends AbstractDAO {
 			closeStatement(statement);
 			closeConnection(connection);
 		}
-		return stockCategories;
+		return stockManufacturers;
 	}
 	
-	public ArrayList<Stock> getStockItemsFromCategory(String category) {
+	public ArrayList<String> getStockModelsForManufacturer(String manufacturer) {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<String> stockModels = new ArrayList<String>();
+		
+		try {
+			statement = connection.prepareStatement("select distinct stock_model from las_stock.stock where stock_manufacturer = ?");
+			statement.setString(1, manufacturer);
+			
+			resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				String tempModel = resultSet.getString("stock_model");
+				stockModels.add(tempModel);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(resultSet);
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return stockModels;
+	}
+	
+	public ArrayList<Stock> getStockItemsFromManufacturerAndModel(String manufacturer, String model) {
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		ArrayList<Stock> stockItems = new ArrayList<Stock>();
 		
 		try {
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_category, s.model_name, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_category = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_manufacturer = ? and s.stock_model = ?");
 			
-			statement.setString(1, category);
+			statement.setString(1, manufacturer);
+			statement.setString(2, model);
 			resultSet = statement.executeQuery();
 			
 			while (resultSet.next()) {
 				Stock stock = new Stock();
-				stock.setModelName(resultSet.getString("model_name"));
+				stock.setStockModel(resultSet.getString("stock_model"));
+				stock.setStockSeries(resultSet.getString("stock_series"));
 				stock.setPricing(resultSet.getDouble("pricing"));
-				stock.setStockCategory(resultSet.getString("stock_category"));
+				stock.setStockManufacturer(resultSet.getString("stock_manufacturer"));
 				stock.setStockCode(resultSet.getString("stock_code"));
 				stock.setStockId(resultSet.getInt("stock_id"));
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
@@ -166,16 +198,17 @@ public class StockDAO extends AbstractDAO {
 		
 		try {
 			//1. get the stock item...
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_category, s.model_name, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_id = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_id = ?");
 			
 			statement.setInt(1, stockId);
 			resultSet = statement.executeQuery();
 			
 			while (resultSet.next()) {
 				stock = new Stock();
-				stock.setModelName(resultSet.getString("model_name"));
+				stock.setStockModel(resultSet.getString("stock_model"));
+				stock.setStockSeries(resultSet.getString("stock_series"));
 				stock.setPricing(resultSet.getDouble("pricing"));
-				stock.setStockCategory(resultSet.getString("stock_category"));
+				stock.setStockManufacturer(resultSet.getString("stock_manufacturer"));
 				stock.setStockCode(resultSet.getString("stock_code"));
 				stock.setStockId(resultSet.getInt("stock_id"));
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));

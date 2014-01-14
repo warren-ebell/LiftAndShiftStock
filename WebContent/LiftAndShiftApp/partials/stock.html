@@ -9,17 +9,25 @@
         <table>
             <tr>
                 <td>
-                    Select the category for stock items :
+                    Select the stock item manufacturer :
                 </td>
                 <td>
-                    <select ng-model="selectedCategory" ng-options="stock.category for stock in stockCategories" ng-change="getStockItemsForCategory()"></select>
+                    <select ng-model="selectedManufacturer" ng-options="stock.manufacturer for stock in stockManufacturers" ng-change="getModelsForManufacturer()"></select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Select the model for the above manufacturer :
+                </td>
+                <td>
+                    <select ng-model="selectedModel" ng-options="stock.model for stock in stockModels" ng-change="getStockItemsForManufacturerAndModel()"></select>
                 </td>
             </tr>
         </table>
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>Model Name</th>
+                <th>Series</th>
                 <th>Stock Code</th>
                 <th>Edit</th>
             </tr>
@@ -27,7 +35,7 @@
             <tbody>
             <tr ng-repeat="stock in stockItems">
                 <td>
-                    {{ stock.modelName }}
+                    {{ stock.stockSeries }}
                 </td>
                 <td>
                     {{ stock.stockCode }}
