@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import za.co.las.stock.constants.StockConstants;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
+import za.co.las.stock.object.TempAccessory;
 import za.co.las.stock.object.User;
 import za.co.las.stock.services.CurrencyService;
 import za.co.las.stock.services.DocumentService;
@@ -146,10 +147,9 @@ public class QuoteServlet extends HttpServlet{
 			ArrayList<String> stockItemIds = new ArrayList<String>();
 			stockItemIds.add(stockId);
 			
-			ArrayList<OptionalExtra> oeList = utilityService.convertOptionalExtraJSONStringToListWithPricingFactor(accessories, factor);
-			ArrayList<String> optionalExtrasIds = optionalExtraService.insertOptionalExtraList(oeList);
+			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, factor);
 			
-			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, optionalExtrasIds, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate)+"'}";
+			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate)+"'}";
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SEND_EMAIL)) {

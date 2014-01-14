@@ -28,6 +28,7 @@
             <tr>
                 <th>Series</th>
                 <th>Stock Code</th>
+                <th>Price (EUR)</th>
                 <th>Select</th>
             </tr>
             </thead>
@@ -38,6 +39,9 @@
                 </td>
                 <td>
                     {{ stock.stockCode }}
+                </td>
+                <td>
+                    {{ stock.pricing }}
                 </td>
                 <td>
                     <button class="btn" ng-click="getStockForStockId(stock.stockId)">{{stock.stockId}}</button>

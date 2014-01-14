@@ -11,6 +11,7 @@ import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
+import za.co.las.stock.object.TempAccessory;
 import za.co.las.stock.object.User;
 
 public class UtilityService {
@@ -39,6 +40,37 @@ public class UtilityService {
 			e.printStackTrace();
 		}
 		return optionalExtras;
+	}
+	
+	public ArrayList<TempAccessory> convertAccessoryJSONStringToListWithPricingFactor(String jsonString, double factor) {
+		ArrayList<TempAccessory> accessoryList = new ArrayList<TempAccessory>();
+		JSONParser parser = new JSONParser();
+		
+		try {
+		
+			JSONArray array = (JSONArray)parser.parse(jsonString);
+			for (int i = 0; i < array.size(); i++) {
+				JSONObject jsonObj = (JSONObject)array.get(i);
+				System.out.println("serial=" + jsonObj.get("serial"));
+				System.out.println("code=" + jsonObj.get("code"));
+				System.out.println("price=" + jsonObj.get("price"));
+				System.out.println("accessoryId=" + jsonObj.get("accessoryId"));
+				
+				double pricing = ((Long)jsonObj.get("price")) * factor;
+				
+				TempAccessory tempAccessory = new TempAccessory();
+				tempAccessory.setAccessoryId(Integer.parseInt((String)jsonObj.get("accessoryId")));
+				tempAccessory.setCode((String)jsonObj.get("code"));
+				tempAccessory.setPrice(pricing);
+				tempAccessory.setSerial((String)jsonObj.get("serial"));
+				
+				accessoryList.add(tempAccessory);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return accessoryList;
 	}
 	
 	public String convertListOfStockToJSONString(ArrayList<Stock> stockItemList) {

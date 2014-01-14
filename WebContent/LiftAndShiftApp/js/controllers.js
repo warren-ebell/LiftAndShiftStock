@@ -130,28 +130,59 @@ function QuoteCtrl($scope, StockService) {
     }
 }
 
-function QuoteAccessoriesCtrl($scope, QuoteService) {
+function QuoteAccessoriesCtrl($scope, AccessoryService) {
     $scope.accessories = [];
+    AccessoryService.getAccessoryManufacturers({serverMethod:'getAccessoryManufacturers'},
+        function(result) {
+            $scope.accessoryManufacturers = result;
+        },
+        function(error) {
+            alert('Error getting accessory manufacturers');
+        }
+    );
+    $scope.getAccessoryItemsForManufacturer = function() {
+        var manufacturer = $scope.selectedManufacturer.manufacturer;
+        AccessoryService.getAccessoryItemsForAccessoryManufacturer({serverMethod:'getAccessoryItemsForAccessoryManufacturer', accessoryManufacturer:manufacturer},
+            function(result) {
+                $scope.accessoryItems = result;
+            },
+            function(error){
+                alert('Error getting accessory items for manufacturer - or no accessory items for this manufacturer.')
+            }
+        );
+    }
+    $scope.getAvailableAccessoryForAccessoryId = function(accessoryId) {
+        AccessoryService.getAvailableAccessoryForAccessoryId({serverMethod:'getAvailableAccessoryForAccessoryId',accessoryId:accessoryId},
+            function(result) {
+                DataManager.getInstance().selectedAccessoryItem = result;
+
+                $scope.selectedAccessoryItem = result;
+                //show the serial number section...
+                $scope.showSerial = 1;
+            },
+            function(error) {
+                alert('Error getting the accessory item');
+            }
+        );
+    };
+    $scope.selectAccessorySerialForQuote = function(serialNumber) {
+        //need to add this item to the list of accessories....
+        var serial = serialNumber;
+        var code = $scope.selectedAccessoryItem.accessoryCode;
+        var price = $scope.selectedAccessoryItem.pricing;
+        var accessoryId = $scope.selectedAccessoryItem.accessoryId;
+
+        var tempAccessory = {};
+        tempAccessory.serial = serial;
+        tempAccessory.code = code;
+        tempAccessory.price = price;
+        tempAccessory.accessoryId = accessoryId;
+
+        $scope.accessories.push(tempAccessory);
+    };
     $scope.next = function() {
         DataManager.getInstance().selectedAccessories = $scope.accessories;
         $scope.setRoute('/quoteCustomer');
-    };
-    $scope.addAccessory = function() {
-        var desc = $scope.description;
-        var price = $scope.pricing;
-        if (desc && price) {
-            var accessory = {};
-            accessory.description = desc;
-            accessory.pricing = price;
-            $scope.accessories.push(accessory);
-
-            //clear the temps now...
-            $scope.description = '';
-            $scope.pricing = '';
-        }
-        else {
-            alert('Please complete both fields.')
-        }
     };
     $scope.removeAccessory = function(selectedAccessory) {
         var index = $scope.accessories.indexOf(selectedAccessory);

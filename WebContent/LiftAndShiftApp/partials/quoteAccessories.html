@@ -6,54 +6,96 @@
             <p class="text-muted">Add accessories to the quote.</p>
         </div>
         <div>
+            <table>
+                <tr>
+                    <td>
+                        Select the accessory item manufacturer :
+                    </td>
+                    <td>
+                        <select ng-model="selectedManufacturer" ng-options="accessory.manufacturer for accessory in accessoryManufacturers" ng-change="getAccessoryItemsForManufacturer()"></select>
+                    </td>
+                </tr>
+            </table>
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>Description</th>
+                    <th>Model</th>
+                    <th>Accessory Code</th>
                     <th>Price (EUR)</th>
+                    <th>Select</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="accessory in accessoryItems">
+                    <td>
+                        {{ accessory.accessoryModel }}
+                    </td>
+                    <td>
+                        {{ accessory.accessoryCode }}
+                    </td>
+                    <td>
+                        {{ accessory.pricing }}
+                    </td>
+                    <td>
+                        <button class="btn" ng-click="getAvailableAccessoryForAccessoryId(accessory.accessoryId)">{{accessory.accessoryId}}</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-show="showSerial">
+            <h4>Available Units</h4>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Status</th>
+                    <th>Select</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="stockLevel in selectedAccessoryItem.accessoryLevel">
+                    <td>
+                        {{ stockLevel.serialNumber }}
+                    </td>
+                    <td>
+                        {{ stockLevel.status }}
+                    </td>
+                    <td>
+                        <button class="btn" ng-click="selectAccessorySerialForQuote(stockLevel.serialNumber)">+</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h4>Selected Accessories</h4>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Code</th>
+                    <th>Price (EUR)</th>
+                    <th>Remove</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="acc in accessories">
                     <td>
-                        {{ acc.description }}
+                        {{ acc.serial }}
                     </td>
                     <td>
-                        {{ acc.pricing }}
+                        {{ acc.code }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="removeAccessory(acc)">X</button>
+                        {{ acc.price }}
+                    </td>
+                    <td>
+                        <button class="btn" ng-click="removeAccessory(acc)">+</button>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <div>
-                <table>
-                    <tr>
-                        <td>
-                            <label class="control-label" for="description">Accessory description:</label>
-                        </td>
-                        <td>
-                            <input class="input" id="description" type="text" ng-model="description" ng-model-instant>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="control-label" for="pricing">Price (EUR):</label>
-                        </td>
-                        <td>
-                            <input class="input" id="pricing" type="number" step="any" min="0" ng-model="pricing" ng-model-instant>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <button type="button" class="btn btn-default" ng-click="addAccessory()">Add</button>
-                        </td>
-                    </tr>
-                </table>
-                <br>
-            </div>
         </div>
         <div>
             <button type="button" class="btn btn-default" ng-click="next()">Next</button>

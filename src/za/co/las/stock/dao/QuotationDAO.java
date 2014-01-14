@@ -11,6 +11,7 @@ import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.Stock;
+import za.co.las.stock.object.TempAccessory;
 
 import com.mysql.jdbc.Statement;
 
@@ -75,12 +76,13 @@ public class QuotationDAO extends AbstractDAO {
 		return defaults;
 	}
 	
-	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<String> optionalExtraItemIds, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate) {
+	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate) {
 		Connection connection = getConnection();
 		PreparedStatement statement1 = null;
 		PreparedStatement statement2 = null;
 		PreparedStatement statement3 = null;
 		PreparedStatement statement4 = null;
+		PreparedStatement statement5 = null;
 		
 		try {
 			String status = "Created";
@@ -135,15 +137,29 @@ public class QuotationDAO extends AbstractDAO {
 			}
 			
 			
-			//3. add the optional extra items to the quotation...
-			statement3 = connection.prepareStatement("insert into las_stock.quotation_line_item (optional_extra_id, quotation_id) values (?,?)");
+			//3. add the accessories to the quotation...
+			statement3 = connection.prepareStatement("insert into las_stock.quotation_line_item (accessory_id, quotation_id, serial_number, serial_number, pricing) values (?,?,?,?)");
 			
-			if (optionalExtraItemIds != null) {
-				for (String oe:optionalExtraItemIds) {
-					statement3.setInt(1, Integer.parseInt(oe));
+			if (accessories != null) {
+				for (TempAccessory temp:accessories) {
+					statement3.setInt(1, temp.getAccessoryId());
 					statement3.setInt(2, quotationId);
+					statement3.setString(3, temp.getSerial());
+					statement3.setDouble(4, temp.getPrice());
 					
 					statement3.executeUpdate();
+				}
+			}
+			
+			//4. need to update the stock level of the accessories...
+			statement5 = connection.prepareStatement("update las_stock.accessory_level set accessory_status = 1 where accessory_id = ? and serial_number = ?");
+			
+			if (accessories != null) {
+				for (TempAccessory temp:accessories) {
+					statement5.setInt(1, temp.getAccessoryId());
+					statement5.setString(2, temp.getSerial());
+					
+					statement5.executeUpdate();
 				}
 			}
 			return quotationId;
@@ -156,6 +172,7 @@ public class QuotationDAO extends AbstractDAO {
 			closeStatement(statement2);
 			closeStatement(statement3);
 			closeStatement(statement4);
+			closeStatement(statement5);
 			closeConnection(connection);
 		}
 		return -1;
@@ -166,8 +183,11 @@ public class QuotationDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		PreparedStatement statement1 = null;
 		PreparedStatement statement2 = null;
+		PreparedStatement statement3 = null;
+		PreparedStatement statement4 = null;
 		
 		ResultSet resultSet = null;
+		ResultSet resultSet2 = null;
 		try {
 			//1. get the quotation information for this quote...
 			statement = connection.prepareStatement("select qli.stock_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.serial_number not in ('null')");
@@ -212,6 +232,27 @@ public class QuotationDAO extends AbstractDAO {
 				
 				result =  statement1.executeUpdate();
 				
+				//now need to update the stock levels of the accessories...
+				statement3 = connection.prepareStatement("select qli.accessory_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.serial_number not in ('null')");
+				statement3.setInt(1, quotationId);
+				
+				resultSet2 = statement3.executeQuery();
+				
+				while (resultSet.next()) {
+					int accessoryId = resultSet.getInt("accessory_id");
+					String accSerialNumber = resultSet.getString("serial_number");
+					
+					//we are in here because there are accessories that need to be updated...
+					statement4 = connection.prepareStatement("update las_stock.accessory_level set accessory_status = ? where accessory_id = ? and serial_number = ?");
+					
+					statement4.setInt(1, stockLevelStatus);
+					statement4.setInt(2, accessoryId);
+					statement4.setString(3, accSerialNumber);
+					
+					result =  statement4.executeUpdate();
+					
+				}
+								
 				return result;
 			}
 		}
@@ -220,8 +261,11 @@ public class QuotationDAO extends AbstractDAO {
 		}
 		finally {
 			closeResultSet(resultSet);
+			closeResultSet(resultSet2);
 			closeStatement(statement2);
 			closeStatement(statement1);
+			closeStatement(statement3);
+			closeStatement(statement4);
 			closeStatement(statement);
 			closeConnection(connection);
 		}
