@@ -49,6 +49,19 @@
             </tr>
             </tbody>
         </table>
+        <div ng-show="showLocations">
+            <h4>Installation Location</h4>
+            <table>
+                <tr>
+                    <td>
+                        Select the installation location :
+                    </td>
+                    <td>
+                        <select ng-model="selectedLocation" ng-options="loc.location for loc in stockInstallLocations" ng-change="setSelectedInstallLocation()"></select>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div ng-show="showSerial">
             <h4>Available Units</h4>
             <table class="table table-hover">

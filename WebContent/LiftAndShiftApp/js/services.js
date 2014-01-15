@@ -37,7 +37,7 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('StockService', function($resource){
         return $resource(serverURL+'/stock',
-            {port: ':8080', serverMethod:'', stockId:'', stockManufacturer:'', stockSeries:'', stockModel:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', serverMethod:'', stockId:'', stockManufacturer:'', stockSeries:'', stockModel:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', location:'', stockUsed:'', callback:'JSON_CALLBACK'},
             {
                 getStockManufacturers: {method: 'JSONP', isArray:true},
                 getStockModelsForManufacturer: {method: 'JSONP', isArray:true},
@@ -47,7 +47,9 @@ angular.module('liftandshift.services', ['ngResource']).
                 saveStockItem: {method: 'JSONP', isArray:false},
                 deleteStockItem: {method: 'JSONP', isArray:false},
                 addSerialNumber: {method: 'JSONP', isArray:false},
-                deleteSerialNumber: {method:'JSONP', isArray:false}
+                deleteSerialNumber: {method:'JSONP', isArray:false},
+                addInstallLocation: {method: 'JSONP', isArray:false},
+                deleteInstallLocation: {method:'JSONP', isArray:false}
             }
         );
     }).
@@ -76,7 +78,7 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('QuoteService', function($resource){
         return $resource(serverURL+'/quote',
-            {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', accessories:'', notes:'', delivery:'', installation:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', accessories:'', notes:'', delivery:'', installation:'', installationLocation:'', usedItem:'', callback:'JSON_CALLBACK'},
             {
                 saveQuote: {method: 'JSONP', isArray:false},
                 getMiniQuotes: {method: 'JSONP', isArray:true},

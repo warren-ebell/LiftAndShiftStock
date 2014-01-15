@@ -53,6 +53,18 @@ public class StockServlet extends HttpServlet{
 		if (serverMethod.equalsIgnoreCase(StockConstants.GET_AVAILABLE_STOCK_FOR_STOCK_ID)) {
 			outputMessage = outputMessage + (stockService.getAvailableStockItemForStockId(Integer.parseInt(stockId)).toJSONString());
 		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.ADD_INSTALL_LOCATION)) {
+			String location = req.getParameter("location");
+			String pricing = req.getParameter("pricing");
+			int result = stockService.addInstallLocationToStockId(location, Double.parseDouble(pricing), Integer.parseInt(stockId));
+			outputMessage = outputMessage + utilityService.buildResponseMessage(result,"");
+		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.DELETE_INSTALL_LOCATION)) {
+			String location = req.getParameter("location");
+			String pricing = req.getParameter("pricing");
+			int result = stockService.deleteInstallLocationFromStockId(location, Double.parseDouble(pricing), Integer.parseInt(stockId));
+			outputMessage = outputMessage + utilityService.buildResponseMessage(result,"");
+		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.ADD_SERIAL_NUMBER)) {
 			String serialNumber = req.getParameter("serialNumber");
 			int result = stockService.addSerialNumberToStockId(serialNumber, Integer.parseInt(stockId));
@@ -70,12 +82,13 @@ public class StockServlet extends HttpServlet{
 			String technicalSpecs = req.getParameter("technicalSpecs");
 			String description = req.getParameter("description");
 			String stockSeries = req.getParameter("stockSeries");
+			String stockUsed = req.getParameter("stockUsed");
 			int result = 0;
 			if (stockId == null) {		
-				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description);
+				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed));
 			}
 			else {
-				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description);
+				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed));
 			}		
 			
 			if (result == 1)

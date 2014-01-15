@@ -3,6 +3,7 @@ package za.co.las.stock.services;
 import java.util.ArrayList;
 
 import za.co.las.stock.dao.StockDAO;
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
 
@@ -14,7 +15,7 @@ public class StockService {
 		return stockDAO.deleteStock(stockId);
 	}
 	
-	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description) {
+	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used) {
 		Stock stock = new Stock();
 		stock.setStockManufacturer(stockManufacturer);
 		stock.setStockModel(stockModel);
@@ -23,10 +24,11 @@ public class StockService {
 		stock.setStockCode(stockCode);
 		stock.setTechnicalSpecs(technicalSpecs);
 		stock.setStockDescription(description);
+		stock.setStockUsed(used);
 		return stockDAO.updateStock(stockId, stock);
 	}
 	
-	public int createStockItem(double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description) {
+	public int createStockItem(double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used) {
 		Stock stock = new Stock();
 		stock.setStockManufacturer(stockManufacturer);
 		stock.setStockModel(stockModel);
@@ -35,6 +37,7 @@ public class StockService {
 		stock.setStockCode(stockCode);
 		stock.setTechnicalSpecs(technicalSpecs);
 		stock.setStockDescription(description);
+		stock.setStockUsed(used);
 		return stockDAO.insertStock(stock);
 	}
 	
@@ -69,4 +72,19 @@ public class StockService {
 	public int deleteSerialNumberFromStockId(String serialNumber, int stockId) {
 		return stockDAO.deleteSerialNumberFromStockId(serialNumber, stockId);
 	}
+	
+	public int addInstallLocationToStockId(String location, double pricing, int stockId) {
+		InstallationLocation installLocation = new InstallationLocation();
+		installLocation.setLocation(location);
+		installLocation.setPrice(pricing);
+		return stockDAO.addInstallLocationForStockId(installLocation, stockId);
+	}
+	
+	public int deleteInstallLocationFromStockId(String location, double pricing, int stockId) {
+		InstallationLocation installLocation = new InstallationLocation();
+		installLocation.setLocation(location);
+		installLocation.setPrice(pricing);
+		return stockDAO.deleteInstallLocationForStockId(installLocation, stockId);
+	}
+	
 }

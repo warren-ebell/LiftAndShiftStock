@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
 
+import za.co.las.stock.object.Accessory;
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.Stock;
@@ -85,7 +87,7 @@ public class DocumentService {
 						    "</subTechnicalDetails>"+
 						    buildQuotationItemsSection(quote.getQuotationLineItems())+
 						    "<subQuotationOptionalExtras>"+
-						    buildOptionalExtraItems(quote.getOptionalExtraItems())+
+						    buildAccessoryItems(quote.getAccessoryItems(), quote.getInstallLocation())+
 						    "</subQuotationOptionalExtras>"+
 						    "<subNotes>"+
 						    "    <txtNotes>"+
@@ -177,13 +179,19 @@ public class DocumentService {
 		return stockLineItems;
 	}
 	
-	private String buildOptionalExtraItems(ArrayList<OptionalExtra> optionalExtraItems) {
+	private String buildAccessoryItems(ArrayList<Accessory> accessoryItems, InstallationLocation location) {
 		String oeLineItems = "    <subHeading/>"+
 						    "    <subTable>";
-		for (OptionalExtra oe:optionalExtraItems) {
+		if (location.getLocation().length() > 0) {
 			oeLineItems +=	"        <subLineItem>"+
-						    "            <txtLineItemDescription>"+oe.getDescription()+"</txtLineItemDescription>"+
-						    "            <txtLineItemAmount>"+oe.getPricing()+"</txtLineItemAmount>"+
+						    "            <txtLineItemDescription>Installation - "+location.getLocation()+"</txtLineItemDescription>"+
+						    "            <txtLineItemAmount>"+location.getPrice()+"</txtLineItemAmount>"+
+						    "        </subLineItem>";
+		}
+		for (Accessory acc:accessoryItems) {
+			oeLineItems +=	"        <subLineItem>"+
+						    "            <txtLineItemDescription>"+acc.getAccessoryDescription()+"</txtLineItemDescription>"+
+						    "            <txtLineItemAmount>"+acc.getPricing()+"</txtLineItemAmount>"+
 						    "        </subLineItem>";
 		}
 		oeLineItems += "    </subTable>";

@@ -15,8 +15,10 @@ public class Quotation {
 	private String warranty;
 	private String variation;
 	private String validity;
+	private InstallationLocation installLocation;
 	private ArrayList<Stock> quotationLineItems;
-	private ArrayList<OptionalExtra> optionalExtraItems;
+	private ArrayList<Accessory> accessoryItems;
+	private int usedItem;
 	
 	public int getQuotationId() {
 		return quotationId;
@@ -36,13 +38,6 @@ public class Quotation {
 	public void setQuotationLineItems(
 			ArrayList<Stock> quotationLineItems) {
 		this.quotationLineItems = quotationLineItems;
-	}
-	public ArrayList<OptionalExtra> getOptionalExtraItems() {
-		return optionalExtraItems;
-	}
-	public void setOptionalExtraItems(
-			ArrayList<OptionalExtra> optionalExtraItems) {
-		this.optionalExtraItems = optionalExtraItems;
 	}
 	public String getNotes() {
 		return notes;
@@ -103,5 +98,23 @@ public class Quotation {
 	}
 	public void setRate(String rate) {
 		this.rate = rate;
+	}
+	public ArrayList<Accessory> getAccessoryItems() {
+		return accessoryItems;
+	}
+	public void setAccessoryItems(ArrayList<Accessory> accessoryItems) {
+		this.accessoryItems = accessoryItems;
+	}
+	public InstallationLocation getInstallLocation() {
+		return installLocation;
+	}
+	public void setInstallLocation(InstallationLocation installLocation) {
+		this.installLocation = installLocation;
+	}
+	public int getUsedItem() {
+		return usedItem;
+	}
+	public void setUsedItem(int usedItem) {
+		this.usedItem = usedItem;
 	}
 }

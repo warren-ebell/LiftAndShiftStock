@@ -5,7 +5,16 @@
             <h4>Stock Item Edit</h4>
             <p class="text-muted">Please complete the fields below.</p>
         </div>
+        <h5>Stock Item Information</h5>
         <table>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.used">Used Stock Item :</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.used" type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="selectedStockItem.stockUsed" ng-model-instant>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <label class="control-label" for="stock.manufacturer">Manufacturer :</label>
@@ -67,6 +76,54 @@
         <text-angular ng-model="htmlTechnicalSpecs"></text-angular>
         <br>
         <div ng-show="showSerialSection==1">
+            <h5>Installation Locations</h5>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="location in selectedStockItem.installLocation">
+                    <td>
+                        {{ location.location }}
+                    </td>
+                    <td>
+                        {{ location.price }}
+                    </td>
+                    <td>
+                        <button class="btn" ng-click="removeLocation(location.location, location.price)">X</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-show="showAddLocation==1">
+            <table>
+                <tr>
+                    <td>
+                        <label class="control-label" for="location">Location :</label>
+                    </td>
+                    <td>
+                        <input class="input" id="location" type="text" ng-model="location" ng-model-instant>
+                    </td>
+                    <td>
+                        <label class="control-label" for="pricing">Price :</label>
+                    </td>
+                    <td>
+                        <input class="input" id="pricing" type="text" ng-model="pricing" ng-model-instant>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default" ng-click="addInstallLocation()">+</button>
+                    </td>
+                </tr>
+            </table>
+            <br>
+        </div>
+        <div ng-show="showSerialSection==1">
+            <h5>Stock Item Serial Numbers</h5>
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -107,6 +164,7 @@
             </div>
         </div>
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddSerialNumber()">Add Serial</button>
+        <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddInstallLocation()">Add Install Location</button>
         <button type="button" class="btn btn-default" ng-click="saveStockItem()">Save</button>
         <button ng-show="showDelete==1" type="button" class="btn btn-info" ng-click="delete()">Delete</button>
         <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>

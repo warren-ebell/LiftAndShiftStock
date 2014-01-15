@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import za.co.las.stock.object.Accessory;
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Stock;
@@ -42,6 +43,28 @@ public class UtilityService {
 		return optionalExtras;
 	}
 	
+	public InstallationLocation convertInstallationLocationJSONStringWithPricingFactor(String jsonString, double factor) {
+		InstallationLocation location = new InstallationLocation();
+		try {
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(jsonString);
+			JSONObject jsonObj = (JSONObject)obj;
+			String loc = (String)jsonObj.get("location");
+			String price = (String)jsonObj.get("price");
+			
+			location.setLocation(loc);
+			
+			double pricing = Double.parseDouble(price) * factor;
+			location.setPrice(pricing);
+			
+			return location;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return location;
+	}
+	
 	public ArrayList<TempAccessory> convertAccessoryJSONStringToListWithPricingFactor(String jsonString, double factor) {
 		ArrayList<TempAccessory> accessoryList = new ArrayList<TempAccessory>();
 		JSONParser parser = new JSONParser();
@@ -56,7 +79,7 @@ public class UtilityService {
 				System.out.println("price=" + jsonObj.get("price"));
 				System.out.println("accessoryId=" + jsonObj.get("accessoryId"));
 				
-				double pricing = ((Long)jsonObj.get("price")) * factor;
+				double pricing = (Double.parseDouble((String)jsonObj.get("price"))) * factor;
 				
 				TempAccessory tempAccessory = new TempAccessory();
 				tempAccessory.setAccessoryId(Integer.parseInt((String)jsonObj.get("accessoryId")));
@@ -109,6 +132,20 @@ public class UtilityService {
 			}
 			else {
 				stockLevelJSONString += "," + s.toJSONString();
+			}
+		}		
+		stockLevelJSONString += "]";
+		return stockLevelJSONString;
+	}
+	
+	public String convertListOfInstallLocationsToJSONString(ArrayList<InstallationLocation> installLocationList) {
+		String stockLevelJSONString = "[";
+		for (InstallationLocation i:installLocationList) {
+			if (stockLevelJSONString.length() == 1) {
+				stockLevelJSONString += i.toJSONString();
+			}
+			else {
+				stockLevelJSONString += "," + i.toJSONString();
 			}
 		}		
 		stockLevelJSONString += "]";

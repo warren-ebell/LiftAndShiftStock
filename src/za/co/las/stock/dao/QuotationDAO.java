@@ -5,8 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import za.co.las.stock.object.Accessory;
 import za.co.las.stock.object.Customer;
 import za.co.las.stock.object.Defaults;
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
@@ -17,12 +19,12 @@ import com.mysql.jdbc.Statement;
 
 public class QuotationDAO extends AbstractDAO {
 	
-	public Quotation populateQuoteWithDefaults(Quotation quote) {
+	public Quotation populateQuoteWithDefaults(Quotation quote, int used) {
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		try {
-			statement = connection.prepareStatement("select notes, delivery, installation, warranty, variation, validity from las_stock.defaults");
+			statement = connection.prepareStatement("select notes, delivery, installation, warranty, variation, validity, used_warranty from las_stock.defaults");
 			
 			resultSet = statement.executeQuery();
 			
@@ -30,7 +32,10 @@ public class QuotationDAO extends AbstractDAO {
 				quote.setNotes(resultSet.getString("notes"));
 				quote.setDelivery(resultSet.getString("delivery"));
 				quote.setInstallation(resultSet.getString("installation"));
-				quote.setWarranty(resultSet.getString("warranty"));
+				if (used == 0)
+					quote.setWarranty(resultSet.getString("warranty"));
+				else
+					quote.setWarranty(resultSet.getString("used_warranty"));
 				quote.setVariation(resultSet.getString("variation"));
 				quote.setValidity(resultSet.getString("validity"));
 			}
@@ -76,7 +81,7 @@ public class QuotationDAO extends AbstractDAO {
 		return defaults;
 	}
 	
-	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate) {
+	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location) {
 		Connection connection = getConnection();
 		PreparedStatement statement1 = null;
 		PreparedStatement statement2 = null;
@@ -87,7 +92,7 @@ public class QuotationDAO extends AbstractDAO {
 		try {
 			String status = "Created";
 			//1. insert into the quotation table - customerId is the only thing that goes in here...
-			statement1 = connection.prepareStatement("insert into las_stock.quotation (customer_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, status, rate) values (?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			statement1 = connection.prepareStatement("insert into las_stock.quotation (customer_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, status, rate, installation_location, installation_price) values (?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement1.setInt(1, customerId);
 			statement1.setString(2, notes);
@@ -100,6 +105,8 @@ public class QuotationDAO extends AbstractDAO {
 			statement1.setInt(9, userId);
 			statement1.setString(10, status);
 			statement1.setString(11, rate);
+			statement1.setString(12, location.getLocation());
+			statement1.setDouble(13, location.getPrice());
 			
 			statement1.execute();
 			
@@ -138,7 +145,7 @@ public class QuotationDAO extends AbstractDAO {
 			
 			
 			//3. add the accessories to the quotation...
-			statement3 = connection.prepareStatement("insert into las_stock.quotation_line_item (accessory_id, quotation_id, serial_number, serial_number, pricing) values (?,?,?,?)");
+			statement3 = connection.prepareStatement("insert into las_stock.quotation_line_item (accessory_id, quotation_id, serial_number, pricing) values (?,?,?,?)");
 			
 			if (accessories != null) {
 				for (TempAccessory temp:accessories) {
@@ -190,7 +197,7 @@ public class QuotationDAO extends AbstractDAO {
 		ResultSet resultSet2 = null;
 		try {
 			//1. get the quotation information for this quote...
-			statement = connection.prepareStatement("select qli.stock_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.serial_number not in ('null')");
+			statement = connection.prepareStatement("select qli.stock_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.stock_id not in ('null')");
 			statement.setInt(1, quotationId);
 			
 			resultSet = statement.executeQuery();
@@ -233,12 +240,12 @@ public class QuotationDAO extends AbstractDAO {
 				result =  statement1.executeUpdate();
 				
 				//now need to update the stock levels of the accessories...
-				statement3 = connection.prepareStatement("select qli.accessory_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.serial_number not in ('null')");
+				statement3 = connection.prepareStatement("select qli.accessory_id, qli.serial_number from las_stock.quotation q, las_stock.quotation_line_item qli where q.quotation_id = ? and q.quotation_id = qli.quotation_id and qli.accessory_id not in ('null')");
 				statement3.setInt(1, quotationId);
 				
 				resultSet2 = statement3.executeQuery();
 				
-				while (resultSet.next()) {
+				while (resultSet2.next()) {
 					int accessoryId = resultSet.getInt("accessory_id");
 					String accSerialNumber = resultSet.getString("serial_number");
 					
@@ -284,10 +291,11 @@ public class QuotationDAO extends AbstractDAO {
 		ResultSet resultSet2 = null;
 		ResultSet resultSet3 = null;
 		Quotation quote = new Quotation();
+		InstallationLocation location = new InstallationLocation();
 		quote.setQuotationId(quotationId);
 		try {
 			//1. get the quotation information for this quote...
-			statement = connection.prepareStatement("select quotation_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, rate from las_stock.quotation where quotation_id = ?");
+			statement = connection.prepareStatement("select quotation_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, rate, installation_location, installation_price from las_stock.quotation where quotation_id = ?");
 			statement.setInt(1, quotationId);
 			
 			resultSet = statement.executeQuery();
@@ -302,6 +310,17 @@ public class QuotationDAO extends AbstractDAO {
 				quote.setQuotationDate(resultSet.getString("quotation_date"));
 				quote.setUserId(resultSet.getInt("user_id"));
 				quote.setRate(resultSet.getString("rate"));
+				
+				String locationStr = resultSet.getString("installation_location");
+				double locationPrice = resultSet.getDouble("installation_price");
+				
+				//might need to do some null or blank checking...
+				if (locationStr.length() > 0) {
+					location.setLocation(locationStr);
+					location.setPrice(locationPrice);
+					
+					quote.setInstallLocation(location);
+				}
 			}
 			
 			//2. get the customer for this quotation...
@@ -363,31 +382,40 @@ public class QuotationDAO extends AbstractDAO {
 			quote.setQuotationLineItems(stockItems);
 			
 			//4. get all the optional extras for this quotation...
-			ArrayList<OptionalExtra> optionalExtraItems = new ArrayList<OptionalExtra>();
+			ArrayList<Accessory> accessoryItems = new ArrayList<Accessory>();
 			statement3 = connection.prepareStatement("select "+
-													"    oe.optional_extra_id, oe.optional_extra_description, oe.pricing "+ 
-													"from  "+
-													"    las_stock.quotation_line_item qli, las_stock.optional_extra oe "+
-													"where "+
-													"    qli.quotation_id = ? "+ 
-													"and  "+
-													"    qli.optional_extra_id not in ('null') "+
-													"and  "+
-													"    qli.optional_extra_id = oe.optional_extra_id");
+													 " 	  a.accessory_id, "+ 
+													 "    qli.serial_number, "+ 
+													 "    a.accessory_code,  "+
+													 "    a.accessory_manufacturer, "+ 
+													 "    a.accessory_model,  "+
+													 "    qli.pricing,  "+
+													 "    a.accessory_description "+ 
+													 "from  "+
+													 "    las_stock.quotation_line_item qli, "+ 
+													 "    las_stock.accessory a  "+
+													 "where  "+
+													 "    qli.quotation_id = ? "+ 
+													 "and   "+
+													 "    qli.accessory_id not in ('null') "+ 
+													 "and   "+
+													 "    qli.accessory_id = a.accessory_id");
 			statement3.setInt(1, quotationId);
 			
 			resultSet3 = statement3.executeQuery();
 			
 			while (resultSet3.next()) {
-				OptionalExtra optionalExtra = new OptionalExtra();
+				Accessory accessory = new Accessory();
+				accessory.setAccessoryId(resultSet3.getInt("accessory_id"));
+				accessory.setAccessoryCode(resultSet3.getString("accessory_code"));
+				accessory.setAccessoryManufacturer(resultSet3.getString("accessory_manufacturer"));
+				accessory.setAccessoryManufacturer(resultSet3.getString("accessory_model"));
+				accessory.setPricing(resultSet3.getDouble("pricing"));
+				accessory.setAccessoryDescription(resultSet3.getString("accessory_description"));
 				
-				optionalExtra.setOptionalExtraId(resultSet3.getInt("optional_extra_id"));
-				optionalExtra.setDescription(resultSet3.getString("optional_extra_description"));
-				optionalExtra.setPricing(resultSet3.getDouble("pricing"));
-				
-				optionalExtraItems.add(optionalExtra);
+				accessoryItems.add(accessory);
 			}
-			quote.setOptionalExtraItems(optionalExtraItems);
+			quote.setAccessoryItems(accessoryItems);
 			
 			return quote;
 		}

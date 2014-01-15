@@ -54,15 +54,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="stockLevel in selectedAccessoryItem.accessoryLevel">
+                <tr ng-repeat="accessory in availableAccessories">
                     <td>
-                        {{ stockLevel.serialNumber }}
+                        {{ accessory.serial }}
                     </td>
                     <td>
-                        {{ stockLevel.status }}
+                        {{ accessory.status }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="selectAccessorySerialForQuote(stockLevel.serialNumber)">+</button>
+                        <button class="btn" ng-click="selectAccessorySerialForQuote(accessory)">+</button>
                     </td>
                 </tr>
                 </tbody>

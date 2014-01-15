@@ -15,6 +15,8 @@ public class Stock {
 	private String stockSeries;
 	private String stockModel;
 	private ArrayList<StockLevel> stockLevel;
+	private ArrayList<InstallationLocation> installLocations;
+	private int stockUsed;
 	
 	private UtilityService utilityService = new UtilityService();
 	
@@ -78,6 +80,18 @@ public class Stock {
 	public void setUtilityService(UtilityService utilityService) {
 		this.utilityService = utilityService;
 	}
+	public ArrayList<InstallationLocation> getInstallLocations() {
+		return installLocations;
+	}
+	public void setInstallLocations(ArrayList<InstallationLocation> installLocations) {
+		this.installLocations = installLocations;
+	}
+	public int getStockUsed() {
+		return stockUsed;
+	}
+	public void setStockUsed(int stockUsed) {
+		this.stockUsed = stockUsed;
+	}
 	
 	public String toJSONString() {
 		DecimalFormat df = new DecimalFormat("0.00");
@@ -89,7 +103,16 @@ public class Stock {
 				+ "'stockModel':'"+this.stockModel+"', "
 				+ "'stockSeries':'"+this.stockSeries+"', "
 				+ "'pricing':'"+df.format(this.pricing)+"', "
+				+ "'stockUsed':'"+this.stockUsed+"', "
 				+ "'technicalSpecs':'"+this.technicalSpecs+"', ";
+		if (this.installLocations != null) {
+			returnString = returnString 
+					+ "'installLocation':"+utilityService.convertListOfInstallLocationsToJSONString(this.installLocations)+", ";
+		}
+		else {
+			returnString = returnString 
+					+ "'installLocation':[], ";
+		}
 		if (this.stockLevel != null) {
 			returnString = returnString 
 				+ "'stockLevel':"+utilityService.convertListOfStockLevelToJSONString(this.stockLevel)+" ";
@@ -100,4 +123,5 @@ public class Stock {
 		}
 		return returnString	+ "}";
 	}
+
 }

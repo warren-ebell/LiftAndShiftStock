@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 public class CurrencyService {
 	
 	public double converstionRateForEUR() {
@@ -23,18 +26,26 @@ public class CurrencyService {
 				(conn.getInputStream())));
 	 
 			String output = org.apache.commons.io.IOUtils.toString(br);
-			
-			int rateIdx = output.indexOf("\"rate\": ");
-			int endIdx = output.indexOf(",", rateIdx);
-			
-			String rate = output.substring(rateIdx + 8, endIdx);
-	 
+
 			conn.disconnect();
-			return Double.parseDouble(rate);
+			return getDoubleRate(output);
 		}
 		catch (Exception e) {
 			return 1.0;
 		}
 	}
-
+	
+	private double getDoubleRate(String response) {
+		try {
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(response);
+			JSONObject jsonObj = (JSONObject)obj;
+			String rate = (String)jsonObj.get("rate");
+			return Double.parseDouble(rate);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 1.0;
+	}
 }

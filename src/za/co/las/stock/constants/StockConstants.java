@@ -16,6 +16,8 @@ public class StockConstants {
 	public static final String GET_STOCK_IEMS_FOR_STOCK_MANUFACTURER_AND_MODEL = "getStockItemsForStockManufacturerAndModel";
 	public static final String SAVE_STOCK_ITEM = "saveStockItem";
 	public static final String DELETE_STOCK_ITEM = "deleteStockItem";
+	public static final String ADD_INSTALL_LOCATION = "addInstallLocation";
+	public static final String DELETE_INSTALL_LOCATION = "deleteInstallLocation";
 
 	public static final String GET_ACCESSORY_MANUFACTURERS = "getAccessoryManufacturers";
 	public static final String GET_ACCESSORY_FOR_ACCESSORY_ID = "getAccessoryForAccessoryId";
@@ -41,6 +43,5 @@ public class StockConstants {
 	public static final String QUOTE_ACCEPT_HTML_FAIL = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>Lift and Shift Quote System</title></head><body>	<h4>Quote system Response</h4>    <div>    	<p>That you for submitting your acceptance of the quotation, but there was an error processing this request - please contact the sales team.</p>    </div></body></html>";
 
 	public static final String SERVER_URL = "http://localhost:8080";
-	//public static final String SERVER_URL = "http://197.221.7.50:8080";
-	
+	//public static final String SERVER_URL = "http://197.221.7.50:8080";	
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
 
@@ -18,7 +19,7 @@ public class StockDAO extends AbstractDAO {
 		
 		try {
 			//1. update the stock table...
-			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_manufacturer = ?, stock_model = ?, stock_series = ?, pricing = ?, technical_specs = ?, stock_description = ? where stock_id = ?");
+			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_manufacturer = ?, stock_model = ?, stock_series = ?, pricing = ?, technical_specs = ?, stock_description = ?, stock_used = ? where stock_id = ?");
 			
 			statement.setString(1, newStock.getStockCode());
 			statement.setString(2, newStock.getStockManufacturer());
@@ -27,7 +28,8 @@ public class StockDAO extends AbstractDAO {
 			statement.setDouble(5, newStock.getPricing());
 			statement.setString(6,  newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
-			statement.setInt(8, stockId);
+			statement.setInt(8, newStock.getStockUsed());
+			statement.setInt(9, stockId);
 			
 			int result = statement.executeUpdate();
 			
@@ -48,7 +50,7 @@ public class StockDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_manufacturer, stock_model, stock_series, pricing, technical_specs, stock_description) values (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_manufacturer, stock_model, stock_series, pricing, technical_specs, stock_description, stock_used) values (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement.setString(1, newStock.getStockCode());
 			statement.setString(2, newStock.getStockManufacturer());
@@ -57,6 +59,7 @@ public class StockDAO extends AbstractDAO {
 			statement.setDouble(5, newStock.getPricing());
 			statement.setString(6, newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
+			statement.setInt(8, newStock.getStockUsed());
 			
 			int result = statement.executeUpdate();			
 			
@@ -157,7 +160,7 @@ public class StockDAO extends AbstractDAO {
 		ArrayList<Stock> stockItems = new ArrayList<Stock>();
 		
 		try {
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_manufacturer = ? and s.stock_model = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used from las_stock.stock s where s.stock_manufacturer = ? and s.stock_model = ?");
 			
 			statement.setString(1, manufacturer);
 			statement.setString(2, model);
@@ -173,6 +176,7 @@ public class StockDAO extends AbstractDAO {
 				stock.setStockId(resultSet.getInt("stock_id"));
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
 				stock.setStockDescription(resultSet.getString("stock_description"));
+				stock.setStockUsed(resultSet.getInt("stock_used"));
 				
 				stockItems.add(stock);
 			}
@@ -194,11 +198,13 @@ public class StockDAO extends AbstractDAO {
 		ResultSet resultSet = null;
 		PreparedStatement statement1 = null;
 		ResultSet resultSet1 = null;
+		PreparedStatement statement2 = null;
+		ResultSet resultSet2 = null;
 		Stock stock = null;
 		
 		try {
 			//1. get the stock item...
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description from las_stock.stock s where s.stock_id = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used from las_stock.stock s where s.stock_id = ?");
 			
 			statement.setInt(1, stockId);
 			resultSet = statement.executeQuery();
@@ -213,6 +219,7 @@ public class StockDAO extends AbstractDAO {
 				stock.setStockId(resultSet.getInt("stock_id"));
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
 				stock.setStockDescription(resultSet.getString("stock_description"));
+				stock.setStockUsed(resultSet.getInt("stock_used"));
 			}
 			
 			//2. get all the serial numbers linked to this stock item...
@@ -238,6 +245,24 @@ public class StockDAO extends AbstractDAO {
 				stockLevelList.add(stockLevel);
 			}
 			stock.setStockLevel(stockLevelList);
+			
+			//3. get all of the install locations for this stock item...
+			ArrayList<InstallationLocation> installLocations = new ArrayList<InstallationLocation>();
+			
+			statement2 = connection.prepareStatement("SELECT stock_id, install_location, install_price FROM las_stock.stock_install where stock_id = ?");
+			
+			statement2.setInt(1, stockId);
+			resultSet2 = statement2.executeQuery();
+			
+			while (resultSet2.next()) {
+				InstallationLocation temp = new InstallationLocation();
+				temp.setLocation(resultSet2.getString("install_location"));
+				temp.setPrice(resultSet2.getDouble("install_price"));
+				
+				installLocations.add(temp);
+			}
+			
+			stock.setInstallLocations(installLocations);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -261,6 +286,55 @@ public class StockDAO extends AbstractDAO {
 
 			statement.setInt(1, stockId);
 			statement.setString(2, serialNumber);
+			
+			int result = statement.executeUpdate();
+			
+			return result;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return -1;
+	}
+	
+	public int addInstallLocationForStockId(InstallationLocation installLocation, int stockId){
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		
+		try {
+			statement = connection.prepareStatement("insert into las_stock.stock_install (stock_id, install_location, install_price) values (?, ?, ?)");
+			
+			statement.setInt(1, stockId);
+			statement.setString(2, installLocation.getLocation());
+			statement.setDouble(3, installLocation.getPrice());
+			
+			int result = statement.executeUpdate();			
+			
+			return result;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return -1;
+	}
+	
+	public int deleteInstallLocationForStockId(InstallationLocation installLocation, int stockId) {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		
+		try {
+			statement = connection.prepareStatement("delete from las_stock.stock_install where stock_id = ? and install_location = ?");
+
+			statement.setInt(1, stockId);
+			statement.setString(2, installLocation.getLocation());
 			
 			int result = statement.executeUpdate();
 			

@@ -117,6 +117,14 @@ function QuoteCtrl($scope, StockService) {
                 $scope.selectedStockItem = stockItem;
                 //show the serial number section...
                 $scope.showSerial = 1;
+                if (stockItem.installLocation.length > 0) {
+                    $scope.stockInstallLocations = stockItem.installLocation;
+                    $scope.showLocations = 1;
+                }
+                else {
+                    $scope.stockInstallLocations = [];
+                    $scope.showLocations = 0;
+                }
                 //$scope.setRoute('/quoteCustomer');
             },
             function(error) {
@@ -127,11 +135,15 @@ function QuoteCtrl($scope, StockService) {
     $scope.selectSerialForQuote = function(serialNumber, stockId) {
         DataManager.getInstance().selectedSerialNumber = serialNumber;
         $scope.setRoute('/quoteAccessories');
+    };
+    $scope.setSelectedInstallLocation = function() {
+        DataManager.getInstance().selectedInstallLocation = $scope.selectedLocation;
     }
 }
 
 function QuoteAccessoriesCtrl($scope, AccessoryService) {
     $scope.accessories = [];
+    $scope.availableAccessories = [];
     AccessoryService.getAccessoryManufacturers({serverMethod:'getAccessoryManufacturers'},
         function(result) {
             $scope.accessoryManufacturers = result;
@@ -159,37 +171,51 @@ function QuoteAccessoriesCtrl($scope, AccessoryService) {
                 $scope.selectedAccessoryItem = result;
                 //show the serial number section...
                 $scope.showSerial = 1;
+
+                //need to build a list of the available accessories...
+                for (var i = 0; i < $scope.selectedAccessoryItem.accessoryLevel.length; i++) {
+                    var acc = $scope.selectedAccessoryItem.accessoryLevel[i];
+                    var availableAcc = {};
+                    availableAcc.serial = acc.serialNumber;
+                    availableAcc.code = $scope.selectedAccessoryItem.accessoryCode;
+                    availableAcc.price = $scope.selectedAccessoryItem.pricing;
+                    availableAcc.accessoryId = $scope.selectedAccessoryItem.accessoryId;
+                    availableAcc.status = acc.status;
+
+                    $scope.availableAccessories.push(availableAcc);
+                }
+
             },
             function(error) {
                 alert('Error getting the accessory item');
             }
         );
     };
-    $scope.selectAccessorySerialForQuote = function(serialNumber) {
+    $scope.selectAccessorySerialForQuote = function(accessory) {
         //need to add this item to the list of accessories....
-        var serial = serialNumber;
-        var code = $scope.selectedAccessoryItem.accessoryCode;
-        var price = $scope.selectedAccessoryItem.pricing;
-        var accessoryId = $scope.selectedAccessoryItem.accessoryId;
+        $scope.accessories.push(accessory);
 
-        var tempAccessory = {};
-        tempAccessory.serial = serial;
-        tempAccessory.code = code;
-        tempAccessory.price = price;
-        tempAccessory.accessoryId = accessoryId;
+        //need to remove the accessory from the list of available accessories...
+        var index = $scope.availableAccessories.indexOf(accessory);
 
-        $scope.accessories.push(tempAccessory);
+        if (index > -1) {
+            $scope.availableAccessories.splice(index, 1);
+        }
     };
     $scope.next = function() {
         DataManager.getInstance().selectedAccessories = $scope.accessories;
         $scope.setRoute('/quoteCustomer');
     };
     $scope.removeAccessory = function(selectedAccessory) {
+        //need to remove from the selected list...
         var index = $scope.accessories.indexOf(selectedAccessory);
 
         if (index > -1) {
             $scope.accessories.splice(index, 1);
         }
+
+        //need to add it to the available list again...
+        $scope.availableAccessories.push(selectedAccessory);
     }
 }
 
@@ -211,9 +237,10 @@ function QuoteNotesCtrl($scope, QuoteService) {
 
     $scope.saveQuote = function() {
         var stockId = DataManager.getInstance().selectedStockItem.stockId;
+        var usedItem = DataManager.getInstance().selectedStockItem.stockUsed;
         var userId = DataManager.getInstance().user.userId;
         var accessories = DataManager.getInstance().selectedAccessories;
-
+        var installLocation = DataManager.getInstance().selectedInstallLocation;
         var customerName = DataManager.getInstance().customerName;
         var customerAddress = DataManager.getInstance().customerAddress;
         var customerEmailAddress = DataManager.getInstance().customerEmailAddress;
@@ -227,9 +254,10 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var installation = $scope.htmlInstallation;
 
         var accString = JSON.stringify(accessories);
+        var locString = JSON.stringify(installLocation)
 
         var serialNumber = DataManager.getInstance().selectedSerialNumber;
-        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation},
+        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation, installationLocation:locString, usedItem:usedItem},
             function(result) {
                 var serverResult = result;
                 if (serverResult.quoteId === '0') {
@@ -537,6 +565,7 @@ function StockEditCtrl($scope, StockService) {
     $scope.htmlTechnicalSpecs = "";
     $scope.showAddSerial = 0;
     $scope.showSerialSection = 0;
+    $scope.showAddLocation = 0;
     if (DataManager.getInstance().selectedStockItem) {
         $scope.selectedStockItem = DataManager.getInstance().selectedStockItem;
         $scope.showDelete = 1;
@@ -548,7 +577,7 @@ function StockEditCtrl($scope, StockService) {
     $scope.saveStockItem = function() {
         var htmlTechSpecs = $scope.htmlTechnicalSpecs;
         var stockCode = $scope.selectedStockItem.stockManufacturer+"-"+$scope.selectedStockItem.stockModel+"-"+$scope.selectedStockItem.stockSeries;
-        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription},
+        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription, stockUsed:$scope.selectedStockItem.stockUsed},
             function(result) {
                 var serverResult = result;
                 if (serverResult.result === '1') {
@@ -565,10 +594,10 @@ function StockEditCtrl($scope, StockService) {
 
             }
         );
-    }
-    $scope.cancel = function() {
+    };
+    $scope.cancel = function () {
         $scope.setRoute('/stock');
-    }
+    };
     $scope.delete = function() {
         StockService.deleteStockItem({serverMethod:'deleteStockItem', stockId:$scope.selectedStockItem.stockId},
             function(result) {
@@ -587,10 +616,10 @@ function StockEditCtrl($scope, StockService) {
                 alert('Error deleting the user');
             }
         );
-    }
+    };
     $scope.showAddSerialNumber = function() {
         $scope.showAddSerial = 1;
-    }
+    };
     $scope.addSerialNumber = function(serialNumber) {
         var serialNumber = $scope.serialNumber;
         StockService.addSerialNumber({serverMethod:'addSerialNumber', stockId:$scope.selectedStockItem.stockId, serialNumber:serialNumber},
@@ -619,7 +648,7 @@ function StockEditCtrl($scope, StockService) {
                 alert('Error adding serial number to stock item.')
             }
         );
-    }
+    };
     $scope.removeSerialNumber = function(serialNumber, status) {
         if (status == 'Available') {
             StockService.deleteSerialNumber({serverMethod:'deleteSerialNumber', stockId:$scope.selectedStockItem.stockId, serialNumber:serialNumber},
@@ -633,8 +662,6 @@ function StockEditCtrl($scope, StockService) {
                                 var stockItem = result;
                                 DataManager.getInstance().selectedStockItem = stockItem;
                                 $scope.selectedStockItem = stockItem;
-                                $scope.serialNumber = '';
-                                $scope.showAddSerial = 0;
                             },
                             function(error) { }
                         );
@@ -652,7 +679,65 @@ function StockEditCtrl($scope, StockService) {
         else {
             alert('Stock serial number cannot be removed if it has been quoted on, or is unavailable.')
         }
-    }
+    };
+    $scope.addInstallLocation = function() {
+        var location = $scope.location;
+        var price = $scope.pricing;
+        var stockId = $scope.selectedStockItem.stockId;
+        StockService.addInstallLocation({location:location, pricing:price, stockId:stockId, serverMethod:'addInstallLocation'},
+            function(result) {
+                if (result.result === '1') {
+                    //everything is done - show alert to say done - then back home...
+                    alert('Installation location added successfully.');
+                    StockService.getStockForStockId({serverMethod:'getStockForStockId',stockId:$scope.selectedStockItem.stockId},
+                        function(result) {
+                            DataManager.getInstance().selectedStockItem = result;
+                            $scope.selectedStockItem = result;
+                            $scope.location = '';
+                            $scope.pricing = '';
+                            $scope.showAddLocation = 0;
+                        },
+                        function(error) { }
+                    );
+                }
+                else {
+                    //something has gone wrong with saving the user - need to show that...
+                    alert('Error adding install location: '+result.message);
+                }
+            },
+            function(error) {
+                alert('Error adding install location');
+            }
+        );
+    };
+    $scope.removeLocation = function(location, price) {
+        var stockId = $scope.selectedStockItem.stockId;
+        StockService.deleteInstallLocation({location:location, pricing:price, stockId:stockId, serverMethod:'deleteInstallLocation'},
+            function(result) {
+                if (result.result === '1') {
+                    //everything is done - show alert to say done - then back home...
+                    alert('Installation location removed successfully.');
+                    StockService.getStockForStockId({serverMethod:'getStockForStockId',stockId:$scope.selectedStockItem.stockId},
+                        function(result) {
+                            DataManager.getInstance().selectedStockItem = result;
+                            $scope.selectedStockItem = result;
+                        },
+                        function(error) { }
+                    );
+                }
+                else {
+                    //something has gone wrong with saving the user - need to show that...
+                    alert('Error removing install location: '+result.message);
+                }
+            },
+            function(error) {
+                alert('Error removing install location');
+            }
+        );
+    };
+    $scope.showAddInstallLocation = function() {
+        $scope.showAddLocation = 1;
+    };
 }
 
 function AccessoryCtrl($scope, AccessoryService) {

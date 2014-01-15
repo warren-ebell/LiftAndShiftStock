@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import za.co.las.stock.constants.StockConstants;
+import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.TempAccessory;
@@ -39,7 +40,6 @@ public class QuoteServlet extends HttpServlet{
 	private DocumentService documentService = new DocumentService();
 	private MailService mailService = new MailService();
 	private CurrencyService currencyService = new CurrencyService();
-	private OptionalExtraService optionalExtraService = new OptionalExtraService();
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -114,7 +114,8 @@ public class QuoteServlet extends HttpServlet{
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SAVE_QUOTE)) {
 			Quotation quote = new Quotation();
-			quote = quotationService.poulateQuoteWithDefaults(quote);
+			int usedItem = Integer.parseInt(req.getParameter("usedItem"));
+			quote = quotationService.poulateQuoteWithDefaults(quote, usedItem);
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			Date date = new Date();
@@ -131,6 +132,7 @@ public class QuoteServlet extends HttpServlet{
 			String notes = req.getParameter("notes");
 			String delivery = req.getParameter("delivery");
 			String installation = req.getParameter("installation");
+			String installationLocation = req.getParameter("installationLocation");
 			
 			quote.setNotes(notes);
 			quote.setDelivery(delivery);
@@ -141,15 +143,17 @@ public class QuoteServlet extends HttpServlet{
 			DecimalFormat df = new DecimalFormat("0.00");
 			
 			String rate = df.format(factor);
+			double newRate = Double.parseDouble(rate);
 			
-			double pricing = Double.parseDouble(pricingStr) * factor;
+			double pricing = Double.parseDouble(pricingStr) * newRate;
 			
 			ArrayList<String> stockItemIds = new ArrayList<String>();
 			stockItemIds.add(stockId);
 			
-			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, factor);
+			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, newRate);
+			InstallationLocation location = utilityService.convertInstallationLocationJSONStringWithPricingFactor(installationLocation, newRate);
 			
-			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate)+"'}";
+			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location)+"'}";
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SEND_EMAIL)) {
