@@ -5,8 +5,18 @@
     <div class="form-horizontal">
         <div>
             <h4>Customer information</h4>
-            <p class="text-muted">Complete the customer information below, and then click 'Done' to complete the quotation.</p>
+            <p class="text-muted">Select a previous customer, or complete the customer information below, and then click 'Done' to complete the quotation.</p>
         </div>
+        <table>
+            <tr>
+                <td>
+                    Customer :
+                </td>
+                <td>
+                    <select ng-model="selectedCustomer" ng-options="cust.name for cust in customers" ng-change="setSelectedCustomer()"></select>
+                </td>
+            </tr>
+        </table>
         <table>
             <tr>
                 <td>

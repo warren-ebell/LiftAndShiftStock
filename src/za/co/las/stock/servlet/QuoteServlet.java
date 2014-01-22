@@ -19,6 +19,7 @@ import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.TempAccessory;
 import za.co.las.stock.object.User;
 import za.co.las.stock.services.CurrencyService;
+import za.co.las.stock.services.CustomerService;
 import za.co.las.stock.services.DocumentService;
 import za.co.las.stock.services.MailService;
 import za.co.las.stock.services.OptionalExtraService;
@@ -37,6 +38,7 @@ public class QuoteServlet extends HttpServlet{
 	private StockService stockService = new StockService();
 	private QuotationService quotationService = new QuotationService();
 	private UserService userService = new UserService();
+	private CustomerService customerService = new CustomerService();
 	private DocumentService documentService = new DocumentService();
 	private MailService mailService = new MailService();
 	private CurrencyService currencyService = new CurrencyService();
@@ -59,6 +61,10 @@ public class QuoteServlet extends HttpServlet{
 		
 		if (serverMethod.equalsIgnoreCase(StockConstants.GET_QUOTE_DEFAULTS)) {
 			outputMessage = outputMessage + quotationService.getQuoteDefaults().toJSONString();
+			outputMessage = outputMessage + ");";
+		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_ALL_CUSTOMERS)) {
+			outputMessage = outputMessage + utilityService.convertListOfCustomersToJSONString(customerService.getAllCustomers());
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.ACCEPT_QUOTE_EMAIL)) {
@@ -121,11 +127,15 @@ public class QuoteServlet extends HttpServlet{
 			Date date = new Date();
 			
 			int userId = Integer.parseInt(req.getParameter("userId")); 
-			String customerAddress = req.getParameter("address");
-			String customerAttention = req.getParameter("attention");
-			String customerEmailAddress = req.getParameter("emailAddress");
 			String customerName = req.getParameter("name");
-			String customerPhoneNumber = req.getParameter("phoneNumber");
+			String customerAddress = null, customerAttention = null, customerEmailAddress = null, customerPhoneNumber = null;
+			if (customerName.length() > 0) {
+				customerAddress = req.getParameter("address");
+				customerAttention = req.getParameter("attention");
+				customerEmailAddress = req.getParameter("emailAddress");			
+				customerPhoneNumber = req.getParameter("phoneNumber");
+			}
+			
 			String serialNumber = req.getParameter("serialNumber");
 			String pricingStr = req.getParameter("pricing");
 			String accessories = req.getParameter("accessories");
@@ -133,6 +143,8 @@ public class QuoteServlet extends HttpServlet{
 			String delivery = req.getParameter("delivery");
 			String installation = req.getParameter("installation");
 			String installationLocation = req.getParameter("installationLocation");
+			int companyId = Integer.parseInt(req.getParameter("companyId"));
+			String customerId = req.getParameter("customerId");
 			
 			quote.setNotes(notes);
 			quote.setDelivery(delivery);
@@ -153,7 +165,7 @@ public class QuoteServlet extends HttpServlet{
 			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, newRate);
 			InstallationLocation location = utilityService.convertInstallationLocationJSONStringWithPricingFactor(installationLocation, newRate);
 			
-			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location)+"'}";
+			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location, companyId, customerId)+"'}";
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SEND_EMAIL)) {

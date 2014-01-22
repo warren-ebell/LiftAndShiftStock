@@ -35,6 +35,7 @@ public class StockConstants {
 	public static final String RETURN_STOCK = "returnStock";
 	public static final String DECLINE_QUOTE = "declineQuote";
 	public static final String GET_QUOTE_DEFAULTS = "getQuoteDefaults";
+	public static final String GET_ALL_CUSTOMERS = "getAllCustomers";
 
 	public static final String ADD_SERIAL_NUMBER = "addSerialNumber";
 	public static final String DELETE_SERIAL_NUMBER = "deleteSerialNumber";

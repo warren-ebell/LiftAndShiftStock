@@ -77,6 +77,7 @@ function LoginCtrl($scope, AuthenticationService) {
 }
 
 function QuoteCtrl($scope, StockService) {
+    $scope.companies = [{companyName:'Lift and Shift', companyId:1},{companyName:'Bowman Cranes', companyId:2}]
     $scope.showSerial = 0;
     StockService.getStockManufacturers({serverMethod:'getStockManufacturers'},
         function(result) {
@@ -134,6 +135,7 @@ function QuoteCtrl($scope, StockService) {
     };
     $scope.selectSerialForQuote = function(serialNumber, stockId) {
         DataManager.getInstance().selectedSerialNumber = serialNumber;
+        DataManager.getInstance().selectedCompany = $scope.selectedCompany;
         $scope.setRoute('/quoteAccessories');
     };
     $scope.setSelectedInstallLocation = function() {
@@ -241,13 +243,27 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var userId = DataManager.getInstance().user.userId;
         var accessories = DataManager.getInstance().selectedAccessories;
         var installLocation = DataManager.getInstance().selectedInstallLocation;
-        var customerName = DataManager.getInstance().customerName;
-        var customerAddress = DataManager.getInstance().customerAddress;
-        var customerEmailAddress = DataManager.getInstance().customerEmailAddress;
-        var customerPhoneNumber = DataManager.getInstance().customerPhoneNumber;
-        var customerAttention = DataManager.getInstance().customerAttention;
+
+        var customerName = '';
+        var customerAddress;
+        var customerEmailAddress;
+        var customerPhoneNumber;
+        var customerAttention;
+
+        if (DataManager.getInstance().oldCustomer == 0) {
+            customerName = DataManager.getInstance().customerName;
+            customerAddress = DataManager.getInstance().customerAddress;
+            customerEmailAddress = DataManager.getInstance().customerEmailAddress;
+            customerPhoneNumber = DataManager.getInstance().customerPhoneNumber;
+            customerAttention = DataManager.getInstance().customerAttention;
+        }
+
+        var customerId = '';
+        if (DataManager.getInstance().customerId)
+            customerId = DataManager.getInstance().customerId;
 
         var pricing = DataManager.getInstance().selectedStockItem.pricing;
+        var companyId = DataManager.getInstance().selectedCompany.companyId;
 
         var notes = $scope.htmlNotes;
         var delivery = $scope.htmlDelivery;
@@ -257,7 +273,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var locString = JSON.stringify(installLocation)
 
         var serialNumber = DataManager.getInstance().selectedSerialNumber;
-        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation, installationLocation:locString, usedItem:usedItem},
+        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation, installationLocation:locString, usedItem:usedItem, companyId:companyId, customerId:customerId},
             function(result) {
                 var serverResult = result;
                 if (serverResult.quoteId === '0') {
@@ -269,6 +285,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
                     alert('Quote created successfully.');
                     DataManager.getInstance().quoteId = serverResult.quoteId;
                     DataManager.getInstance().quoteHistory = 0;
+                    DataManager.getInstance().customerId = 0;
                     $scope.setRoute('/document');
                 }
             },
@@ -280,6 +297,33 @@ function QuoteNotesCtrl($scope, QuoteService) {
 }
 
 function QuoteCustomerCtrl($scope, QuoteService) {
+    QuoteService.getAllCustomers({serverMethod:'getAllCustomers'},
+        function(result) {
+            $scope.customers = result;
+        },
+        function(error) {
+            alert('Error retrieving customers');
+        }
+    );
+    $scope.setSelectedCustomer = function() {
+        if ($scope.selectedCustomer.name.length > 0) {
+            $scope.customerName = $scope.selectedCustomer.name;
+            $scope.customerAddress = $scope.selectedCustomer.address;
+            $scope.customerEmailAddress = $scope.selectedCustomer.emailAddress;
+            $scope.customerPhoneNumber = $scope.selectedCustomer.phoneNumber;
+            $scope.customerAttention = $scope.selectedCustomer.attention;
+            DataManager.getInstance().oldCustomer = 1;
+            DataManager.getInstance().customerId = $scope.selectedCustomer.customerId;
+        }
+        else {
+            $scope.customerName = '';
+            $scope.customerAddress = '';
+            $scope.customerEmailAddress = '';
+            $scope.customerPhoneNumber = '';
+            $scope.customerAttention = '';
+            DataManager.getInstance().oldCustomer = 0;
+        }
+    };
     $scope.next = function() {
         DataManager.getInstance().customerName = $scope.customerName;
         DataManager.getInstance().customerAddress = $scope.customerAddress;

@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import za.co.las.stock.object.Accessory;
+import za.co.las.stock.object.Customer;
 import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
@@ -94,6 +95,20 @@ public class UtilityService {
 			e.printStackTrace();
 		}
 		return accessoryList;
+	}
+	
+	public String convertListOfCustomersToJSONString(ArrayList<Customer> customerList) {
+		String customerJSONString = "[";
+		for (Customer s:customerList) {
+			if (customerJSONString.length() == 1) {
+				customerJSONString += s.toJSONString();
+			}
+			else {
+				customerJSONString += "," + s.toJSONString();
+			}
+		}		
+		customerJSONString += "]";
+		return customerJSONString;
 	}
 	
 	public String convertListOfStockToJSONString(ArrayList<Stock> stockItemList) {

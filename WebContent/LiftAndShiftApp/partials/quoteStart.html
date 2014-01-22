@@ -2,6 +2,20 @@
 <div class="container">
     <div class="form-horizontal">
         <div>
+            <h4>Quoting Company</h4>
+            <p class="text-muted">Select the company to quote from</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    Company :
+                </td>
+                <td>
+                    <select ng-model="selectedCompany" ng-options="comp.companyName for comp in companies"></select>
+                </td>
+            </tr>
+        </table>
+        <div>
             <h4>Stock List</h4>
             <p class="text-muted">Select a stock category to view all stock items in that category. Click on the stock id button to select the stock item to quote on.</p>
         </div>

@@ -8,6 +8,18 @@ public class Customer {
 	private String phoneNumber;
 	private String attention;
 	
+	public Customer(String name, String address,
+			String emailAddress, String phoneNumber, String attention) {
+		super();
+		this.name = name;
+		this.address = address;
+		this.emailAddress = emailAddress;
+		this.phoneNumber = phoneNumber;
+		this.attention = attention;
+	}
+	
+	public Customer() {}
+	
 	public int getCustomerId() {
 		return customerId;
 	}

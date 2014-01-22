@@ -40,8 +40,8 @@ public class CurrencyService {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(response);
 			JSONObject jsonObj = (JSONObject)obj;
-			String rate = (String)jsonObj.get("rate");
-			return Double.parseDouble(rate);
+			return (Double)jsonObj.get("rate");
+			//return Double.parseDouble(rate);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

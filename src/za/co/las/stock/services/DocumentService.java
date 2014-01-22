@@ -27,7 +27,12 @@ public class DocumentService {
 			String formData = buildXMLDataForForm(quote, user);
 		
 			//get the source XML stream from the template...
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
+			if (quote.getCompanyId() == 1) {
+				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
+			}
+			else {
+				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
+			}
 			PDFDocument mergePdfDocument = PDFFactory.openDocument(quotationPDFInput);
 				
 			//check to make sure everything is ok...

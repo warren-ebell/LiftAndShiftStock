@@ -34,7 +34,11 @@ public class CustomerService {
 	}
 	
 	public ArrayList<Customer> getAllCustomers() {
-		return customerDAO.getAllCustomers();
+		ArrayList<Customer> customerList = new ArrayList<Customer>();
+		customerList = customerDAO.getAllCustomers();
+		Customer temp = new Customer("","","","","");
+		customerList.add(0, temp);
+		return customerList;
 	}
 	
 	public Customer getCustomerForCustomerId(int customerId) {

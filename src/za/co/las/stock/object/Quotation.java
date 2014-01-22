@@ -19,6 +19,7 @@ public class Quotation {
 	private ArrayList<Stock> quotationLineItems;
 	private ArrayList<Accessory> accessoryItems;
 	private int usedItem;
+	private int companyId;
 	
 	public int getQuotationId() {
 		return quotationId;
@@ -116,5 +117,11 @@ public class Quotation {
 	}
 	public void setUsedItem(int usedItem) {
 		this.usedItem = usedItem;
+	}
+	public int getCompanyId() {
+		return companyId;
+	}
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
 	}
 }

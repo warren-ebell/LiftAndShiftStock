@@ -78,7 +78,7 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('QuoteService', function($resource){
         return $resource(serverURL+'/quote',
-            {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', accessories:'', notes:'', delivery:'', installation:'', installationLocation:'', usedItem:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', stockId: '', name:'', address:'', emailAddress:'', phoneNumber:'', attention:'', userId:'', serverMethod:'', quotationId:'', serialNumber:'', pricing:'', accessories:'', notes:'', delivery:'', installation:'', installationLocation:'', usedItem:'', companyId:'', customerId:'', callback:'JSON_CALLBACK'},
             {
                 saveQuote: {method: 'JSONP', isArray:false},
                 getMiniQuotes: {method: 'JSONP', isArray:true},
@@ -86,6 +86,7 @@ angular.module('liftandshift.services', ['ngResource']).
                 acceptQuote: {method: 'JSONP', isArray:false},
                 declineQuote: {method: 'JSONP', isArray:false},
                 completeQuote: {method: 'JSONP', isArray:false},
+                getAllCustomers: {method: 'JSONP', isArray:true},
                 getQuoteDefaults: {method: 'JSONP', isArray:false}
             }
         );

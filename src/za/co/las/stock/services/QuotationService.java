@@ -15,10 +15,16 @@ public class QuotationService {
 	private QuotationDAO quotationDAO = new QuotationDAO();
 	private CustomerService customerService = new CustomerService();
 
-	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location) {
-		int customerId = customerService.insertCustomer(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber);
+	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String passedCustomerId) {
 		
-		return quotationDAO.insertQuotation(customerId, stockItemIds, accessories, notes, delivery, installation, warranty, variation, validity, date, userId, serialNumber, pricing, rate, location);	
+		int customerId;
+		if (customerName.length() > 0) {
+			customerId = customerService.insertCustomer(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber);
+		}
+		else {
+			customerId = Integer.parseInt(passedCustomerId);
+		}		
+		return quotationDAO.insertQuotation(customerId, stockItemIds, accessories, notes, delivery, installation, warranty, variation, validity, date, userId, serialNumber, pricing, rate, location, companyId);	
 	}
 	
 	public Quotation getQuotation(int quotationId) {
