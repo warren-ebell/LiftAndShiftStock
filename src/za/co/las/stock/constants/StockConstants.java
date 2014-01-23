@@ -45,4 +45,7 @@ public class StockConstants {
 
 	public static final String SERVER_URL = "http://localhost:8080";
 	//public static final String SERVER_URL = "http://197.221.7.50:8080";	
+
+	public static final String GET_ALL_AVAILABLE_STOCK_FOR_REPORT = "getAllAvailableStockForReport";
+	public static final String EXPORT_ALL_AVAILABLE_STOCK_FOR_REPORT = "exportAllAvailableStockForReport";
 }

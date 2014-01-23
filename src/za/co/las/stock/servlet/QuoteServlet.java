@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import za.co.las.stock.constants.StockConstants;
 import za.co.las.stock.object.InstallationLocation;
-import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.TempAccessory;
 import za.co.las.stock.object.User;
@@ -22,7 +21,6 @@ import za.co.las.stock.services.CurrencyService;
 import za.co.las.stock.services.CustomerService;
 import za.co.las.stock.services.DocumentService;
 import za.co.las.stock.services.MailService;
-import za.co.las.stock.services.OptionalExtraService;
 import za.co.las.stock.services.QuotationService;
 import za.co.las.stock.services.StockService;
 import za.co.las.stock.services.UserService;

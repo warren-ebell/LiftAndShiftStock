@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.mysql.jdbc.Statement;
 
 import za.co.las.stock.object.InstallationLocation;
+import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
 
@@ -404,5 +405,49 @@ public class StockDAO extends AbstractDAO {
 			closeConnection(connection);
 		}
 		return stockLevelItems;
+	}
+	
+	public ArrayList<ReportStock> getAllAvailableStockForReport() {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<ReportStock> reportStockItems = new ArrayList<ReportStock>();
+		
+		try {
+			statement = connection.prepareStatement("select st.stock_id, st.stock_code, st.stock_manufacturer, st.stock_model, st.stock_series, st.stock_used, sl.serial_number "
+					+ "from"
+					+ " las_stock.stock st, "
+					+ " las_stock.stock_level sl "
+					+ "where "
+					+ " sl.stock_id = st.stock_id "
+					+ "and "
+					+ " sl.stock_status = 0 "
+					+ "order by "
+					+ " st.stock_manufacturer, st.stock_model;");
+			
+			resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				ReportStock report = new ReportStock();
+				report.setStockId(resultSet.getInt("stock_id"));
+				report.setSerialNumber(resultSet.getString("serial_number"));
+				report.setStockCode(resultSet.getString("stock_code"));
+				report.setStockManufacturer(resultSet.getString("stock_manufacturer"));
+				report.setStockModel(resultSet.getString("stock_model"));
+				report.setStockSeries(resultSet.getString("stock_series"));
+				report.setStockUsed(resultSet.getInt("stock_used"));
+
+				reportStockItems.add(report);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(resultSet);
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return reportStockItems;
 	}
 }

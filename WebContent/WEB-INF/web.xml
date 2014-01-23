@@ -36,6 +36,11 @@
    		<servlet-name>QuoteServlet</servlet-name>
    		<servlet-class>za.co.las.stock.servlet.QuoteServlet</servlet-class>
   	</servlet>
+  	<servlet>
+		<display-name>ReportServlet</display-name>
+   		<servlet-name>ReportServlet</servlet-name>
+   		<servlet-class>za.co.las.stock.servlet.ReportServlet</servlet-class>
+  	</servlet>
   	
   	<servlet-mapping>
     	<servlet-name>TestServlet</servlet-name>
@@ -64,6 +69,10 @@
  	<servlet-mapping>
     	<servlet-name>QuoteServlet</servlet-name>
     	<url-pattern>/quote</url-pattern>
+ 	</servlet-mapping>
+ 	<servlet-mapping>
+    	<servlet-name>ReportServlet</servlet-name>
+    	<url-pattern>/report</url-pattern>
  	</servlet-mapping>
  	
   	<welcome-file-list>

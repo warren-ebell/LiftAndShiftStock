@@ -10,7 +10,6 @@ import za.co.las.stock.object.Customer;
 import za.co.las.stock.object.Defaults;
 import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
-import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.TempAccessory;

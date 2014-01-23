@@ -17,9 +17,16 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 public class MailService {
+	
+	public int sendNotificationEmail(String toAddress, String bodyText) throws Exception {
+		return sendEmail(null, toAddress, bodyText);
+	}
 
 	public int sendEmailWithQuote(byte[] attachment, String toAddress, String bodyText) throws Exception {
-		
+		return sendEmail(attachment, toAddress, bodyText);
+	}
+	
+	private int sendEmail(byte[] attachment, String toAddress, String bodyText) throws Exception {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -46,17 +53,19 @@ public class MailService {
 			
 			MimeBodyPart msgBodyPart = new MimeBodyPart();
 			msgBodyPart.setContent(bodyText, "text/html; charset=utf-8");            
- 
-			MimeBodyPart mbp = new MimeBodyPart();
-            mbp.setFileName("AttachedQuote.pdf");
-            
-            DataSource ds = new ByteArrayDataSource(attachment, "application/pdf");
-            mbp.setDataHandler(new DataHandler(ds));
 			
 			Multipart multipart = new MimeMultipart();
+			if (attachment.length > 0) {
+				MimeBodyPart mbp = new MimeBodyPart();
+	            mbp.setFileName("AttachedQuote.pdf");
+	            
+	            DataSource ds = new ByteArrayDataSource(attachment, "application/pdf");
+	            mbp.setDataHandler(new DataHandler(ds));
+	            multipart.addBodyPart(mbp);
+			}
+						
 			multipart.addBodyPart(msgBodyPart);
-			multipart.addBodyPart(mbp);
-	        message.setContent(multipart);
+		    message.setContent(multipart);
 			
 			Transport.send(message);
  

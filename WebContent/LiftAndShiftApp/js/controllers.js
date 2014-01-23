@@ -944,3 +944,20 @@ function DefaultsCtrl($scope) {
 
 }
 
+function ReportsCtrl($scope, ReportService) {
+
+}
+
+function StockListCtrl($scope, ReportService) {
+    //$scope.exportAllAvailableStockForReport = 'http://197.221.7.50:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport';
+    $scope.exportAllAvailableStockForReport = 'http://localhost:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport';
+    ReportService.getAllAvailableStockForReport({serverMethod:'getAllAvailableStockForReport'},
+        function(result) {
+            $scope.reportStock = result;
+        },
+        function(error) {
+            alert('Error retrieving stock items for report.')
+        }
+    );
+}
+

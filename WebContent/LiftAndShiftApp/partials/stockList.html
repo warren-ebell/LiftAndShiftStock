@@ -1,0 +1,49 @@
+
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Stock List</h4>
+            <p class="text-muted">The list below is a list of all the available stock currently in the system.</p>
+        </div>
+        <div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Stock Manufacturer</th>
+                    <th>Stock Model</th>
+                    <th>Stock Series</th>
+                    <th>Stock Code</th>
+                    <th>Serial Number</th>
+                    <th>Used Stock</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="stock in reportStock">
+                        <td>
+                            {{ stock.stockManufacturer }}
+                        </td>
+                        <td>
+                            {{ stock.stockModel }}
+                        </td>
+                        <td>
+                            {{ stock.stockSeries }}
+                        </td>
+                        <td>
+                            {{ stock.stockCode }}
+                        </td>
+                        <td>
+                            {{ stock.serialNumber }}
+                        </td>
+                        <td>
+                            {{ stock.stockUsed }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <a class="btn btn-default" href="http://localhost:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport" target="_blank">Export</a>
+            <!--button type="button" class="btn btn-default" ng-click="exportReport()">Export</button-->
+        </div>
+    </div>
+</div>

@@ -14,6 +14,7 @@ public class QuotationService {
 	
 	private QuotationDAO quotationDAO = new QuotationDAO();
 	private CustomerService customerService = new CustomerService();
+	private MailService mailService = new MailService();
 
 	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String passedCustomerId) {
 		
@@ -48,7 +49,25 @@ public class QuotationService {
 	}
 	
 	public int acceptQuote(int quotationId) {
-		return quotationDAO.updateQuotationStock(quotationId,2);
+		int acceptResult = 0;
+		// first need to update the quote
+		acceptResult = quotationDAO.updateQuotationStock(quotationId,2);
+		// now need to send the notification mail to john
+		try {
+			Quotation quote = quotationDAO.getQuotationForQuotationId(quotationId);
+			String companyName = "Lift and Shift";
+			if (quote.getCompanyId() == 2) 
+				companyName = "Bowman Cranes";
+			String message = "<p>Dear John</p>"+
+							 "<p>Please find attached the quotation that has been accepted. Click this link to view the quote (<a href'"+StockConstants.SERVER_URL+"/LiftAndShiftStock/document?quotationId="+quotationId+"'>View Quote</a>).</p>"+
+							 "<p>The quote is for "+quote.getCustomer().getName()+" and was quoted from "+companyName+"</p>"+
+							 "<p>"+companyName+" Stock System</p>";
+			acceptResult = mailService.sendNotificationEmail("johnhb@liftandshift.co.za", message);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		return acceptResult;
 	}
 	
 	public int completeQuote(int quotationId) {

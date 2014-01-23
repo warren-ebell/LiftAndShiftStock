@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 
 import za.co.las.stock.object.Accessory;
 import za.co.las.stock.object.InstallationLocation;
-import za.co.las.stock.object.OptionalExtra;
 import za.co.las.stock.object.Quotation;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.User;
@@ -31,7 +30,7 @@ public class DocumentService {
 				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
 			}
 			else {
-				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
+				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm.pdf");
 			}
 			PDFDocument mergePdfDocument = PDFFactory.openDocument(quotationPDFInput);
 				

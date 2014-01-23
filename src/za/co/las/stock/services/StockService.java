@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import za.co.las.stock.dao.StockDAO;
 import za.co.las.stock.object.InstallationLocation;
+import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
 
@@ -13,6 +14,10 @@ public class StockService {
 	
 	public int deleteStockItem(int stockId) {
 		return stockDAO.deleteStock(stockId);
+	}
+	
+	public ArrayList<ReportStock> getAllAvailableStockForReport() {
+		return stockDAO.getAllAvailableStockForReport();
 	}
 	
 	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used) {

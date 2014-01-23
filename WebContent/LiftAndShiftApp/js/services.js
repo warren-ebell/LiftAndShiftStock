@@ -53,6 +53,14 @@ angular.module('liftandshift.services', ['ngResource']).
             }
         );
     }).
+    factory('ReportService', function($resource){
+        return $resource(serverURL+'/report',
+            {port: ':8080', serverMethod:'',  callback:'JSON_CALLBACK'},
+            {
+                getAllAvailableStockForReport: {method: 'JSONP', isArray:true}
+            }
+        );
+    }).
     factory('AccessoryService', function($resource){
         return $resource(serverURL+'/accessory',
             {port: ':8080', serverMethod:'', accessoryId:'', accessoryManufacturer:'', pricing:'', serialNumber:'', accessoryCode:'', accessoryModel:'', description:'', callback:'JSON_CALLBACK'},

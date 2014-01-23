@@ -11,6 +11,7 @@ import za.co.las.stock.object.Customer;
 import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
+import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
 import za.co.las.stock.object.TempAccessory;
@@ -139,6 +140,20 @@ public class UtilityService {
 		return stockJSONString;
 	}
 	
+	public String convertListOfReportStockToJSONString(ArrayList<ReportStock> reportStockItemList) {
+		String stockJSONString = "[";
+		for (ReportStock rs:reportStockItemList) {
+			if (stockJSONString.length() == 1) {
+				stockJSONString += rs.toJSONString();
+			}
+			else {
+				stockJSONString += "," + rs.toJSONString();
+			}
+		}		
+		stockJSONString += "]";
+		return stockJSONString;
+	}
+	
 	public String convertListOfStockLevelToJSONString(ArrayList<StockLevel> stockLevelItemList) {
 		String stockLevelJSONString = "[";
 		for (StockLevel s:stockLevelItemList) {
@@ -239,6 +254,15 @@ public class UtilityService {
 	
 	public String buildResponseMessage(int result, String message) {
 		return "{'result':'"+result+"', 'message':'"+message+"'}";
+	}
+	
+	public byte[] generateExportReport(ArrayList<ReportStock> reportStock) {
+		StringBuffer fileString = new StringBuffer();
+		fileString.append("Stock Code,Stock Manufacturer,Stock Model,Stock Series,Serial Number, Stock Used\n");
+		for (ReportStock rs:reportStock) {
+			fileString.append(rs.getStockCode()+","+rs.getStockManufacturer()+","+rs.getStockModel()+","+rs.getStockSeries()+","+rs.getSerialNumber()+","+rs.getStockUsed()+"\n");
+		}
+		return fileString.toString().getBytes();
 	}
 
 }
