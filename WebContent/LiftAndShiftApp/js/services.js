@@ -57,7 +57,8 @@ angular.module('liftandshift.services', ['ngResource']).
         return $resource(serverURL+'/report',
             {port: ':8080', serverMethod:'',  callback:'JSON_CALLBACK'},
             {
-                getAllAvailableStockForReport: {method: 'JSONP', isArray:true}
+                getAllAvailableStockForReport: {method: 'JSONP', isArray:true},
+                getAllStockForReport: {method: 'JSONP', isArray:true}
             }
         );
     }).

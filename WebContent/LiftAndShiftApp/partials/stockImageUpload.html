@@ -1,0 +1,36 @@
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Image Upload</h4>
+            <p class="text-muted">CLick Browse to locate an image file to upload.</p>
+        </div>
+        <div class="row">
+            <label for="fileToUpload">Select a File to Upload</label><br />
+            <input id="fileToUpload" ng-model-instant type="file" style="display:none" onchange="angular.element(this).scope().setFiles(this)">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <!--input id="file" class="input-large form-control" type="text" id=-->
+                    <button class="btn btn-primary" type="button" onclick="$('input[id=fileToUpload]').click();">Browse</button>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="files.length">
+            <div ng-repeat="file in files.slice(0)">
+                <span>File: {{file.webkitRelativePath || file.name}}</span>
+                (<span ng-switch="file.size > 1024*1024">
+                        <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+                        <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+                    </span>)
+            </div>
+        </div>
+        <div class="row" ng-show="files.length">
+            <div class="col-lg-6">
+                <button class="btn btn-primary" ng-click="uploadFile()">Upload</button>
+            </div>
+        </div>
+        <div ng-show="progressVisible" class="row">
+            <div class="percent">{{progress}}%</div>
+        </div>
+    </div>
+</div>

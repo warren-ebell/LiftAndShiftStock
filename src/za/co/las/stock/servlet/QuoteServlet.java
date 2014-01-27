@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import za.co.las.stock.constants.StockConstants;
 import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.Quotation;
+import za.co.las.stock.object.StockImage;
 import za.co.las.stock.object.TempAccessory;
 import za.co.las.stock.object.User;
 import za.co.las.stock.services.CurrencyService;
@@ -170,7 +171,8 @@ public class QuoteServlet extends HttpServlet{
 			int quotationId = Integer.parseInt(req.getParameter("quotationId"));
 			Quotation quote = quotationService.getQuotation(quotationId);
 			User user = userService.getUserForId(quote.getUserId());
-			byte[] documentBytes = documentService.getQuotePDFFromQuote(quote, user);
+			StockImage stockImage = stockService.getStockImageForStockId(quote.getQuotationLineItems().get(0).getStockId());
+			byte[] documentBytes = documentService.getQuoteFromQuoteUserAndStockImage(quote, user, stockImage);
 			String bodyText = "<p>Dear "+quote.getCustomer().getAttention()+"</p>"+
 				"<p>Please find attached the quotation requested. Click this link to accept the quote (<a href='"+StockConstants.SERVER_URL+"/LiftAndShiftStock/quote?serverMethod=acceptQuoteEmail&quotationId="+quotationId+"'>Accept Quote</a>), or comntact the sales team.</p>"+
 				"<p>Please do not reply to the email address this mail comes from, but rather the email address below.</p>"+

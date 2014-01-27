@@ -1,5 +1,6 @@
 function HeaderController($scope, $location) {
     DataManager.getInstance().showMenu = 0;
+    DataManager.getInstance().serverURL = '/LiftAndShiftStock';
     $scope.showMenu = DataManager.getInstance().showMenu;
     $scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
@@ -430,8 +431,7 @@ function QuoteHistoryCtrl($scope, QuoteService) {
 function DocumentViewCtrl($scope, QuoteService) {
     var quoteId = DataManager.getInstance().quoteId;
     $scope.quoteId = quoteId;
-    //$scope.url = 'http://197.221.7.50:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
-    $scope.url = 'http://localhost:8080/LiftAndShiftStock/document?quotationId='+quoteId+'';
+    $scope.url = DataManager.getInstance().serverURL+'/document?quotationId='+quoteId+'';
     $scope.done = function() {
         if (DataManager.getInstance().quoteHistory === 1) {
             $scope.setRoute('/quoteHistory');
@@ -782,6 +782,83 @@ function StockEditCtrl($scope, StockService) {
     $scope.showAddInstallLocation = function() {
         $scope.showAddLocation = 1;
     };
+    $scope.uploadImageFile = function() {
+        var stockId = $scope.selectedStockItem.stockId;
+        if (stockId) {
+            DataManager.getInstance().stockId = stockId;
+            $scope.setRoute('/stockImageUpload');
+        }
+        else {
+            alert('Please save the stock item before trying to upload an image.')
+        }
+    }
+}
+
+function StockImageUploadCtrl($scope) {
+    $scope.uploadFile = function() {
+        var stockId = DataManager.getInstance().stockId;
+        var fd = new FormData();
+        fd.append("stockId",stockId);
+        fd.append("action","stockImageUpload");
+        //add the files to the formData...
+        for (var i in $scope.files) {
+            fd.append("uploadedFile", $scope.files[i]);
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", "/LiftAndShiftStock/upload");
+        $scope.progressVisible = true;
+        xhr.send(fd);
+
+    }
+
+    $scope.setFiles = function(element) {
+        $scope.$apply(function($scope) {
+            console.log('files:', element.files);
+            // Turn the FileList object into an Array
+            $scope.files = []
+            for (var i = 0; i < element.files.length; i++) {
+                $scope.files.push(element.files[i])
+            }
+            $scope.progressVisible = false
+        });
+    };
+
+    function uploadProgress(evt) {
+        $scope.$apply(function(){
+            if (evt.lengthComputable) {
+                $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+            } else {
+                $scope.progress = 'unable to compute';
+            }
+        })
+    }
+
+    function uploadComplete(evt) {
+        /* This event is raised when the server send back a response */
+        var response = evt.target.responseText;
+        if (response > 0) {
+            alert('Stock Image Uploaded successfully.');
+            $scope.setRoute('/stockEdit');
+        }
+        else {
+            alert('Error uploading template');
+        }
+    }
+
+    function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.");
+    }
+
+    function uploadCanceled(evt) {
+        $scope.$apply(function(){
+            $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+    }
 }
 
 function AccessoryCtrl($scope, AccessoryService) {
@@ -944,13 +1021,20 @@ function DefaultsCtrl($scope) {
 
 }
 
-function ReportsCtrl($scope, ReportService) {
-
+function StockListAllCtrl($scope, ReportService) {
+    $scope.exportAllStockForReport = DataManager.getInstance().serverURL+'/report?serverMethod=exportAllStockForReport';
+    ReportService.getAllAvailableStockForReport({serverMethod:'getAllStockForReport'},
+        function(result) {
+            $scope.reportStock = result;
+        },
+        function(error) {
+            alert('Error retrieving stock items for report.')
+        }
+    );
 }
 
 function StockListCtrl($scope, ReportService) {
-    //$scope.exportAllAvailableStockForReport = 'http://197.221.7.50:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport';
-    $scope.exportAllAvailableStockForReport = 'http://localhost:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport';
+    $scope.exportAllAvailableStockForReport = DataManager.getInstance().serverURL+'/report?serverMethod=exportAllAvailableStockForReport';
     ReportService.getAllAvailableStockForReport({serverMethod:'getAllAvailableStockForReport'},
         function(result) {
             $scope.reportStock = result;

@@ -43,11 +43,28 @@ public class ReportServlet extends HttpServlet {
 			out.flush();
 			out.close();
 		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.GET_ALL_STOCK_FOR_REPORT)) {
+			PrintWriter out = resp.getWriter();
+			String outputMessage = callBack+"(";
+			outputMessage = outputMessage + utilityService.convertListOfReportAllStockToJSONString(stockService.getAllStockForReport());
+			outputMessage = outputMessage + ");";
+			System.err.println(outputMessage);
+			out.write(outputMessage);
+			out.flush();
+			out.close();
+		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.EXPORT_ALL_AVAILABLE_STOCK_FOR_REPORT)) {
 			ServletOutputStream output = resp.getOutputStream();
 			resp.setHeader("Content-Type", "text/csv");
 		    resp.setHeader("Content-Disposition", "attachment;filename=\"StockList.csv\"");
 		    byte[] fileBytes = utilityService.generateExportReport(stockService.getAllAvailableStockForReport());
+		    output.write(fileBytes);
+		}
+		if (serverMethod.equalsIgnoreCase(StockConstants.EXPORT_ALL_STOCK_FOR_REPORT)) {
+			ServletOutputStream output = resp.getOutputStream();
+			resp.setHeader("Content-Type", "text/csv");
+		    resp.setHeader("Content-Disposition", "attachment;filename=\"StockList.csv\"");
+		    byte[] fileBytes = utilityService.generateAllExportReport(stockService.getAllStockForReport());
 		    output.write(fileBytes);
 		}
 		

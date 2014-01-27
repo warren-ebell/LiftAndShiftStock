@@ -227,10 +227,11 @@ public class QuotationDAO extends AbstractDAO {
 				int result = statement2.executeUpdate();
 				
 				//now need to set the stock level...
-				//if the status is declined OR competed, then the status needs to be 0...
 				int stockLevelStatus = 0;
 				if (status == 2)
 					stockLevelStatus = 2;
+				if (status == 1)
+					stockLevelStatus = 3;
 				statement1 = connection.prepareStatement("update las_stock.stock_level set stock_status = ? where stock_id = ? and serial_number = ?");
 				
 				statement1.setInt(1, stockLevelStatus);

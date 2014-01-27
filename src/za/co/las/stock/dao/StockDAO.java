@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import com.mysql.jdbc.Statement;
 
 import za.co.las.stock.object.InstallationLocation;
+import za.co.las.stock.object.ReportAllStock;
 import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
+import za.co.las.stock.object.StockImage;
 import za.co.las.stock.object.StockLevel;
 
 public class StockDAO extends AbstractDAO {
@@ -449,5 +451,103 @@ public class StockDAO extends AbstractDAO {
 			closeConnection(connection);
 		}
 		return reportStockItems;
+	}
+	
+	public ArrayList<ReportAllStock> getAllStockForReport() {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<ReportAllStock> reportStockItems = new ArrayList<ReportAllStock>();
+		
+		try {
+			statement = connection.prepareStatement("select st.stock_id, st.stock_code, st.stock_manufacturer, st.stock_model, st.stock_series, st.stock_used, sl.serial_number, sl.stock_status, st.pricing "+
+													"from "+
+													"    las_stock.stock st, "+ 
+													"	las_stock.stock_level sl "+ 
+													"where  "+
+													"	sl.stock_id = st.stock_id "+  
+													"order by  "+
+													"	st.stock_manufacturer, st.stock_model;");
+			
+			resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				ReportAllStock report = new ReportAllStock();
+				report.setStockId(resultSet.getInt("stock_id"));
+				report.setSerialNumber(resultSet.getString("serial_number"));
+				report.setStockCode(resultSet.getString("stock_code"));
+				report.setStockManufacturer(resultSet.getString("stock_manufacturer"));
+				report.setStockModel(resultSet.getString("stock_model"));
+				report.setStockSeries(resultSet.getString("stock_series"));
+				report.setStockUsed(resultSet.getInt("stock_used"));
+				report.setStockStatus(resultSet.getInt("stock_status"));
+				report.setStockPrice(resultSet.getDouble("pricing"));
+
+				reportStockItems.add(report);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(resultSet);
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return reportStockItems;
+	}
+	
+	public int insertStockImage(StockImage stockImage) {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		
+		try {
+			statement = connection.prepareStatement("insert into las_stock.stock_image (stock_id, stock_image) values (?, ?)");
+			
+			statement.setInt(1, stockImage.getStockId());
+			statement.setBytes(2, stockImage.getStockImage());
+			
+			int result = statement.executeUpdate();			
+			
+			return result;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return -1;
+	}
+	
+	public StockImage getStockImageFroStockId(int stockId) {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		try {
+			statement = connection.prepareStatement("select stock_id, stock_image from las_stock.stock_image where stock_id = ?");
+			
+			statement.setInt(1, stockId);
+			
+			resultSet = statement.executeQuery(); 
+			
+			while (resultSet.next()) {
+				StockImage stockImage = new StockImage();
+				stockImage.setStockId(stockId);
+				stockImage.setStockImage(resultSet.getBytes("stock_image"));
+				
+				return stockImage;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(resultSet);
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return null;
 	}
 }

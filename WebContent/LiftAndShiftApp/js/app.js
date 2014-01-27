@@ -15,10 +15,11 @@ angular.module('liftandshift', ['ngRoute', 'liftandshift.filters', 'liftandshift
     $routeProvider.when('/userEdit', {templateUrl: 'partials/editUser.html', controller: UserEditCtrl});
     $routeProvider.when('/stock', {templateUrl: 'partials/stock.html', controller: StockCtrl});
     $routeProvider.when('/stockEdit', {templateUrl: 'partials/stockEdit.html', controller: StockEditCtrl});
+    $routeProvider.when('/stockImageUpload', {templateUrl: 'partials/stockImageUpload.html', controller: StockImageUploadCtrl});
     $routeProvider.when('/accessory', {templateUrl: 'partials/accessory.html', controller: AccessoryCtrl});
     $routeProvider.when('/accessoryEdit', {templateUrl: 'partials/accessoryEdit.html', controller: AccessoryEditCtrl});
     $routeProvider.when('/defaults', {templateUrl: 'partials/defaults.html', controller: DefaultsCtrl});
-    $routeProvider.when('/reports', {templateUrl: 'partials/reports.html', controller: ReportsCtrl});
+    $routeProvider.when('/stockListAll', {templateUrl: 'partials/stockListAll.html', controller: StockListAllCtrl});
     $routeProvider.when('/stockList', {templateUrl: 'partials/stockList.html', controller: StockListCtrl});
     $routeProvider.otherwise({redirectTo: '/login'});
   }]);

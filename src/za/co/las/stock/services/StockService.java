@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import za.co.las.stock.dao.StockDAO;
 import za.co.las.stock.object.InstallationLocation;
+import za.co.las.stock.object.ReportAllStock;
 import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
+import za.co.las.stock.object.StockImage;
 import za.co.las.stock.object.StockLevel;
 
 public class StockService {
@@ -18,6 +20,10 @@ public class StockService {
 	
 	public ArrayList<ReportStock> getAllAvailableStockForReport() {
 		return stockDAO.getAllAvailableStockForReport();
+	}
+	
+	public ArrayList<ReportAllStock> getAllStockForReport() {
+		return stockDAO.getAllStockForReport();
 	}
 	
 	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used) {
@@ -90,6 +96,17 @@ public class StockService {
 		installLocation.setLocation(location);
 		installLocation.setPrice(pricing);
 		return stockDAO.deleteInstallLocationForStockId(installLocation, stockId);
+	}
+	
+	public int insertStockImage(int stockId, byte[] stockImageBytes) {
+		StockImage stockImage = new StockImage();
+		stockImage.setStockId(stockId);
+		stockImage.setStockImage(stockImageBytes);
+		return stockDAO.insertStockImage(stockImage);
+	}
+	
+	public StockImage getStockImageForStockId(int stockId) {
+		return stockDAO.getStockImageFroStockId(stockId);
 	}
 	
 }

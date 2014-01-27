@@ -48,4 +48,11 @@ public class StockConstants {
 
 	public static final String GET_ALL_AVAILABLE_STOCK_FOR_REPORT = "getAllAvailableStockForReport";
 	public static final String EXPORT_ALL_AVAILABLE_STOCK_FOR_REPORT = "exportAllAvailableStockForReport";
+	public static final String GET_ALL_STOCK_FOR_REPORT = "getAllStockForReport";
+	public static final String EXPORT_ALL_STOCK_FOR_REPORT = "exportAllStockForReport";
+
+	public static final String IMAGE_NAME = "imageName";
+	public static final String ACTION = "action";
+	public static final String IMAGE_UPLOAD = "stockImageUpload";
+	public static final String STOCK_ID = "stockId";
 }

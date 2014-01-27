@@ -5,32 +5,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.apache.commons.io.IOUtils;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import za.co.las.stock.object.Accessory;
-import za.co.las.stock.object.InstallationLocation;
-import za.co.las.stock.object.Quotation;
-import za.co.las.stock.object.Stock;
-import za.co.las.stock.object.User;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
 
 import com.adobe.pdf.PDFDocument;
 import com.adobe.pdf.PDFFactory;
 
+import flex.acrobat.pdf.XFAHelper;
+import za.co.las.stock.object.Accessory;
+import za.co.las.stock.object.InstallationLocation;
+import za.co.las.stock.object.Quotation;
+import za.co.las.stock.object.Stock;
+import za.co.las.stock.object.StockImage;
+import za.co.las.stock.object.User;
+
 public class DocumentService {
-	public byte[] getQuotePDFFromQuote(Quotation quote, User user) {
+
+	private byte[] getQuoteFromQuoteUserAndStockImageUsingXPAAJ(Quotation quote, User user, StockImage stockImage) {
 		byte[] documentBytes = null;
 		InputStream quotationPDFInput = null;
 		InputStream formInputStream = null;
 		InputStream savedPDFStream = null;
 		try {
-			String formData = buildXMLDataForForm(quote, user);
-		
+			String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
+			
 			//get the source XML stream from the template...
 			if (quote.getCompanyId() == 1) {
-				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm.pdf");
+				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V16.pdf");
 			}
 			else {
-				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm.pdf");
+				quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V16.pdf");
 			}
 			PDFDocument mergePdfDocument = PDFFactory.openDocument(quotationPDFInput);
 				
@@ -62,7 +70,38 @@ public class DocumentService {
 		return documentBytes;
 	}
 	
-	private String buildXMLDataForForm(Quotation quote, User user) {
+	public byte[] getQuoteFromQuoteUserAndStockImage(Quotation quote, User user, StockImage stockImage) {
+		byte[] documentBytes = null;
+		InputStream quotationPDFInput = null;
+		
+		String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
+		
+		if (quote.getCompanyId() == 1) {
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V16.pdf");
+		}
+		else {
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V16.pdf");
+		}
+		
+		XFAHelper helper = new XFAHelper();
+		try {
+			helper.open(quotationPDFInput);
+		
+			ByteArrayInputStream bais = new	ByteArrayInputStream(formData.getBytes("UTF-8"));
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			Document dataset = builder.parse(bais);
+			helper.importDataset(dataset);
+			documentBytes = helper.saveToByteArray();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return documentBytes;
+	}
+	
+	private String buildXMLDataForForm(Quotation quote, User user, String base64Image) {
 		String formData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
 						"<form1>"+
 						    "<subQuoteHeader>"+
@@ -82,7 +121,11 @@ public class DocumentService {
 						    "    <txtOffer>"+
 						    quote.getQuotationLineItems().get(0).getStockDescription()+
 						    "    </txtOffer>"+
-						    "    <ImageField1/>"+
+						    "    <subImage>"+
+						    "        <imgStock content-encoding=\"base64\" content-type=\"image/jpeg\" filename=\"pic.jpg\">"+
+						    base64Image+
+						    "        </imgStock>"+
+						    " 	 </subImage>"+
 						    "    <txtTechnicalSpecs>"+
 						    "        <body xmlns=\"http://www.w3.org/1999/xhtml\">"+
 						    quote.getQuotationLineItems().get(0).getTechnicalSpecs()+
@@ -200,5 +243,9 @@ public class DocumentService {
 		}
 		oeLineItems += "    </subTable>";
 		return oeLineItems;
+	}
+	
+	private String getBase64StringFromImageForHTML(byte[] imageData) {
+		return Base64.encodeBase64String(imageData);
 	}
 }

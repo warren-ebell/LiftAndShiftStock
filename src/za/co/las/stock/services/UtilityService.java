@@ -1,5 +1,11 @@
 package za.co.las.stock.services;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
@@ -11,6 +17,7 @@ import za.co.las.stock.object.Customer;
 import za.co.las.stock.object.InstallationLocation;
 import za.co.las.stock.object.MiniQuote;
 import za.co.las.stock.object.OptionalExtra;
+import za.co.las.stock.object.ReportAllStock;
 import za.co.las.stock.object.ReportStock;
 import za.co.las.stock.object.Stock;
 import za.co.las.stock.object.StockLevel;
@@ -154,6 +161,20 @@ public class UtilityService {
 		return stockJSONString;
 	}
 	
+	public String convertListOfReportAllStockToJSONString(ArrayList<ReportAllStock> reportStockItemList) {
+		String stockJSONString = "[";
+		for (ReportStock rs:reportStockItemList) {
+			if (stockJSONString.length() == 1) {
+				stockJSONString += rs.toJSONString();
+			}
+			else {
+				stockJSONString += "," + rs.toJSONString();
+			}
+		}		
+		stockJSONString += "]";
+		return stockJSONString;
+	}
+	
 	public String convertListOfStockLevelToJSONString(ArrayList<StockLevel> stockLevelItemList) {
 		String stockLevelJSONString = "[";
 		for (StockLevel s:stockLevelItemList) {
@@ -264,5 +285,46 @@ public class UtilityService {
 		}
 		return fileString.toString().getBytes();
 	}
-
+	
+	public byte[] generateAllExportReport(ArrayList<ReportAllStock> reportStock) {
+		StringBuffer fileString = new StringBuffer();
+		DecimalFormat df = new DecimalFormat("0.00");
+		fileString.append("Stock Code,Stock Manufacturer,Stock Model,Stock Series,Serial Number, Stock Used, Stock Status, Stock Price\n");
+		String statusString = "";
+		for (ReportAllStock rs:reportStock) {
+			if (rs.getStockStatus() == 0)
+				statusString = "Available";
+			if (rs.getStockStatus() == 1)
+				statusString = "On quote";
+			if (rs.getStockStatus() == 2)
+				statusString = "Unavailable";
+			if (rs.getStockStatus() == 3)
+				statusString = "Sold";
+			fileString.append(rs.getStockCode()+","+rs.getStockManufacturer()+","+rs.getStockModel()+","+rs.getStockSeries()+","+rs.getSerialNumber()+","+rs.getStockUsed()+","+statusString+","+df.format(rs.getStockPrice())+"\n");
+		}
+		return fileString.toString().getBytes();
+	}
+	
+	public String getStringFromInputStream(InputStream is) {
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+ 		String line;
+		try {
+ 			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+ 		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+ 		return sb.toString();
+ 	}
 }

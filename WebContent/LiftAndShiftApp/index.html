@@ -50,11 +50,14 @@
                                 <li><a href="#/user"><i class="glyphicon glyphicon-user"></i> User Admin</a></li>
                                 <li><a href="#/stock"><i class="glyphicon glyphicon-book"></i> Stock Management</a></li>
                                 <li><a href="#/accessory"><i class="glyphicon glyphicon-list-alt"></i> Accessory Admin</a></li>
-                                <li><a href="#/reports"><i class="glyphicon glyphicon-folder-close"></i> Reports</a></li>
+                                <!--li><a href="#/reports"><i class="glyphicon glyphicon-folder-close"></i> Reports</a></li-->
                             </ul>
                         </li>
-                        <li ng-class="{ active: isActive('/stockList')}">
+                        <li ng-class="{ active: isActive('/stockList')}" ng-hide="showAdmin==1" ng-show="showAdmin==0">
                             <a href="#/stockList"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
+                        </li>
+                        <li ng-class="{ active: isActive('/stockListAll')}" ng-hide="showAdmin==0" ng-show="showAdmin==1">
+                            <a href="#/stockListAll"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

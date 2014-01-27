@@ -25,6 +25,8 @@ public class StockLevel {
 			statusString = "On quote";
 		if (this.status == 2)
 			statusString = "Unavailable";
+		if (this.status == 3)
+			statusString = "Sold";
 		return "{"
 				+ "'serialNumber':'"+this.serialNumber+"', "
 				+ "'status':'"+statusString+"' "

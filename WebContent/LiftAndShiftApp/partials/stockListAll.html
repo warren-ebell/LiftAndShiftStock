@@ -1,0 +1,58 @@
+
+
+<div class="container">
+    <div class="form-horizontal">
+        <div>
+            <h4>Full Stock List</h4>
+            <p class="text-muted">The list below is a list of all the stock currently in the system.</p>
+        </div>
+        <div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Stock Manufacturer</th>
+                    <th>Stock Model</th>
+                    <th>Stock Series</th>
+                    <th>Stock Code</th>
+                    <th>Serial Number</th>
+                    <th>Used Stock</th>
+                    <th>Stock Status</th>
+                    <th>Stock Price (EUR)</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="stock in reportStock">
+                        <td>
+                            {{ stock.stockManufacturer }}
+                        </td>
+                        <td>
+                            {{ stock.stockModel }}
+                        </td>
+                        <td>
+                            {{ stock.stockSeries }}
+                        </td>
+                        <td>
+                            {{ stock.stockCode }}
+                        </td>
+                        <td>
+                            {{ stock.serialNumber }}
+                        </td>
+                        <td>
+                            {{ stock.stockUsed }}
+                        </td>
+                        <td>
+                            {{ stock.stockStatus }}
+                        </td>
+                        <td>
+                            {{ stock.stockPrice }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <a class="btn btn-default" ng-href="{{exportAllStockForReport}}" target="_blank">Export</a>
+            <!--a class="btn btn-default" href="http://197.221.7.50:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport" target="_blank">Export</a-->
+            <!--a class="btn btn-default" href="http://localhost:8080/LiftAndShiftStock/report?serverMethod=exportAllAvailableStockForReport" target="_blank">Export</a-->
+        </div>
+    </div>
+</div>

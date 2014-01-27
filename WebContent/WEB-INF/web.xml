@@ -1,7 +1,22 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   	<display-name>Lift and Shift Stock</display-name>
   	
-  	<servlet>
+  	<listener>
+        <listener-class>flex.messaging.HttpFlexSession</listener-class>
+    </listener>
+
+    <!-- MessageBroker Servlet -->
+    <servlet>
+		<servlet-name>MessageBrokerServlet</servlet-name>
+		<servlet-class>flex.messaging.MessageBrokerServlet</servlet-class>
+		<init-param>
+			<param-name>services.configuration.file</param-name>
+			<param-value>/WEB-INF/flex/services-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+    </servlet>
+    
+  	 <servlet>
 		<display-name>TestServlet</display-name>
    		<servlet-name>TestServlet</servlet-name>
    		<servlet-class>za.co.las.stock.servlet.TestServlet</servlet-class>
@@ -41,8 +56,17 @@
    		<servlet-name>ReportServlet</servlet-name>
    		<servlet-class>za.co.las.stock.servlet.ReportServlet</servlet-class>
   	</servlet>
+  	<servlet>
+		<display-name>UploadServlet</display-name>
+   		<servlet-name>UploadServlet</servlet-name>
+   		<servlet-class>za.co.las.stock.servlet.UploadServlet</servlet-class>
+  	</servlet>
   	
   	<servlet-mapping>
+    	<servlet-name>UploadServlet</servlet-name>
+    	<url-pattern>/upload</url-pattern>
+ 	</servlet-mapping>
+ 	<servlet-mapping>
     	<servlet-name>TestServlet</servlet-name>
     	<url-pattern>/test</url-pattern>
  	</servlet-mapping>
@@ -75,7 +99,13 @@
     	<url-pattern>/report</url-pattern>
  	</servlet-mapping>
  	
-  	<welcome-file-list>
+ 	<servlet-mapping>
+		<servlet-name>MessageBrokerServlet</servlet-name>
+		<url-pattern>/messagebroker/*</url-pattern>
+	</servlet-mapping>
+ 	
+ 	
+ 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	    <welcome-file>index.htm</welcome-file>
 	    <welcome-file>index.jsp</welcome-file>
