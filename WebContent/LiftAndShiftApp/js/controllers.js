@@ -78,7 +78,8 @@ function LoginCtrl($scope, AuthenticationService) {
 }
 
 function QuoteCtrl($scope, StockService) {
-    $scope.companies = [{companyName:'Lift and Shift', companyId:1},{companyName:'Bowman Cranes', companyId:2}]
+    $scope.companies = [{companyName:'Lift and Shift', companyId:1},{companyName:'Bowman Cranes', companyId:2}];
+    $scope.showItemPriceOptions = [{label:'Show line item Prices', option:'0'}, {label:'Hide line item prices', option:'1'}];
     $scope.showSerial = 0;
     StockService.getStockManufacturers({serverMethod:'getStockManufacturers'},
         function(result) {
@@ -137,6 +138,7 @@ function QuoteCtrl($scope, StockService) {
     $scope.selectSerialForQuote = function(serialNumber, stockId) {
         DataManager.getInstance().selectedSerialNumber = serialNumber;
         DataManager.getInstance().selectedCompany = $scope.selectedCompany;
+        DataManager.getInstance().showItemPrices = $scope.selectedShowOption.option;
         $scope.setRoute('/quoteAccessories');
     };
     $scope.setSelectedInstallLocation = function() {
@@ -244,6 +246,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var userId = DataManager.getInstance().user.userId;
         var accessories = DataManager.getInstance().selectedAccessories;
         var installLocation = DataManager.getInstance().selectedInstallLocation;
+        var showItemPrices = DataManager.getInstance().showItemPrices;
 
         var customerName = '';
         var customerAddress;
@@ -274,7 +277,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var locString = JSON.stringify(installLocation)
 
         var serialNumber = DataManager.getInstance().selectedSerialNumber;
-        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation, installationLocation:locString, usedItem:usedItem, companyId:companyId, customerId:customerId},
+        QuoteService.saveQuote({serverMethod:'saveQuote', stockId:stockId , name:customerName, address:customerAddress, emailAddress:customerEmailAddress, phoneNumber:customerPhoneNumber, attention:customerAttention, userId:userId, serialNumber:serialNumber, pricing:pricing, accessories:accString, notes:notes, delivery:delivery, installation:installation, installationLocation:locString, usedItem:usedItem, companyId:companyId, customerId:customerId, showItemPrices:showItemPrices},
             function(result) {
                 var serverResult = result;
                 if (serverResult.quoteId === '0') {

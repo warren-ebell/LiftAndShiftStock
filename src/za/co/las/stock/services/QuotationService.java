@@ -16,7 +16,7 @@ public class QuotationService {
 	private CustomerService customerService = new CustomerService();
 	private MailService mailService = new MailService();
 
-	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String passedCustomerId) {
+	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String passedCustomerId, String showItemPrices, int usedItem) {
 		
 		int customerId;
 		if (customerName.length() > 0) {
@@ -25,7 +25,7 @@ public class QuotationService {
 		else {
 			customerId = Integer.parseInt(passedCustomerId);
 		}		
-		return quotationDAO.insertQuotation(customerId, stockItemIds, accessories, notes, delivery, installation, warranty, variation, validity, date, userId, serialNumber, pricing, rate, location, companyId);	
+		return quotationDAO.insertQuotation(customerId, stockItemIds, accessories, notes, delivery, installation, warranty, variation, validity, date, userId, serialNumber, pricing, rate, location, companyId, showItemPrices, usedItem);	
 	}
 	
 	public Quotation getQuotation(int quotationId) {

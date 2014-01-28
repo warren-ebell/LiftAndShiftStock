@@ -77,11 +77,13 @@ public class DocumentService {
 		String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
 		
 		if (quote.getCompanyId() == 1) {
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V16.pdf");
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V16_A.pdf");
 		}
 		else {
 			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V16.pdf");
 		}
+		
+		//System.out.println(formData);
 		
 		XFAHelper helper = new XFAHelper();
 		try {
@@ -106,6 +108,7 @@ public class DocumentService {
 						"<form1>"+
 						    "<subQuoteHeader>"+
 						        "<txtQuotationType>"+quote.getQuotationLineItems().get(0).getStockModel()+"</txtQuotationType>"+
+						        "<txtShowItemPrices>"+quote.getShowLineItemPrices()+"</txtShowItemPrices>"+
 						    "</subQuoteHeader>"+
 						    "<subCustomerInfo>"+
 						    "    <txtDate>"+quote.getQuotationDate()+"</txtDate>"+
@@ -132,9 +135,9 @@ public class DocumentService {
 						    "        </body>"+
 						    "    </txtTechnicalSpecs>"+
 						    "</subTechnicalDetails>"+
-						    buildQuotationItemsSection(quote.getQuotationLineItems())+
+						    buildQuotationItemsSection(quote.getQuotationLineItems(),quote.getAccessoryItems(), quote.getInstallLocation())+
 						    "<subQuotationOptionalExtras>"+
-						    buildAccessoryItems(quote.getAccessoryItems(), quote.getInstallLocation())+
+						    //buildAccessoryItems(quote.getAccessoryItems(), quote.getInstallLocation())+
 						    "</subQuotationOptionalExtras>"+
 						    "<subNotes>"+
 						    "    <txtNotes>"+
@@ -192,7 +195,7 @@ public class DocumentService {
 		return orig.replace("<<rate>>", rate);
 	}
 	
-	private String buildQuotationItemsSection(ArrayList<Stock> stockItems) {
+	private String buildQuotationItemsSection(ArrayList<Stock> stockItems, ArrayList<Accessory> accessoryItems, InstallationLocation location) {
 		long subTotalAmount = 0;
 		double vatAmount = 0;
 		String stockLineItems = "<subQuotationDetails>"+
@@ -207,6 +210,24 @@ public class DocumentService {
 			stockLineItems += lineItem;
 			subTotalAmount += s.getPricing();
 		}
+		
+		if (location.getLocation().length() > 0) {
+			stockLineItems +="        <subLineItem>"+
+						     "            <txtLineItemDescription>Installation - "+location.getLocation()+"</txtLineItemDescription>"+
+						     "            <txtLineItemAmount>"+location.getPrice()+"</txtLineItemAmount>"+
+						     "        </subLineItem>";
+			subTotalAmount += location.getPrice();
+		}
+		for (Accessory acc:accessoryItems) {
+			stockLineItems +="        <subLineItem>"+
+						     "            <txtLineItemDescription>"+acc.getAccessoryDescription()+"</txtLineItemDescription>"+
+						     "            <txtLineItemAmount>"+acc.getPricing()+"</txtLineItemAmount>"+
+						     "        </subLineItem>";
+			subTotalAmount += acc.getPricing();
+		}
+		
+		//add the line items for the optional extras...
+		
 		String subTotalAmountStr = new Long(subTotalAmount).toString();
 		vatAmount = subTotalAmount * 0.14;
 		String vatAmountStr = new Double(vatAmount).toString();

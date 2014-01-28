@@ -37,6 +37,7 @@ public class QuotationDAO extends AbstractDAO {
 					quote.setWarranty(resultSet.getString("used_warranty"));
 				quote.setVariation(resultSet.getString("variation"));
 				quote.setValidity(resultSet.getString("validity"));
+				quote.setUsedItem(used);
 			}
 		}
 		catch (Exception e) {
@@ -80,7 +81,7 @@ public class QuotationDAO extends AbstractDAO {
 		return defaults;
 	}
 	
-	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId) {
+	public int insertQuotation(int customerId, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty,String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String showItemPrices, int usedItem) {
 		Connection connection = getConnection();
 		PreparedStatement statement1 = null;
 		PreparedStatement statement2 = null;
@@ -91,7 +92,7 @@ public class QuotationDAO extends AbstractDAO {
 		try {
 			String status = "Created";
 			//1. insert into the quotation table - customerId is the only thing that goes in here...
-			statement1 = connection.prepareStatement("insert into las_stock.quotation (customer_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, status, rate, installation_location, installation_price, company_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			statement1 = connection.prepareStatement("insert into las_stock.quotation (customer_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, status, rate, installation_location, installation_price, company_id, show_item_prices, used_item) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement1.setInt(1, customerId);
 			statement1.setString(2, notes);
@@ -107,6 +108,8 @@ public class QuotationDAO extends AbstractDAO {
 			statement1.setString(12, location.getLocation());
 			statement1.setDouble(13, location.getPrice());
 			statement1.setInt(14, companyId);
+			statement1.setString(15, showItemPrices);
+			statement1.setInt(16, usedItem);
 			
 			statement1.execute();
 			
@@ -247,8 +250,8 @@ public class QuotationDAO extends AbstractDAO {
 				resultSet2 = statement3.executeQuery();
 				
 				while (resultSet2.next()) {
-					int accessoryId = resultSet.getInt("accessory_id");
-					String accSerialNumber = resultSet.getString("serial_number");
+					int accessoryId = resultSet2.getInt("accessory_id");
+					String accSerialNumber = resultSet2.getString("serial_number");
 					
 					//we are in here because there are accessories that need to be updated...
 					statement4 = connection.prepareStatement("update las_stock.accessory_level set accessory_status = ? where accessory_id = ? and serial_number = ?");
@@ -296,7 +299,7 @@ public class QuotationDAO extends AbstractDAO {
 		quote.setQuotationId(quotationId);
 		try {
 			//1. get the quotation information for this quote...
-			statement = connection.prepareStatement("select quotation_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, rate, installation_location, installation_price, company_id from las_stock.quotation where quotation_id = ?");
+			statement = connection.prepareStatement("select quotation_id, notes, delivery, installation, warranty, variation, validity, quotation_date, user_id, rate, installation_location, installation_price, company_id, show_item_prices from las_stock.quotation where quotation_id = ?");
 			statement.setInt(1, quotationId);
 			
 			resultSet = statement.executeQuery();
@@ -312,6 +315,7 @@ public class QuotationDAO extends AbstractDAO {
 				quote.setUserId(resultSet.getInt("user_id"));
 				quote.setRate(resultSet.getString("rate"));
 				quote.setCompanyId(resultSet.getInt("company_id"));
+				quote.setShowLineItemPrices(resultSet.getString("show_item_prices"));
 				
 				String locationStr = resultSet.getString("installation_location");
 				double locationPrice = resultSet.getDouble("installation_price");

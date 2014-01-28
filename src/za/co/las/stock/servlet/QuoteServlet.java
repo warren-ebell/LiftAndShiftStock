@@ -135,6 +135,7 @@ public class QuoteServlet extends HttpServlet{
 				customerPhoneNumber = req.getParameter("phoneNumber");
 			}
 			
+			String showItemPrices = req.getParameter("showItemPrices");
 			String serialNumber = req.getParameter("serialNumber");
 			String pricingStr = req.getParameter("pricing");
 			String accessories = req.getParameter("accessories");
@@ -164,7 +165,7 @@ public class QuoteServlet extends HttpServlet{
 			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, newRate);
 			InstallationLocation location = utilityService.convertInstallationLocationJSONStringWithPricingFactor(installationLocation, newRate);
 			
-			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location, companyId, customerId)+"'}";
+			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location, companyId, customerId, showItemPrices, quote.getUsedItem())+"'}";
 			outputMessage = outputMessage + ");";
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.SEND_EMAIL)) {

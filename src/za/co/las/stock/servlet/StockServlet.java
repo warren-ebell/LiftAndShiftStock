@@ -83,6 +83,9 @@ public class StockServlet extends HttpServlet{
 			String description = req.getParameter("description");
 			String stockSeries = req.getParameter("stockSeries");
 			String stockUsed = req.getParameter("stockUsed");
+			if (stockUsed == null) {
+				stockUsed = "0";
+			}
 			int result = 0;
 			if (stockId == null) {		
 				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed));

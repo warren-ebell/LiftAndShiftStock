@@ -14,6 +14,14 @@
                     <select ng-model="selectedCompany" ng-options="comp.companyName for comp in companies"></select>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Show the line item prices :
+                </td>
+                <td>
+                    <select ng-model="selectedShowOption" ng-options="stock.label for stock in showItemPriceOptions"></select>
+                </td>
+            </tr>
         </table>
         <div>
             <h4>Stock List</h4>
@@ -35,6 +43,7 @@
                 <td>
                     <select ng-model="selectedModel" ng-options="stock.model for stock in stockModels" ng-change="getStockItemsForManufacturerAndModel()"></select>
                 </td>
+            </tr>
             </tr>
         </table>
         <table class="table table-hover">
