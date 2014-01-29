@@ -38,7 +38,22 @@
                     <input class="input" id="accessory.description" type="text" ng-model="selectedAccessoryItem.accessoryDescription" ng-model-instant>
                 </td>
             </tr>
-
+            <tr>
+                <td>
+                    <label class="control-label" for="accessory.accessoryMarkup">Accessory Markup (%):</label>
+                </td>
+                <td>
+                    <input class="input" id="accessory.accessoryMarkup" type="text" ng-model="selectedAccessoryItem.accessoryMarkup" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="accessory.accessoryShipping">Accessory Shipping (%):</label>
+                </td>
+                <td>
+                    <input class="input" id="accessory.accessoryShipping" type="text" ng-model="selectedAccessoryItem.accessoryShipping" ng-model-instant>
+                </td>
+            </tr>
         </table>
         <br>
         <div ng-show="showSerialSection==1">
@@ -74,7 +89,7 @@
                             <input class="input" id="serialNumber" type="text" ng-model="serialNumber" ng-model-instant>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">-</button>
+                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">+</button>
                         </td>
                     </tr>
                 </table>

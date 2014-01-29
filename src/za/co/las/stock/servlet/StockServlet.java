@@ -83,15 +83,17 @@ public class StockServlet extends HttpServlet{
 			String description = req.getParameter("description");
 			String stockSeries = req.getParameter("stockSeries");
 			String stockUsed = req.getParameter("stockUsed");
+			String markup = req.getParameter("stockMarkup");
+			String shipping = req.getParameter("stockShipping");
 			if (stockUsed == null) {
 				stockUsed = "0";
 			}
 			int result = 0;
 			if (stockId == null) {		
-				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed));
+				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Integer.parseInt(markup), Integer.parseInt(shipping));
 			}
 			else {
-				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed));
+				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Integer.parseInt(markup), Integer.parseInt(shipping));
 			}		
 			
 			if (result == 1)

@@ -37,7 +37,7 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('StockService', function($resource){
         return $resource(serverURL+'/stock',
-            {port: ':8080', serverMethod:'', stockId:'', stockManufacturer:'', stockSeries:'', stockModel:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', location:'', stockUsed:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', serverMethod:'', stockId:'', stockManufacturer:'', stockSeries:'', stockModel:'', pricing:'', serialNumber:'', stockCode:'', technicalSpecs:'', description:'', location:'', stockUsed:'', stockMarkup:'', stockShipping:'', callback:'JSON_CALLBACK'},
             {
                 getStockManufacturers: {method: 'JSONP', isArray:true},
                 getStockModelsForManufacturer: {method: 'JSONP', isArray:true},
@@ -64,7 +64,7 @@ angular.module('liftandshift.services', ['ngResource']).
     }).
     factory('AccessoryService', function($resource){
         return $resource(serverURL+'/accessory',
-            {port: ':8080', serverMethod:'', accessoryId:'', accessoryManufacturer:'', pricing:'', serialNumber:'', accessoryCode:'', accessoryModel:'', description:'', callback:'JSON_CALLBACK'},
+            {port: ':8080', serverMethod:'', accessoryId:'', accessoryManufacturer:'', pricing:'', serialNumber:'', accessoryCode:'', accessoryModel:'', description:'', accessoryMarkup:'', accessoryShipping:'',  callback:'JSON_CALLBACK'},
             {
                 getAccessoryManufacturers: {method: 'JSONP', isArray:true},
                 getAccessoryForAccessoryId: {method: 'JSONP', isArray:false},

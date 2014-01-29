@@ -184,6 +184,7 @@ function QuoteAccessoriesCtrl($scope, AccessoryService) {
                     availableAcc.serial = acc.serialNumber;
                     availableAcc.code = $scope.selectedAccessoryItem.accessoryCode;
                     availableAcc.price = $scope.selectedAccessoryItem.pricing;
+                    availableAcc.sellingPrice = $scope.selectedAccessoryItem.sellingPrice;
                     availableAcc.accessoryId = $scope.selectedAccessoryItem.accessoryId;
                     availableAcc.status = acc.status;
 
@@ -240,6 +241,10 @@ function QuoteNotesCtrl($scope, QuoteService) {
         }
     );
 
+    $scope.cancel = function() {
+        $scope.setRoute('/home');
+    }
+
     $scope.saveQuote = function() {
         var stockId = DataManager.getInstance().selectedStockItem.stockId;
         var usedItem = DataManager.getInstance().selectedStockItem.stockUsed;
@@ -254,7 +259,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var customerPhoneNumber;
         var customerAttention;
 
-        if (DataManager.getInstance().oldCustomer == 0) {
+        if (!DataManager.getInstance().oldCustomer) {
             customerName = DataManager.getInstance().customerName;
             customerAddress = DataManager.getInstance().customerAddress;
             customerEmailAddress = DataManager.getInstance().customerEmailAddress;
@@ -266,7 +271,7 @@ function QuoteNotesCtrl($scope, QuoteService) {
         if (DataManager.getInstance().customerId)
             customerId = DataManager.getInstance().customerId;
 
-        var pricing = DataManager.getInstance().selectedStockItem.pricing;
+        var pricing = DataManager.getInstance().selectedStockItem.sellingPrice;
         var companyId = DataManager.getInstance().selectedCompany.companyId;
 
         var notes = $scope.htmlNotes;
@@ -624,7 +629,7 @@ function StockEditCtrl($scope, StockService) {
     $scope.saveStockItem = function() {
         var htmlTechSpecs = $scope.htmlTechnicalSpecs;
         var stockCode = $scope.selectedStockItem.stockManufacturer+"-"+$scope.selectedStockItem.stockModel+"-"+$scope.selectedStockItem.stockSeries;
-        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription, stockUsed:$scope.selectedStockItem.stockUsed},
+        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription, stockUsed:$scope.selectedStockItem.stockUsed, stockMarkup:$scope.selectedStockItem.stockMarkup, stockShipping:$scope.selectedStockItem.stockShipping},
             function(result) {
                 var serverResult = result;
                 if (serverResult.result === '1') {
@@ -799,23 +804,34 @@ function StockEditCtrl($scope, StockService) {
 
 function StockImageUploadCtrl($scope) {
     $scope.uploadFile = function() {
-        var stockId = DataManager.getInstance().stockId;
-        var fd = new FormData();
-        fd.append("stockId",stockId);
-        fd.append("action","stockImageUpload");
-        //add the files to the formData...
+        var fileOk = 0;
         for (var i in $scope.files) {
-            fd.append("uploadedFile", $scope.files[i]);
+            if ($scope.files[i].type != 'image/jpeg') {
+                fileOk = 1;
+                break;
+            }
         }
-        var xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener("progress", uploadProgress, false);
-        xhr.addEventListener("load", uploadComplete, false);
-        xhr.addEventListener("error", uploadFailed, false);
-        xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "/LiftAndShiftStock/upload");
-        $scope.progressVisible = true;
-        xhr.send(fd);
-
+        if (fileOk == 0) {
+            var stockId = DataManager.getInstance().stockId;
+            var fd = new FormData();
+            fd.append("stockId",stockId);
+            fd.append("action","stockImageUpload");
+            //add the files to the formData...
+            for (var i in $scope.files) {
+                fd.append("uploadedFile", $scope.files[i]);
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", uploadProgress, false);
+            xhr.addEventListener("load", uploadComplete, false);
+            xhr.addEventListener("error", uploadFailed, false);
+            xhr.addEventListener("abort", uploadCanceled, false);
+            xhr.open("POST", "/LiftAndShiftStock/upload");
+            $scope.progressVisible = true;
+            xhr.send(fd);
+        }
+        else {
+            alert('Only JPEG images can be uploaded');
+        }
     }
 
     $scope.setFiles = function(element) {
@@ -913,7 +929,7 @@ function AccessoryEditCtrl($scope, AccessoryService) {
         $scope.showDelete = 0;
     $scope.saveAccessoryItem = function() {
         var stockCode = $scope.selectedAccessoryItem.accessoryManufacturer+"-"+$scope.selectedAccessoryItem.accessoryModel;
-        AccessoryService.saveAccessoryItem({serverMethod:'saveAccessoryItem', accessoryId:$scope.selectedAccessoryItem.accessoryId, accessoryManufacturer:$scope.selectedAccessoryItem.accessoryManufacturer, accessoryModel:$scope.selectedAccessoryItem.accessoryModel, pricing:$scope.selectedAccessoryItem.pricing, accessoryCode:stockCode, description:$scope.selectedAccessoryItem.accessoryDescription},
+        AccessoryService.saveAccessoryItem({serverMethod:'saveAccessoryItem', accessoryId:$scope.selectedAccessoryItem.accessoryId, accessoryManufacturer:$scope.selectedAccessoryItem.accessoryManufacturer, accessoryModel:$scope.selectedAccessoryItem.accessoryModel, pricing:$scope.selectedAccessoryItem.pricing, accessoryCode:stockCode, description:$scope.selectedAccessoryItem.accessoryDescription, accessoryMarkup:$scope.selectedAccessoryItem.accessoryMarkup, accessoryShipping:$scope.selectedAccessoryItem.accessoryShipping},
             function(result) {
                 var serverResult = result;
                 if (serverResult.result === '1') {

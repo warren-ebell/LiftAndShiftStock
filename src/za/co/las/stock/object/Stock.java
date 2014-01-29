@@ -17,6 +17,8 @@ public class Stock {
 	private ArrayList<StockLevel> stockLevel;
 	private ArrayList<InstallationLocation> installLocations;
 	private int stockUsed;
+	private int stockMarkup;
+	private int stockShipping;
 	
 	private UtilityService utilityService = new UtilityService();
 	
@@ -92,9 +94,24 @@ public class Stock {
 	public void setStockUsed(int stockUsed) {
 		this.stockUsed = stockUsed;
 	}
+	public int getStockMarkup() {
+		return stockMarkup;
+	}
+	public void setStockMarkup(int stockMarkup) {
+		this.stockMarkup = stockMarkup;
+	}
+	public int getStockShipping() {
+		return stockShipping;
+	}
+	public void setStockShipping(int stockShipping) {
+		this.stockShipping = stockShipping;
+	}
 	
 	public String toJSONString() {
 		DecimalFormat df = new DecimalFormat("0.00");
+		double markup = 1.0 + (this.stockMarkup/100.0);
+		double shipping = 1.0 + (this.stockShipping/100.0);
+		String sellingPrice = df.format(this.pricing * markup * shipping);
 		String returnString = "{"
 				+ "'stockId':'"+this.stockId+"', "
 				+ "'stockCode':'"+this.stockCode+"', "
@@ -104,7 +121,10 @@ public class Stock {
 				+ "'stockSeries':'"+this.stockSeries+"', "
 				+ "'pricing':'"+df.format(this.pricing)+"', "
 				+ "'stockUsed':'"+this.stockUsed+"', "
-				+ "'technicalSpecs':'"+this.technicalSpecs+"', ";
+				+ "'technicalSpecs':'"+this.technicalSpecs+"', "
+				+ "'stockMarkup':'"+this.stockMarkup+"', "
+				+ "'stockShipping':'"+this.stockShipping+"', "
+				+ "'sellingPrice':'"+sellingPrice+"', ";
 		if (this.installLocations != null) {
 			returnString = returnString 
 					+ "'installLocation':"+utilityService.convertListOfInstallLocationsToJSONString(this.installLocations)+", ";
@@ -123,5 +143,4 @@ public class Stock {
 		}
 		return returnString	+ "}";
 	}
-
 }

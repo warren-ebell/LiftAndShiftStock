@@ -65,12 +65,14 @@ public class AccessoryServlet extends HttpServlet{
 			String accessoryCode = req.getParameter("accessoryCode");
 			String description = req.getParameter("description");
 			String model = req.getParameter("accessoryModel");
+			String markup = req.getParameter("accessoryMarkup");
+			String shipping = req.getParameter("accessoryShipping");
 			int result = 0;
 			if (accessoryId == null) {		
-				result = accessoryService.createAccessoryItem(Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model);
+				result = accessoryService.createAccessoryItem(Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
 			}
 			else {
-				result = accessoryService.updateAccessoryItem(Integer.parseInt(accessoryId), Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model);
+				result = accessoryService.updateAccessoryItem(Integer.parseInt(accessoryId), Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
 			}		
 			
 			if (result == 1)

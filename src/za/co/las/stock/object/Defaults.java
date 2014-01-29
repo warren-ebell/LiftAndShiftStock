@@ -46,12 +46,12 @@ public class Defaults {
 	
 	public String toJSONString() {
 		return "{"
-				+ "'notes':'"+this.notes+"', "
-				+ "'delivery':'"+this.delivery+"', "
-				+ "'installation':'"+this.installation+"', "
-				+ "'warranty':'"+this.warranty+"', "
-				+ "'variation':'"+this.variation+"', "
-				+ "'validity':'"+this.validity+"' "
+				+ "\"notes\":\""+this.notes+"\", "
+				+ "\"delivery\":\""+this.delivery+"\", "
+				+ "\"installation\":\""+this.installation+"\", "
+				+ "\"warranty\":\""+this.warranty+"\", "
+				+ "\"variation\":\""+this.variation+"\", "
+				+ "\"validity\":\""+this.validity+"\" "
 			+ "}";
 	}
 }

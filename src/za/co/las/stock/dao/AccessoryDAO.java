@@ -18,14 +18,16 @@ public class AccessoryDAO extends AbstractDAO {
 		
 		try {
 			//1. update the accessory table...
-			statement = connection.prepareStatement("update las_stock.accessory set accessory_code = ?, accessory_manufacturer = ?, pricing = ?, accessory_description = ?, accessory_model = ? where accessory_id = ?");
+			statement = connection.prepareStatement("update las_stock.accessory set accessory_code = ?, accessory_manufacturer = ?, pricing = ?, accessory_description = ?, accessory_model = ?, accessory_markup = ?, accessory_shipping = ? where accessory_id = ?");
 			
 			statement.setString(1, newAccessory.getAccessoryCode());
 			statement.setString(2, newAccessory.getAccessoryManufacturer());
 			statement.setDouble(3, newAccessory.getPricing());
 			statement.setString(4,  newAccessory.getAccessoryDescription());
 			statement.setString(5, newAccessory.getAccessoryModel());
-			statement.setInt(6, accessoryId);
+			statement.setInt(6, newAccessory.getAccessoryMarkup());
+			statement.setInt(7, newAccessory.getAccessoryShipping());
+			statement.setInt(8, accessoryId);
 			
 			int result = statement.executeUpdate();
 			
@@ -46,13 +48,15 @@ public class AccessoryDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("insert into las_stock.accessory (accessory_code, accessory_manufacturer, pricing, accessory_description, accessory_model) values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement("insert into las_stock.accessory (accessory_code, accessory_manufacturer, pricing, accessory_description, accessory_model, accessory_markup, accessory_shipping) values (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement.setString(1, newAccessory.getAccessoryCode());
 			statement.setString(2, newAccessory.getAccessoryManufacturer());
 			statement.setDouble(3, newAccessory.getPricing());
 			statement.setString(4, newAccessory.getAccessoryDescription());
 			statement.setString(5, newAccessory.getAccessoryModel());
+			statement.setInt(6, newAccessory.getAccessoryMarkup());
+			statement.setInt(7, newAccessory.getAccessoryShipping());
 			
 			int result = statement.executeUpdate();			
 			
@@ -125,7 +129,7 @@ public class AccessoryDAO extends AbstractDAO {
 		ArrayList<Accessory> accessoryItems = new ArrayList<Accessory>();
 		
 		try {
-			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model from las_stock.accessory a where a.accessory_manufacturer = ? ");
+			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_manufacturer = ? ");
 			
 			statement.setString(1, manufacturer);
 			
@@ -139,6 +143,8 @@ public class AccessoryDAO extends AbstractDAO {
 				accessory.setAccessoryId(resultSet.getInt("accessory_id"));
 				accessory.setAccessoryDescription(resultSet.getString("accessory_description"));
 				accessory.setAccessoryModel(resultSet.getString("accessory_model"));
+				accessory.setAccessoryMarkup(resultSet.getInt("accessory_markup"));
+				accessory.setAccessoryShipping(resultSet.getInt("accessory_shipping"));
 				
 				accessoryItems.add(accessory);
 			}
@@ -164,7 +170,7 @@ public class AccessoryDAO extends AbstractDAO {
 		
 		try {
 			//1. get the stock item...
-			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model from las_stock.accessory a where a.accessory_id = ?");
+			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_id = ?");
 			
 			statement.setInt(1, accessoryId);
 			resultSet = statement.executeQuery();
@@ -177,6 +183,8 @@ public class AccessoryDAO extends AbstractDAO {
 				accessory.setAccessoryId(resultSet.getInt("accessory_id"));
 				accessory.setAccessoryDescription(resultSet.getString("accessory_description"));
 				accessory.setAccessoryModel(resultSet.getString("accessory_model"));
+				accessory.setAccessoryMarkup(resultSet.getInt("accessory_markup"));
+				accessory.setAccessoryShipping(resultSet.getInt("accessory_shipping"));
 			}
 			
 			//2. get all the serial numbers linked to this stock item...

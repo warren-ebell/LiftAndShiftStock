@@ -22,7 +22,7 @@ public class StockDAO extends AbstractDAO {
 		
 		try {
 			//1. update the stock table...
-			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_manufacturer = ?, stock_model = ?, stock_series = ?, pricing = ?, technical_specs = ?, stock_description = ?, stock_used = ? where stock_id = ?");
+			statement = connection.prepareStatement("update las_stock.stock set stock_code = ?, stock_manufacturer = ?, stock_model = ?, stock_series = ?, pricing = ?, technical_specs = ?, stock_description = ?, stock_used = ?, stock_markup = ?, stock_shipping = ? where stock_id = ?");
 			
 			statement.setString(1, newStock.getStockCode());
 			statement.setString(2, newStock.getStockManufacturer());
@@ -32,7 +32,9 @@ public class StockDAO extends AbstractDAO {
 			statement.setString(6,  newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
 			statement.setInt(8, newStock.getStockUsed());
-			statement.setInt(9, stockId);
+			statement.setInt(9, newStock.getStockMarkup());
+			statement.setInt(10, newStock.getStockShipping());
+			statement.setInt(11, stockId);
 			
 			int result = statement.executeUpdate();
 			
@@ -53,7 +55,7 @@ public class StockDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_manufacturer, stock_model, stock_series, pricing, technical_specs, stock_description, stock_used) values (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement("insert into las_stock.stock (stock_code, stock_manufacturer, stock_model, stock_series, pricing, technical_specs, stock_description, stock_used, stock_markup, stock_shipping) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement.setString(1, newStock.getStockCode());
 			statement.setString(2, newStock.getStockManufacturer());
@@ -63,6 +65,8 @@ public class StockDAO extends AbstractDAO {
 			statement.setString(6, newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
 			statement.setInt(8, newStock.getStockUsed());
+			statement.setInt(9, newStock.getStockMarkup());
+			statement.setInt(10, newStock.getStockShipping());
 			
 			int result = statement.executeUpdate();			
 			
@@ -163,7 +167,7 @@ public class StockDAO extends AbstractDAO {
 		ArrayList<Stock> stockItems = new ArrayList<Stock>();
 		
 		try {
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used from las_stock.stock s where s.stock_manufacturer = ? and s.stock_model = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used, s.stock_markup, s.stock_shipping from las_stock.stock s where s.stock_manufacturer = ? and s.stock_model = ?");
 			
 			statement.setString(1, manufacturer);
 			statement.setString(2, model);
@@ -180,7 +184,8 @@ public class StockDAO extends AbstractDAO {
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
 				stock.setStockDescription(resultSet.getString("stock_description"));
 				stock.setStockUsed(resultSet.getInt("stock_used"));
-				
+				stock.setStockMarkup(resultSet.getInt("stock_markup"));
+				stock.setStockShipping(resultSet.getInt("stock_shipping"));
 				stockItems.add(stock);
 			}
 		}
@@ -207,7 +212,7 @@ public class StockDAO extends AbstractDAO {
 		
 		try {
 			//1. get the stock item...
-			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used from las_stock.stock s where s.stock_id = ?");
+			statement = connection.prepareStatement("select s.stock_id, s.stock_code, s.stock_manufacturer, s.stock_model, s.stock_series, s.pricing, s.technical_specs, s.stock_description, s.stock_used, s.stock_markup, s.stock_shipping from las_stock.stock s where s.stock_id = ?");
 			
 			statement.setInt(1, stockId);
 			resultSet = statement.executeQuery();
@@ -223,6 +228,8 @@ public class StockDAO extends AbstractDAO {
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
 				stock.setStockDescription(resultSet.getString("stock_description"));
 				stock.setStockUsed(resultSet.getInt("stock_used"));
+				stock.setStockMarkup(resultSet.getInt("stock_markup"));
+				stock.setStockShipping(resultSet.getInt("stock_shipping"));
 			}
 			
 			//2. get all the serial numbers linked to this stock item...
@@ -531,14 +538,14 @@ public class StockDAO extends AbstractDAO {
 			statement.setInt(1, stockId);
 			
 			resultSet = statement.executeQuery(); 
+			StockImage stockImage = new StockImage();
 			
 			while (resultSet.next()) {
-				StockImage stockImage = new StockImage();
 				stockImage.setStockId(stockId);
 				stockImage.setStockImage(resultSet.getBytes("stock_image"));
 				
-				return stockImage;
 			}
+			return stockImage;
 		}
 		catch (Exception e) {
 			e.printStackTrace();

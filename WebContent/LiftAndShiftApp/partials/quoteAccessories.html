@@ -34,7 +34,7 @@
                         {{ accessory.accessoryCode }}
                     </td>
                     <td>
-                        {{ accessory.pricing }}
+                        {{ accessory.sellingPrice }}
                     </td>
                     <td>
                         <button class="btn" ng-click="getAvailableAccessoryForAccessoryId(accessory.accessoryId)">{{accessory.accessoryId}}</button>
@@ -88,7 +88,7 @@
                         {{ acc.code }}
                     </td>
                     <td>
-                        {{ acc.price }}
+                        {{ acc.sellingPrice }}
                     </td>
                     <td>
                         <button class="btn" ng-click="removeAccessory(acc)">-</button>

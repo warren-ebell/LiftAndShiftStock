@@ -20,6 +20,8 @@ create table las_stock.stock (
     pricing DOUBLE,
     technical_specs VARCHAR(1023),
     stock_used INT,
+    stock_markup INT,
+    stock_shipping INT,
     PRIMARY KEY (stock_id)
 );
 
@@ -42,6 +44,8 @@ create table las_stock.accessory (
     accessory_model VARCHAR(255),
     accessory_manufacturer VARCHAR(255),
     pricing DOUBLE,
+    accessory_markup INT,
+    accessory_shipping INT,
     PRIMARY KEY (accessory_id)
 );
 

@@ -14,23 +14,27 @@ public class AccessoryService {
 		return accessoryDAO.deleteAccessory(accessoryId);
 	}
 	
-	public int updateAccessoryItem(int accessoryId, double pricing, String accessoryManufacturer, String accessoryCode, String description, String model) {
+	public int updateAccessoryItem(int accessoryId, double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
 		Accessory accessory = new Accessory();
 		accessory.setAccessoryManufacturer(accessoryManufacturer);
 		accessory.setPricing(pricing);
 		accessory.setAccessoryCode(accessoryCode);
 		accessory.setAccessoryDescription(description);
 		accessory.setAccessoryModel(model);
+		accessory.setAccessoryMarkup(markup);
+		accessory.setAccessoryShipping(shipping);
 		return accessoryDAO.updateAccessory(accessoryId, accessory);
 	}
 	
-	public int createAccessoryItem(double pricing, String accessoryManufacturer, String accessoryCode, String description, String model) {
+	public int createAccessoryItem(double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
 		Accessory accessory = new Accessory();
 		accessory.setAccessoryManufacturer(accessoryManufacturer);
 		accessory.setPricing(pricing);
 		accessory.setAccessoryCode(accessoryCode);
 		accessory.setAccessoryDescription(description);
 		accessory.setAccessoryModel(model);
+		accessory.setAccessoryMarkup(markup);
+		accessory.setAccessoryShipping(shipping);
 		return accessoryDAO.insertAccessory(accessory);
 	}
 	

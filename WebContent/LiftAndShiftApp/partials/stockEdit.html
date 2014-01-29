@@ -65,6 +65,22 @@
             </tr>
             <tr>
                 <td>
+                    <label class="control-label" for="stock.stockMarkup">Stock Markup (%):</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.stockMarkup" type="text" ng-model="selectedStockItem.stockMarkup" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="stock.stockShipping">Stock Shipping (%):</label>
+                </td>
+                <td>
+                    <input class="input" id="stock.stockShipping" type="text" ng-model="selectedStockItem.stockShipping" ng-model-instant>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label class="control-label">Technical Specifications:</label>
                 </td>
                 <td>
@@ -81,7 +97,7 @@
                 <thead>
                 <tr>
                     <th>Location</th>
-                    <th>Price</th>
+                    <th>Price (EUR)</th>
                     <th>Remove</th>
                 </tr>
                 </thead>
@@ -110,7 +126,7 @@
                         <input class="input" id="location" type="text" ng-model="location" ng-model-instant>
                     </td>
                     <td>
-                        <label class="control-label" for="pricing">Price :</label>
+                        <label class="control-label" for="pricing">Price (EUR) :</label>
                     </td>
                     <td>
                         <input class="input" id="pricing" type="text" ng-model="pricing" ng-model-instant>
@@ -165,8 +181,8 @@
         </div>
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddSerialNumber()">Add Serial</button>
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddInstallLocation()">Add Install Location</button>
+        <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="uploadImageFile()">Upload Image</button>
         <button type="button" class="btn btn-default" ng-click="saveStockItem()">Save</button>
-        <button type="button" class="btn btn-default" ng-click="uploadImageFile()">Upload Image</button>
         <button ng-show="showDelete==1" type="button" class="btn btn-info" ng-click="delete()">Delete</button>
         <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>
     </div>

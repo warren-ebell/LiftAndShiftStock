@@ -77,10 +77,10 @@ public class DocumentService {
 		String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
 		
 		if (quote.getCompanyId() == 1) {
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V16_A.pdf");
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V17.pdf");
 		}
 		else {
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V16.pdf");
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V17.pdf");
 		}
 		
 		//System.out.println(formData);

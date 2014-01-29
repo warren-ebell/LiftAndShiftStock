@@ -14,6 +14,8 @@ public class Accessory {
 	private String accessoryManufacturer;
 	private double pricing;
 	private ArrayList<StockLevel> accessoryLevel;
+	private int accessoryMarkup;
+	private int accessoryShipping;
 	
 	private UtilityService utilityService = new UtilityService();
 	
@@ -59,15 +61,33 @@ public class Accessory {
 	public void setAccessoryModel(String accessoryModel) {
 		this.accessoryModel = accessoryModel;
 	}
+	public int getAccessoryMarkup() {
+		return accessoryMarkup;
+	}
+	public void setAccessoryMarkup(int accessoryMarkup) {
+		this.accessoryMarkup = accessoryMarkup;
+	}
+	public int getAccessoryShipping() {
+		return accessoryShipping;
+	}
+	public void setAccessoryShipping(int accessoryShipping) {
+		this.accessoryShipping = accessoryShipping;
+	}
 	
 	public String toJSONString() {
 		DecimalFormat df = new DecimalFormat("0.00");
+		double markup = 1.0 + (this.accessoryMarkup/100.0);
+		double shipping = 1.0 + (this.accessoryShipping/100.0);
+		String sellingPrice = df.format(this.pricing * markup * shipping);
 		String returnString = "{"
 				+ "'accessoryId':'"+this.accessoryId+"', "
 				+ "'accessoryCode':'"+this.accessoryCode+"', "
 				+ "'accessoryModel':'"+this.accessoryModel+"', "
 				+ "'accessoryDescription':'"+this.accessoryDescription+"', "
 				+ "'accessoryManufacturer':'"+this.accessoryManufacturer+"', "
+				+ "'accessoryMarkup':'"+this.accessoryMarkup+"', "
+				+ "'accessoryShipping':'"+this.accessoryShipping+"', "
+				+ "'sellingPrice':'"+sellingPrice+"', "
 				+ "'pricing':'"+df.format(this.pricing)+"', ";
 		if (this.accessoryLevel != null) {
 			returnString = returnString 
@@ -79,5 +99,4 @@ public class Accessory {
 		}
 		return returnString	+ "}";
 	}
-
 }
