@@ -150,7 +150,7 @@ public class QuoteServlet extends HttpServlet{
 			quote.setDelivery(delivery);
 			quote.setInstallation(installation);
 			
-			double factor = currencyService.converstionRateForEUR();
+			double factor = currencyService.converstionRateForEURFromECB();
 			
 			DecimalFormat df = new DecimalFormat("0.00");
 			

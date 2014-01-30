@@ -13,8 +13,8 @@ public abstract class AbstractDAO {
 		Connection conn = null;
 		try	{
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "password");
-			//conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "L@SmySQ1r00t");
+			//conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "password");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "L@SmySQ1r00t");
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();

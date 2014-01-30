@@ -66,7 +66,7 @@ public class TestServlet extends HttpServlet{
 		int quoteId = quoteService.createQuotation("1 Main Road somewhere", "Warren Ebell", "warren.ebell@gmail.com", "Warren Inc", "0114658907", stock, optional, "notes", "delivery", "installation", "warranty", "variation", "validity", "20130102",1,"", "");
 		System.err.println("Quote Service Test run complete...");*/
 		
-		double currency = currencyService.converstionRateForEUR();
+		double currency = currencyService.converstionRateForEURFromECB();
 		System.err.println(currency);
 	}
 

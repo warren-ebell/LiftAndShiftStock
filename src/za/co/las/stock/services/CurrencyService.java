@@ -35,6 +35,45 @@ public class CurrencyService {
 		}
 	}
 	
+	public double converstionRateForEURFromECB() {
+		try {
+			URL url = new URL("http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/xml");
+	 
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+	 
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+				(conn.getInputStream())));
+	 
+			String output = org.apache.commons.io.IOUtils.toString(br);
+
+			conn.disconnect();
+			return getDoubleRateFromECB(output);
+		}
+		catch (Exception e) {
+			return 1.0;
+		}
+	}
+	
+	private double getDoubleRateFromECB(String response) {
+		try {
+			int startIdx = response.indexOf("<Cube currency='ZAR' rate='");
+			int endIdx = response.indexOf("'/>", startIdx);
+			String exchanceRate = response.substring(startIdx + 27, endIdx);
+		
+			return Double.parseDouble(exchanceRate);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return 1.0;
+		}
+	}
+	
 	private double getDoubleRate(String response) {
 		try {
 			JSONParser parser = new JSONParser();
