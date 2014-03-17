@@ -13,9 +13,9 @@ public abstract class AbstractDAO {
 		Connection conn = null;
 		try	{
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "password");
+			//conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "password");
 			//PROD config
-			//conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "L@SmySQ1r00t");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/las_stock","root", "L@SmySQ1r00t");
 			//REMOTE DEBUG CONFIG
 			//conn = DriverManager.getConnection("jdbc:mysql://197.221.7.50:3306/las_stock","root", "L@SmySQ1r00t");
 		}
