@@ -44,6 +44,7 @@ create table las_stock.accessory (
     accessory_model VARCHAR(255),
     accessory_manufacturer VARCHAR(255),
     pricing DOUBLE,
+    currency VARCHAR(25),
     accessory_markup INT,
     accessory_shipping INT,
     PRIMARY KEY (accessory_id)

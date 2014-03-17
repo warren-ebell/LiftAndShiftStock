@@ -52,7 +52,7 @@ public class UtilityService {
 		return optionalExtras;
 	}
 	
-	public InstallationLocation convertInstallationLocationJSONStringWithPricingFactor(String jsonString, double factor) {
+	public InstallationLocation convertInstallationLocationJSONString(String jsonString) {
 		InstallationLocation location = new InstallationLocation();
 		try {
 			JSONParser parser = new JSONParser();
@@ -63,7 +63,7 @@ public class UtilityService {
 			
 			location.setLocation(loc);
 			
-			double pricing = Double.parseDouble(price) * factor;
+			double pricing = Double.parseDouble(price);
 			location.setPrice(pricing);
 			
 			return location;
@@ -85,10 +85,14 @@ public class UtilityService {
 				JSONObject jsonObj = (JSONObject)array.get(i);
 				System.out.println("serial=" + jsonObj.get("serial"));
 				System.out.println("code=" + jsonObj.get("code"));
-				System.out.println("price=" + jsonObj.get("price"));
+				System.out.println("sellingPrice=" + jsonObj.get("sellingPrice"));
 				System.out.println("accessoryId=" + jsonObj.get("accessoryId"));
+				System.out.println("currency=" + jsonObj.get("currency"));
 				
-				double pricing = (Double.parseDouble((String)jsonObj.get("price"))) * factor;
+				String currency = (String)jsonObj.get("currency");
+				double pricing = Double.parseDouble((String)jsonObj.get("sellingPrice"));
+				if (currency.equalsIgnoreCase("EUR"))
+					pricing = pricing * factor;
 				
 				TempAccessory tempAccessory = new TempAccessory();
 				tempAccessory.setAccessoryId(Integer.parseInt((String)jsonObj.get("accessoryId")));

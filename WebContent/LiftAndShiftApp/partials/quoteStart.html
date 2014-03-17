@@ -14,6 +14,14 @@
                     <select ng-model="selectedCompany" ng-options="comp.companyName for comp in companies"></select>
                 </td>
             </tr>
+            <tr ng-show="showAdmin==1">
+                <td>
+                    Quotation From :
+                </td>
+                <td>
+                    <select ng-model="selectedUser" ng-options="user.displayName for user in userList"></select>
+                </td>
+            </tr>
             <tr>
                 <td>
                     Show the line item prices :
@@ -104,7 +112,7 @@
                         {{ stockLevel.status }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="selectSerialForQuote(stockLevel.serialNumber, stock.stockId)">+</button>
+                        <button class="btn" ng-click="selectSerialForQuote(stockLevel.serialNumber, stock.stockId)">Select</button>
                     </td>
                 </tr>
                 </tbody>

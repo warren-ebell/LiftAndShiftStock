@@ -235,7 +235,7 @@ public class StockDAO extends AbstractDAO {
 			//2. get all the serial numbers linked to this stock item...
 			String sql = "";
 			if (available) {
-				sql = "select serial_number, stock_status from las_stock.stock_level where stock_id = ? and stock_status = 0";
+				sql = "select serial_number, stock_status from las_stock.stock_level where stock_id = ? and stock_status in (0,1)";
 			}
 			else {
 				sql = "select serial_number, stock_status from las_stock.stock_level where stock_id = ?";
@@ -460,6 +460,50 @@ public class StockDAO extends AbstractDAO {
 		return reportStockItems;
 	}
 	
+	public ArrayList<ReportStock> getAllSoldStockForReport() {
+		Connection connection = getConnection();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<ReportStock> reportStockItems = new ArrayList<ReportStock>();
+		
+		try {
+			statement = connection.prepareStatement("select st.stock_id, st.stock_code, st.stock_manufacturer, st.stock_model, st.stock_series, st.stock_used, sl.serial_number "
+					+ "from"
+					+ " las_stock.stock st, "
+					+ " las_stock.stock_level sl "
+					+ "where "
+					+ " sl.stock_id = st.stock_id "
+					+ "and "
+					+ " sl.stock_status = 3 "
+					+ "order by "
+					+ " st.stock_manufacturer, st.stock_model;");
+			
+			resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				ReportStock report = new ReportStock();
+				report.setStockId(resultSet.getInt("stock_id"));
+				report.setSerialNumber(resultSet.getString("serial_number"));
+				report.setStockCode(resultSet.getString("stock_code"));
+				report.setStockManufacturer(resultSet.getString("stock_manufacturer"));
+				report.setStockModel(resultSet.getString("stock_model"));
+				report.setStockSeries(resultSet.getString("stock_series"));
+				report.setStockUsed(resultSet.getInt("stock_used"));
+
+				reportStockItems.add(report);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeResultSet(resultSet);
+			closeStatement(statement);
+			closeConnection(connection);
+		}
+		return reportStockItems;
+	}
+	
 	public ArrayList<ReportAllStock> getAllStockForReport() {
 		Connection connection = getConnection();
 		PreparedStatement statement = null;
@@ -472,7 +516,9 @@ public class StockDAO extends AbstractDAO {
 													"    las_stock.stock st, "+ 
 													"	las_stock.stock_level sl "+ 
 													"where  "+
-													"	sl.stock_id = st.stock_id "+  
+													"	sl.stock_id = st.stock_id "+
+													"and "+ 
+													" sl.stock_status in (0,1) " +
 													"order by  "+
 													"	st.stock_manufacturer, st.stock_model;");
 			

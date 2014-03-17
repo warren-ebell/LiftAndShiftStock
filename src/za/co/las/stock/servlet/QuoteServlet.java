@@ -163,7 +163,11 @@ public class QuoteServlet extends HttpServlet{
 			stockItemIds.add(stockId);
 			
 			ArrayList<TempAccessory> tempAccList = utilityService.convertAccessoryJSONStringToListWithPricingFactor(accessories, newRate);
-			InstallationLocation location = utilityService.convertInstallationLocationJSONStringWithPricingFactor(installationLocation, newRate);
+			
+			InstallationLocation location = null;
+			if (installationLocation != null) {
+				location = utilityService.convertInstallationLocationJSONString(installationLocation);
+			}
 			
 			outputMessage = outputMessage + "{'quoteId':'"+quotationService.createQuotation(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber, stockItemIds, tempAccList, quote.getNotes(), quote.getDelivery(), quote.getInstallation(), quote.getWarranty(), quote.getVariation(), quote.getValidity(), sdf.format(date), userId, serialNumber, pricing, rate, location, companyId, customerId, showItemPrices, quote.getUsedItem())+"'}";
 			outputMessage = outputMessage + ");";
@@ -172,10 +176,10 @@ public class QuoteServlet extends HttpServlet{
 			int quotationId = Integer.parseInt(req.getParameter("quotationId"));
 			Quotation quote = quotationService.getQuotation(quotationId);
 			User user = userService.getUserForId(quote.getUserId());
-			StockImage stockImage = stockService.getStockImageForStockId(quote.getQuotationLineItems().get(0).getStockId());
-			byte[] documentBytes = documentService.getQuoteFromQuoteUserAndStockImage(quote, user, stockImage);
+			//StockImage stockImage = stockService.getStockImageForStockId(quote.getQuotationLineItems().get(0).getStockId());
+			byte[] documentBytes = documentService.getQuoteFromQuoteUserAndStockImage(quote, user);
 			String bodyText = "<p>Dear "+quote.getCustomer().getAttention()+"</p>"+
-				"<p>Please find attached the quotation requested. Click this link to accept the quote (<a href='"+StockConstants.SERVER_URL+"/LiftAndShiftStock/quote?serverMethod=acceptQuoteEmail&quotationId="+quotationId+"'>Accept Quote</a>), or comntact the sales team.</p>"+
+				"<p>Please find attached the quotation requested. Please comntact the sales team to accept this quote.</p>"+
 				"<p>Please do not reply to the email address this mail comes from, but rather the email address below.</p>"+
 				"<br/>"+
 				"Kind Regards<br/>"+

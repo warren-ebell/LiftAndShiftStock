@@ -55,7 +55,8 @@ public class MailService {
 			msgBodyPart.setContent(bodyText, "text/html; charset=utf-8");            
 			
 			Multipart multipart = new MimeMultipart();
-			if (attachment.length > 0) {
+			if (attachment != null && 
+				attachment.length > 0) {
 				MimeBodyPart mbp = new MimeBodyPart();
 	            mbp.setFileName("AttachedQuote.pdf");
 	            

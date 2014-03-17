@@ -21,5 +21,6 @@ angular.module('liftandshift', ['ngRoute', 'liftandshift.filters', 'liftandshift
     $routeProvider.when('/defaults', {templateUrl: 'partials/defaults.html', controller: DefaultsCtrl});
     $routeProvider.when('/stockListAll', {templateUrl: 'partials/stockListAll.html', controller: StockListAllCtrl});
     $routeProvider.when('/stockList', {templateUrl: 'partials/stockList.html', controller: StockListCtrl});
+    $routeProvider.when('/stockListSold', {templateUrl: 'partials/stockListSold.html', controller: StockListSoldCtrl});
     $routeProvider.otherwise({redirectTo: '/login'});
   }]);

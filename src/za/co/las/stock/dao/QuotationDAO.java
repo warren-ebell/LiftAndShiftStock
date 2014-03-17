@@ -105,8 +105,14 @@ public class QuotationDAO extends AbstractDAO {
 			statement1.setInt(9, userId);
 			statement1.setString(10, status);
 			statement1.setString(11, rate);
-			statement1.setString(12, location.getLocation());
-			statement1.setDouble(13, location.getPrice());
+			if (location != null) {
+				statement1.setString(12, location.getLocation());
+				statement1.setDouble(13, location.getPrice());
+			}
+			else {
+				statement1.setString(12, "");
+				statement1.setDouble(13, 0);
+			}
 			statement1.setInt(14, companyId);
 			statement1.setString(15, showItemPrices);
 			statement1.setInt(16, usedItem);
@@ -321,7 +327,8 @@ public class QuotationDAO extends AbstractDAO {
 				double locationPrice = resultSet.getDouble("installation_price");
 				
 				//might need to do some null or blank checking...
-				if (locationStr.length() > 0) {
+				if ((locationStr != null) &&
+					(locationStr.length() > 0)) {
 					location.setLocation(locationStr);
 					location.setPrice(locationPrice);
 					

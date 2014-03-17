@@ -47,7 +47,7 @@ public class AccessoryServlet extends HttpServlet{
 			outputMessage = outputMessage + (accessoryService.getAccessoryItemForAccessoryId(Integer.parseInt(accessoryId)).toJSONString());
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.GET_AVAILABLE_ACCESSORY_FOR_ACCESSORY_ID)) {
-			outputMessage = outputMessage + (accessoryService.getAvailableStockItemForStockId(Integer.parseInt(accessoryId)).toJSONString());
+			outputMessage = outputMessage + (accessoryService.getAvailableAccessoryItemForAccessoryId(Integer.parseInt(accessoryId)).toJSONString());
 		}
 		if (serverMethod.equalsIgnoreCase(StockConstants.ADD_SERIAL_NUMBER)) {
 			String serialNumber = req.getParameter("serialNumber");
@@ -67,12 +67,13 @@ public class AccessoryServlet extends HttpServlet{
 			String model = req.getParameter("accessoryModel");
 			String markup = req.getParameter("accessoryMarkup");
 			String shipping = req.getParameter("accessoryShipping");
+			String currency = req.getParameter("currency");
 			int result = 0;
 			if (accessoryId == null) {		
-				result = accessoryService.createAccessoryItem(Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
+				result = accessoryService.createAccessoryItem(currency, Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
 			}
 			else {
-				result = accessoryService.updateAccessoryItem(Integer.parseInt(accessoryId), Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
+				result = accessoryService.updateAccessoryItem(Integer.parseInt(accessoryId), currency, Double.parseDouble(pricing), accessoryManufacturer, accessoryCode, description, model, Integer.parseInt(markup), Integer.parseInt(shipping));
 			}		
 			
 			if (result == 1)

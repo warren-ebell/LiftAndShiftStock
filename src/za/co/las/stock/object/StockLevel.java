@@ -19,10 +19,8 @@ public class StockLevel {
 	
 	public String toJSONString() {
 		String statusString = "";
-		if (this.status == 0)
+		if (this.status == 0 || this.status == 1)
 			statusString = "Available";
-		if (this.status == 1)
-			statusString = "On quote";
 		if (this.status == 2)
 			statusString = "Unavailable";
 		if (this.status == 3)

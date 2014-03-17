@@ -22,6 +22,10 @@ public class StockService {
 		return stockDAO.getAllAvailableStockForReport();
 	}
 	
+	public ArrayList<ReportStock> getAllSoldStockForReport() {
+		return stockDAO.getAllSoldStockForReport();
+	}
+	
 	public ArrayList<ReportAllStock> getAllStockForReport() {
 		return stockDAO.getAllStockForReport();
 	}

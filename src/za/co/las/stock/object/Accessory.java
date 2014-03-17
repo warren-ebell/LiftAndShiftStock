@@ -8,6 +8,7 @@ import za.co.las.stock.services.UtilityService;
 public class Accessory {
 	
 	private int accessoryId;
+	private String accessoryCurrency;
 	private String accessoryCode;
 	private String accessoryModel;
 	private String accessoryDescription;
@@ -24,6 +25,12 @@ public class Accessory {
 	}
 	public void setAccessoryId(int accessoryId) {
 		this.accessoryId = accessoryId;
+	}
+	public String getAccessoryCurrency() {
+		return this.accessoryCurrency;
+	}
+	public void setAccessoryCurrency(String accessoryCurrency) {
+		this.accessoryCurrency = accessoryCurrency;
 	}
 	public String getAccessoryCode() {
 		return accessoryCode;
@@ -87,6 +94,7 @@ public class Accessory {
 				+ "'accessoryManufacturer':'"+this.accessoryManufacturer+"', "
 				+ "'accessoryMarkup':'"+this.accessoryMarkup+"', "
 				+ "'accessoryShipping':'"+this.accessoryShipping+"', "
+				+ "'accessoryCurrency':'"+this.accessoryCurrency+"', "
 				+ "'sellingPrice':'"+sellingPrice+"', "
 				+ "'pricing':'"+df.format(this.pricing)+"', ";
 		if (this.accessoryLevel != null) {

@@ -14,9 +14,10 @@ public class AccessoryService {
 		return accessoryDAO.deleteAccessory(accessoryId);
 	}
 	
-	public int updateAccessoryItem(int accessoryId, double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
+	public int updateAccessoryItem(int accessoryId, String currency, double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
 		Accessory accessory = new Accessory();
 		accessory.setAccessoryManufacturer(accessoryManufacturer);
+		accessory.setAccessoryCurrency(currency);
 		accessory.setPricing(pricing);
 		accessory.setAccessoryCode(accessoryCode);
 		accessory.setAccessoryDescription(description);
@@ -26,10 +27,11 @@ public class AccessoryService {
 		return accessoryDAO.updateAccessory(accessoryId, accessory);
 	}
 	
-	public int createAccessoryItem(double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
+	public int createAccessoryItem(String currency, double pricing, String accessoryManufacturer, String accessoryCode, String description, String model, int markup, int shipping) {
 		Accessory accessory = new Accessory();
 		accessory.setAccessoryManufacturer(accessoryManufacturer);
 		accessory.setPricing(pricing);
+		accessory.setAccessoryCurrency(currency);
 		accessory.setAccessoryCode(accessoryCode);
 		accessory.setAccessoryDescription(description);
 		accessory.setAccessoryModel(model);
@@ -42,7 +44,7 @@ public class AccessoryService {
 		return accessoryDAO.getAccessoryItemForAccessoryId(accessoryId, false);
 	}
 	
-	public Accessory getAvailableStockItemForStockId(int accessoryId) {
+	public Accessory getAvailableAccessoryItemForAccessoryId(int accessoryId) {
 		return accessoryDAO.getAccessoryItemForAccessoryId(accessoryId, true);
 	}
 	

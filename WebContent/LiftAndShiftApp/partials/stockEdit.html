@@ -97,7 +97,7 @@
                 <thead>
                 <tr>
                     <th>Location</th>
-                    <th>Price (EUR)</th>
+                    <th>Price (ZAR)</th>
                     <th>Remove</th>
                 </tr>
                 </thead>
@@ -110,7 +110,7 @@
                         {{ location.price }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="removeLocation(location.location, location.price)">X</button>
+                        <button class="btn" ng-click="removeLocation(location.location, location.price)">Remove</button>
                     </td>
                 </tr>
                 </tbody>
@@ -126,13 +126,13 @@
                         <input class="input" id="location" type="text" ng-model="location" ng-model-instant>
                     </td>
                     <td>
-                        <label class="control-label" for="pricing">Price (EUR) :</label>
+                        <label class="control-label" for="pricing">Price (ZAR) :</label>
                     </td>
                     <td>
                         <input class="input" id="pricing" type="text" ng-model="pricing" ng-model-instant>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-default" ng-click="addInstallLocation()">+</button>
+                        <button type="button" class="btn btn-default" ng-click="addInstallLocation()">Add</button>
                     </td>
                 </tr>
             </table>
@@ -157,7 +157,7 @@
                         {{ stockLevel.status }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="removeSerialNumber(stockLevel.serialNumber, stockLevel.status)">X</button>
+                        <button class="btn" ng-click="removeSerialNumber(stockLevel.serialNumber, stockLevel.status)">Remove</button>
                     </td>
                 </tr>
                 </tbody>
@@ -172,7 +172,7 @@
                             <input class="input" id="serialNumber" type="text" ng-model="serialNumber" ng-model-instant>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">+</button>
+                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">Add</button>
                         </td>
                     </tr>
                 </table>
@@ -181,9 +181,9 @@
         </div>
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddSerialNumber()">Add Serial</button>
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddInstallLocation()">Add Install Location</button>
-        <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="uploadImageFile()">Upload Image</button>
+        <!--button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="uploadImageFile()">Upload Image</button-->
         <button type="button" class="btn btn-default" ng-click="saveStockItem()">Save</button>
         <button ng-show="showDelete==1" type="button" class="btn btn-info" ng-click="delete()">Delete</button>
-        <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>
+        <button type="button" class="btn btn-danger" ng-click="cancel()">Back</button>
     </div>
 </div>

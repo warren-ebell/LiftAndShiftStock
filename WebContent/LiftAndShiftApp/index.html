@@ -53,11 +53,19 @@
                                 <!--li><a href="#/reports"><i class="glyphicon glyphicon-folder-close"></i> Reports</a></li-->
                             </ul>
                         </li>
-                        <li ng-class="{ active: isActive('/stockList')}" ng-hide="showAdmin==1" ng-show="showAdmin==0">
-                            <a href="#/stockList"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
-                        </li>
-                        <li ng-class="{ active: isActive('/stockListAll')}" ng-hide="showAdmin==0" ng-show="showAdmin==1">
-                            <a href="#/stockListAll"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> Reports<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-hide="showAdmin==1" ng-show="showAdmin==0">
+                                    <a href="#/stockList"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
+                                </li>
+                                <li ng-hide="showAdmin==0" ng-show="showAdmin==1">
+                                    <a href="#/stockListAll"><i class="glyphicon glyphicon-stats"></i> Stock List</a>
+                                </li>
+                                <li>
+                                    <a href="#/stockListSold"><i class="glyphicon glyphicon-usd"></i> Sold Stock</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

@@ -3,6 +3,7 @@ package za.co.las.stock.services;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,7 +32,7 @@ public class DocumentService {
 		InputStream formInputStream = null;
 		InputStream savedPDFStream = null;
 		try {
-			String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
+			String formData = buildXMLDataForForm(quote, user);
 			
 			//get the source XML stream from the template...
 			if (quote.getCompanyId() == 1) {
@@ -70,17 +71,17 @@ public class DocumentService {
 		return documentBytes;
 	}
 	
-	public byte[] getQuoteFromQuoteUserAndStockImage(Quotation quote, User user, StockImage stockImage) {
+	public byte[] getQuoteFromQuoteUserAndStockImage(Quotation quote, User user) {
 		byte[] documentBytes = null;
 		InputStream quotationPDFInput = null;
 		
-		String formData = buildXMLDataForForm(quote, user, getBase64StringFromImageForHTML(stockImage.getStockImage()));
+		String formData = buildXMLDataForForm(quote, user);
 		
 		if (quote.getCompanyId() == 1) {
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V17.pdf");
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/LiftAndShiftQuotationForm_V18.pdf");
 		}
 		else {
-			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V17.pdf");
+			quotationPDFInput = DocumentService.class.getResourceAsStream("../../../../../pdf/BowmanCranesQuotationForm_V18.pdf");
 		}
 		
 		//System.out.println(formData);
@@ -103,7 +104,7 @@ public class DocumentService {
 		return documentBytes;
 	}
 	
-	private String buildXMLDataForForm(Quotation quote, User user, String base64Image) {
+	private String buildXMLDataForForm(Quotation quote, User user) {
 		String formData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
 						"<form1>"+
 						    "<subQuoteHeader>"+
@@ -124,11 +125,6 @@ public class DocumentService {
 						    "    <txtOffer>"+
 						    quote.getQuotationLineItems().get(0).getStockDescription()+
 						    "    </txtOffer>"+
-						    "    <subImage>"+
-						    "        <imgStock content-encoding=\"base64\" content-type=\"image/jpeg\" filename=\"pic.jpg\">"+
-						    base64Image+
-						    "        </imgStock>"+
-						    " 	 </subImage>"+
 						    "    <txtTechnicalSpecs>"+
 						    "        <body xmlns=\"http://www.w3.org/1999/xhtml\">"+
 						    quote.getQuotationLineItems().get(0).getTechnicalSpecs()+
@@ -196,7 +192,8 @@ public class DocumentService {
 	}
 	
 	private String buildQuotationItemsSection(ArrayList<Stock> stockItems, ArrayList<Accessory> accessoryItems, InstallationLocation location) {
-		long subTotalAmount = 0;
+		DecimalFormat df = new DecimalFormat("0.00");
+		double subTotalAmount = 0;
 		double vatAmount = 0;
 		String stockLineItems = "<subQuotationDetails>"+
 						    "    <subHeading/>"+
@@ -211,7 +208,8 @@ public class DocumentService {
 			subTotalAmount += s.getPricing();
 		}
 		
-		if (location.getLocation().length() > 0) {
+		if (location != null &&
+			location.getLocation().length() > 0) {
 			stockLineItems +="        <subLineItem>"+
 						     "            <txtLineItemDescription>Installation - "+location.getLocation()+"</txtLineItemDescription>"+
 						     "            <txtLineItemAmount>"+location.getPrice()+"</txtLineItemAmount>"+
@@ -228,10 +226,10 @@ public class DocumentService {
 		
 		//add the line items for the optional extras...
 		
-		String subTotalAmountStr = new Long(subTotalAmount).toString();
+		String subTotalAmountStr = new Double(subTotalAmount).toString();
 		vatAmount = subTotalAmount * 0.14;
-		String vatAmountStr = new Double(vatAmount).toString();
-		String totalAmountStr = new Double(subTotalAmount + vatAmount).toString();
+		String vatAmountStr = df.format(vatAmount);
+		String totalAmountStr = df.format(subTotalAmount + vatAmount);
 		
 		stockLineItems +=   "    </subTable>"+
 						    "    <subSubTotal>"+

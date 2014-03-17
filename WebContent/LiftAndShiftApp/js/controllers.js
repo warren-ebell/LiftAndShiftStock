@@ -77,7 +77,7 @@ function LoginCtrl($scope, AuthenticationService) {
     };
 }
 
-function QuoteCtrl($scope, StockService) {
+function QuoteCtrl($scope, StockService, UserService) {
     $scope.companies = [{companyName:'Lift and Shift', companyId:1},{companyName:'Bowman Cranes', companyId:2}];
     $scope.showItemPriceOptions = [{label:'Show line item Prices', option:'0'}, {label:'Hide line item prices', option:'1'}];
     $scope.showSerial = 0;
@@ -87,6 +87,15 @@ function QuoteCtrl($scope, StockService) {
         },
         function(error) {
             alert('Error getting stock manufacturers');
+        }
+    );
+    UserService.getAllUsers({userId: '',serverMethod: 'getAllUsers'},
+        function(result) {
+            var userList = result;
+            $scope.userList = userList;
+        },
+        function(error) {
+            alert('Error retrieving user list');
         }
     );
     $scope.getModelsForManufacturer = function() {
@@ -138,6 +147,7 @@ function QuoteCtrl($scope, StockService) {
     $scope.selectSerialForQuote = function(serialNumber, stockId) {
         DataManager.getInstance().selectedSerialNumber = serialNumber;
         DataManager.getInstance().selectedCompany = $scope.selectedCompany;
+        DataManager.getInstance().selectedUser = $scope.selectedUser;
         DataManager.getInstance().showItemPrices = $scope.selectedShowOption.option;
         $scope.setRoute('/quoteAccessories');
     };
@@ -184,6 +194,7 @@ function QuoteAccessoriesCtrl($scope, AccessoryService) {
                     availableAcc.serial = acc.serialNumber;
                     availableAcc.code = $scope.selectedAccessoryItem.accessoryCode;
                     availableAcc.price = $scope.selectedAccessoryItem.pricing;
+                    availableAcc.currency = $scope.selectedAccessoryItem.accessoryCurrency;
                     availableAcc.sellingPrice = $scope.selectedAccessoryItem.sellingPrice;
                     availableAcc.accessoryId = $scope.selectedAccessoryItem.accessoryId;
                     availableAcc.status = acc.status;
@@ -248,7 +259,13 @@ function QuoteNotesCtrl($scope, QuoteService) {
     $scope.saveQuote = function() {
         var stockId = DataManager.getInstance().selectedStockItem.stockId;
         var usedItem = DataManager.getInstance().selectedStockItem.stockUsed;
-        var userId = DataManager.getInstance().user.userId;
+        var userId;
+        if (!DataManager.getInstance().selectedUser) {
+           userId = DataManager.getInstance().user.userId;
+        }
+        else {
+            userId = DataManager.getInstance().selectedUser.userId;
+        }
         var accessories = DataManager.getInstance().selectedAccessories;
         var installLocation = DataManager.getInstance().selectedInstallLocation;
         var showItemPrices = DataManager.getInstance().showItemPrices;
@@ -920,16 +937,27 @@ function AccessoryCtrl($scope, AccessoryService) {
 function AccessoryEditCtrl($scope, AccessoryService) {
     $scope.showAddSerial = 0;
     $scope.showSerialSection = 0;
+    $scope.currencies = [{currencyCode:'ZAR', id:'0'},{currencyCode:'EUR', id:'1'}];
     if (DataManager.getInstance().selectedAccessoryItem) {
         $scope.selectedAccessoryItem = DataManager.getInstance().selectedAccessoryItem;
         $scope.showDelete = 1;
         $scope.showSerialSection = 1;
+        var tempCurr = {};
+        tempCurr.currencyCode = $scope.selectedAccessoryItem.accessoryCurrency;
+        if (tempCurr.currencyCode === 'ZAR') {
+            tempCurr.id = '0';
+        }
+        else {
+            tempCurr.id = '1';
+        }
+        $scope.initCurrency = tempCurr;
+        $scope.selectedCurrency = tempCurr;
     }
     else
         $scope.showDelete = 0;
     $scope.saveAccessoryItem = function() {
         var stockCode = $scope.selectedAccessoryItem.accessoryManufacturer+"-"+$scope.selectedAccessoryItem.accessoryModel;
-        AccessoryService.saveAccessoryItem({serverMethod:'saveAccessoryItem', accessoryId:$scope.selectedAccessoryItem.accessoryId, accessoryManufacturer:$scope.selectedAccessoryItem.accessoryManufacturer, accessoryModel:$scope.selectedAccessoryItem.accessoryModel, pricing:$scope.selectedAccessoryItem.pricing, accessoryCode:stockCode, description:$scope.selectedAccessoryItem.accessoryDescription, accessoryMarkup:$scope.selectedAccessoryItem.accessoryMarkup, accessoryShipping:$scope.selectedAccessoryItem.accessoryShipping},
+        AccessoryService.saveAccessoryItem({serverMethod:'saveAccessoryItem', accessoryId:$scope.selectedAccessoryItem.accessoryId, accessoryManufacturer:$scope.selectedAccessoryItem.accessoryManufacturer, accessoryModel:$scope.selectedAccessoryItem.accessoryModel, currency:$scope.selectedCurrency, pricing:$scope.selectedAccessoryItem.pricing, accessoryCode:stockCode, description:$scope.selectedAccessoryItem.accessoryDescription, accessoryMarkup:$scope.selectedAccessoryItem.accessoryMarkup, accessoryShipping:$scope.selectedAccessoryItem.accessoryShipping},
             function(result) {
                 var serverResult = result;
                 if (serverResult.result === '1') {
@@ -1055,6 +1083,18 @@ function StockListAllCtrl($scope, ReportService) {
 function StockListCtrl($scope, ReportService) {
     $scope.exportAllAvailableStockForReport = DataManager.getInstance().serverURL+'/report?serverMethod=exportAllAvailableStockForReport';
     ReportService.getAllAvailableStockForReport({serverMethod:'getAllAvailableStockForReport'},
+        function(result) {
+            $scope.reportStock = result;
+        },
+        function(error) {
+            alert('Error retrieving stock items for report.')
+        }
+    );
+}
+
+function StockListSoldCtrl($scope, ReportService) {
+    $scope.exportAllAvailableStockForReport = DataManager.getInstance().serverURL+'/report?serverMethod=exportAllSoldStockForReport';
+    ReportService.getAllSoldStockForReport({serverMethod:'getAllSoldStockForReport'},
         function(result) {
             $scope.reportStock = result;
         },

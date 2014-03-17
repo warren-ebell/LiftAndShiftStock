@@ -21,7 +21,7 @@
                 <tr>
                     <th>Model</th>
                     <th>Accessory Code</th>
-                    <th>Price (EUR)</th>
+                    <th>Price</th>
                     <th>Select</th>
                 </tr>
                 </thead>
@@ -34,7 +34,7 @@
                         {{ accessory.accessoryCode }}
                     </td>
                     <td>
-                        {{ accessory.sellingPrice }}
+                        {{ accessory.sellingPrice }} - {{ accessory.accessoryCurrency }}
                     </td>
                     <td>
                         <button class="btn" ng-click="getAvailableAccessoryForAccessoryId(accessory.accessoryId)">{{accessory.accessoryId}}</button>
@@ -62,7 +62,7 @@
                         {{ accessory.status }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="selectAccessorySerialForQuote(accessory)">+</button>
+                        <button class="btn" ng-click="selectAccessorySerialForQuote(accessory)">Select</button>
                     </td>
                 </tr>
                 </tbody>
@@ -75,7 +75,7 @@
                 <tr>
                     <th>Serial Number</th>
                     <th>Code</th>
-                    <th>Price (EUR)</th>
+                    <th>Price</th>
                     <th>Remove</th>
                 </tr>
                 </thead>
@@ -88,10 +88,10 @@
                         {{ acc.code }}
                     </td>
                     <td>
-                        {{ acc.sellingPrice }}
+                        {{ acc.sellingPrice }} - {{ acc.currency}}
                     </td>
                     <td>
-                        <button class="btn" ng-click="removeAccessory(acc)">-</button>
+                        <button class="btn" ng-click="removeAccessory(acc)">Remove</button>
                     </td>
                 </tr>
                 </tbody>

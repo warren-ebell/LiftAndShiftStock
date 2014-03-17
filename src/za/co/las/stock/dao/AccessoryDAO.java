@@ -18,16 +18,17 @@ public class AccessoryDAO extends AbstractDAO {
 		
 		try {
 			//1. update the accessory table...
-			statement = connection.prepareStatement("update las_stock.accessory set accessory_code = ?, accessory_manufacturer = ?, pricing = ?, accessory_description = ?, accessory_model = ?, accessory_markup = ?, accessory_shipping = ? where accessory_id = ?");
+			statement = connection.prepareStatement("update las_stock.accessory set accessory_code = ?, accessory_manufacturer = ?, currency = ?, pricing = ?, accessory_description = ?, accessory_model = ?, accessory_markup = ?, accessory_shipping = ? where accessory_id = ?");
 			
 			statement.setString(1, newAccessory.getAccessoryCode());
 			statement.setString(2, newAccessory.getAccessoryManufacturer());
-			statement.setDouble(3, newAccessory.getPricing());
-			statement.setString(4,  newAccessory.getAccessoryDescription());
-			statement.setString(5, newAccessory.getAccessoryModel());
-			statement.setInt(6, newAccessory.getAccessoryMarkup());
-			statement.setInt(7, newAccessory.getAccessoryShipping());
-			statement.setInt(8, accessoryId);
+			statement.setString(3, newAccessory.getAccessoryCurrency());
+			statement.setDouble(4, newAccessory.getPricing());
+			statement.setString(5,  newAccessory.getAccessoryDescription());
+			statement.setString(6, newAccessory.getAccessoryModel());
+			statement.setInt(7, newAccessory.getAccessoryMarkup());
+			statement.setInt(8, newAccessory.getAccessoryShipping());
+			statement.setInt(9, accessoryId);
 			
 			int result = statement.executeUpdate();
 			
@@ -48,15 +49,16 @@ public class AccessoryDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("insert into las_stock.accessory (accessory_code, accessory_manufacturer, pricing, accessory_description, accessory_model, accessory_markup, accessory_shipping) values (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement("insert into las_stock.accessory (accessory_code, accessory_manufacturer, currency, pricing, accessory_description, accessory_model, accessory_markup, accessory_shipping) values (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			statement.setString(1, newAccessory.getAccessoryCode());
 			statement.setString(2, newAccessory.getAccessoryManufacturer());
-			statement.setDouble(3, newAccessory.getPricing());
-			statement.setString(4, newAccessory.getAccessoryDescription());
-			statement.setString(5, newAccessory.getAccessoryModel());
-			statement.setInt(6, newAccessory.getAccessoryMarkup());
-			statement.setInt(7, newAccessory.getAccessoryShipping());
+			statement.setString(3, newAccessory.getAccessoryCurrency());
+			statement.setDouble(4, newAccessory.getPricing());
+			statement.setString(5, newAccessory.getAccessoryDescription());
+			statement.setString(6, newAccessory.getAccessoryModel());
+			statement.setInt(7, newAccessory.getAccessoryMarkup());
+			statement.setInt(8, newAccessory.getAccessoryShipping());
 			
 			int result = statement.executeUpdate();			
 			
@@ -129,7 +131,7 @@ public class AccessoryDAO extends AbstractDAO {
 		ArrayList<Accessory> accessoryItems = new ArrayList<Accessory>();
 		
 		try {
-			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_manufacturer = ? ");
+			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.currency, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_manufacturer = ? ");
 			
 			statement.setString(1, manufacturer);
 			
@@ -138,6 +140,7 @@ public class AccessoryDAO extends AbstractDAO {
 			while (resultSet.next()) {
 				Accessory accessory = new Accessory();
 				accessory.setPricing(resultSet.getDouble("pricing"));
+				accessory.setAccessoryCurrency(resultSet.getString("currency"));
 				accessory.setAccessoryManufacturer(resultSet.getString("accessory_manufacturer"));
 				accessory.setAccessoryCode(resultSet.getString("accessory_code"));
 				accessory.setAccessoryId(resultSet.getInt("accessory_id"));
@@ -170,7 +173,7 @@ public class AccessoryDAO extends AbstractDAO {
 		
 		try {
 			//1. get the stock item...
-			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_id = ?");
+			statement = connection.prepareStatement("select a.accessory_id, a.accessory_code, a.accessory_manufacturer, a.currency, a.pricing, a.accessory_description, a.accessory_model, a.accessory_markup, a.accessory_shipping from las_stock.accessory a where a.accessory_id = ?");
 			
 			statement.setInt(1, accessoryId);
 			resultSet = statement.executeQuery();
@@ -179,6 +182,7 @@ public class AccessoryDAO extends AbstractDAO {
 				accessory = new Accessory();
 				accessory.setPricing(resultSet.getDouble("pricing"));
 				accessory.setAccessoryManufacturer(resultSet.getString("accessory_manufacturer"));
+				accessory.setAccessoryCurrency(resultSet.getString("currency"));
 				accessory.setAccessoryCode(resultSet.getString("accessory_code"));
 				accessory.setAccessoryId(resultSet.getInt("accessory_id"));
 				accessory.setAccessoryDescription(resultSet.getString("accessory_description"));
@@ -190,7 +194,7 @@ public class AccessoryDAO extends AbstractDAO {
 			//2. get all the serial numbers linked to this stock item...
 			String sql = "";
 			if (available) {
-				sql = "select serial_number, accessory_status from las_stock.accessory_level where accessory_id = ? and accessory_status = 0";
+				sql = "select serial_number, accessory_status from las_stock.accessory_level where accessory_id = ? and accessory_status in (0,1)";
 			}
 			else {
 				sql = "select serial_number, accessory_status from las_stock.accessory_level where accessory_id = ?";

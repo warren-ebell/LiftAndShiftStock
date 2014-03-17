@@ -24,7 +24,15 @@
             </tr>
             <tr>
                 <td>
-                    <label class="control-label" for="accessory.pricing">Pricing (EUR):</label>
+                    <label class="control-label" for="accessory.model">Currency :</label>
+                </td>
+                <td>
+                    <select ng-model="selectedCurrency" ng-options="curr.currencyCode as curr.currencyCode for curr in currencies" ng-init="selectedCurrency = initCurrency.currencyCode"></select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-label" for="accessory.pricing">Pricing:</label>
                 </td>
                 <td>
                     <input class="input" id="accessory.pricing" type="text" ng-model="selectedAccessoryItem.pricing" ng-model-instant>
@@ -74,7 +82,7 @@
                         {{ stockLevel.status }}
                     </td>
                     <td>
-                        <button class="btn" ng-click="removeSerialNumber(stockLevel.serialNumber, stockLevel.status)">X</button>
+                        <button class="btn" ng-click="removeSerialNumber(stockLevel.serialNumber, stockLevel.status)">Remove</button>
                     </td>
                 </tr>
                 </tbody>
@@ -89,7 +97,7 @@
                             <input class="input" id="serialNumber" type="text" ng-model="serialNumber" ng-model-instant>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">+</button>
+                            <button type="button" class="btn btn-default" ng-click="addSerialNumber(serialNumber)">Add</button>
                         </td>
                     </tr>
                 </table>
@@ -99,6 +107,6 @@
         <button ng-show="showSerialSection==1" type="button" class="btn btn-default" ng-click="showAddSerialNumber()">Add Serial</button>
         <button type="button" class="btn btn-default" ng-click="saveAccessoryItem()">Save</button>
         <button ng-show="showDelete==1" type="button" class="btn btn-info" ng-click="delete()">Delete</button>
-        <button type="button" class="btn btn-danger" ng-click="cancel()">Done</button>
+        <button type="button" class="btn btn-danger" ng-click="cancel()">Back</button>
     </div>
 </div>

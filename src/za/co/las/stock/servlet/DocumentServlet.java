@@ -37,8 +37,8 @@ public class DocumentServlet extends HttpServlet{
 		int quotationId = Integer.parseInt(req.getParameter("quotationId"));
 		Quotation quote = quotationService.getQuotation(quotationId);
 		User user = userService.getUserForId(quote.getUserId());
-		StockImage stockImage = stockService.getStockImageForStockId(quote.getQuotationLineItems().get(0).getStockId());
-		byte[] documentBytes = documentService.getQuoteFromQuoteUserAndStockImage(quote, user, stockImage);
+		//StockImage stockImage = stockService.getStockImageForStockId(quote.getQuotationLineItems().get(0).getStockId());
+		byte[] documentBytes = documentService.getQuoteFromQuoteUserAndStockImage(quote, user);
 		resp.setContentType("application/pdf");
 		resp.addHeader("Content-Disposition", "inline; filename=\"Quotation_"+quote.getQuotationId()+"_"+System.currentTimeMillis()+".pdf\"");
 		resp.setHeader("Content-Length", ""+documentBytes.length);
