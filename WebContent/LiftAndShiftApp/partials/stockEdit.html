@@ -12,7 +12,7 @@
                     <label class="control-label" for="stock.used">Used Stock Item :</label>
                 </td>
                 <td>
-                    <input class="input" id="stock.used" type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="selectedStockItem.stockUsed" ng-model-instant>
+                    <input class="input" id="stock.used" type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="selectedStockItem.stockUsed" ng-model-instant ng-change="changeCurrency()">
                 </td>
             </tr>
             <tr>
@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <td>
-                    <label class="control-label" for="stock.pricing">Pricing (EUR):</label>
+                    <label class="control-label" for="stock.pricing">Pricing ({{currencyCode}}):</label>
                 </td>
                 <td>
                     <input class="input" id="stock.pricing" type="text" ng-model="selectedStockItem.pricing" ng-model-instant>

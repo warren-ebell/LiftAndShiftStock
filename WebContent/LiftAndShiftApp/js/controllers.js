@@ -635,6 +635,15 @@ function StockEditCtrl($scope, StockService) {
     $scope.showAddSerial = 0;
     $scope.showSerialSection = 0;
     $scope.showAddLocation = 0;
+    $scope.currencyCode = 'EUR';
+    $scope.changeCurrency = function() {
+        if ($scope.selectedStockItem.stockUsed == '1') {
+            $scope.currencyCode = 'ZAR';
+        }
+        else {
+            $scope.currencyCode = 'EUR';
+        }
+    }
     if (DataManager.getInstance().selectedStockItem) {
         $scope.selectedStockItem = DataManager.getInstance().selectedStockItem;
         $scope.showDelete = 1;
@@ -643,26 +652,63 @@ function StockEditCtrl($scope, StockService) {
     }
     else
         $scope.showDelete = 0;
+    if ($scope.selectedStockItem.stockUsed == '1') {
+        $scope.currencyCode = 'ZAR';
+    }
     $scope.saveStockItem = function() {
         var htmlTechSpecs = $scope.htmlTechnicalSpecs;
-        var stockCode = $scope.selectedStockItem.stockManufacturer+"-"+$scope.selectedStockItem.stockModel+"-"+$scope.selectedStockItem.stockSeries;
-        StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription, stockUsed:$scope.selectedStockItem.stockUsed, stockMarkup:$scope.selectedStockItem.stockMarkup, stockShipping:$scope.selectedStockItem.stockShipping},
-            function(result) {
-                var serverResult = result;
-                if (serverResult.result === '1') {
-                    //everything is done - show alert to say done - then back home...
-                    alert('Stock Item saved successfully.');
-                    //$scope.setRoute('/stock');
-                }
-                else {
-                    //something has gone wrong with saving the user - need to show that...
-                    alert('Error saving the stock Item: '+serverResult.message);
-                }
-            },
-            function(error){
+        var errorMessage = '';
+        var reg = /[0-9]$/;
+        var test = reg.test($scope.selectedStockItem.stockMarkup);
+        if (!$scope.selectedStockItem.stockManufacturer ||
+            $scope.selectedStockItem.stockManufacturer == '') {
+            errorMessage = errorMessage + 'Please ensure that a manufacturer has been captured.\n';
+        }
+        if (!$scope.selectedStockItem.stockModel ||
+            $scope.selectedStockItem.stockModel == '') {
+            errorMessage = errorMessage + 'Please ensure that a model has been captured.\n';
+        }
+        if (!$scope.selectedStockItem.stockSeries ||
+            $scope.selectedStockItem.stockSeries == '') {
+            errorMessage = errorMessage + 'Please ensure that a series has been captured.\n';
+        }
+        if (!$scope.selectedStockItem.pricing ||
+            $scope.selectedStockItem.pricing == '') {
+            errorMessage = errorMessage + 'Please ensure that pricing has been captured.\n';
+        }
+        if (!$scope.selectedStockItem.stockMarkup ||
+            $scope.selectedStockItem.stockMarkup == '' ||
+            !reg.test($scope.selectedStockItem.stockMarkup)) {
+            errorMessage = errorMessage + 'Please ensure that the markup percentage has been captured correctly (no decimal points).\n';
+        }
+        if (!$scope.selectedStockItem.stockShipping ||
+            $scope.selectedStockItem.stockShipping == '' ||
+            !reg.test($scope.selectedStockItem.stockShipping)) {
+            errorMessage = errorMessage + 'Please ensure that the shipping percentage has been captured correctly (no decimal points).\n';
+        }
+        if (errorMessage.length > 0) {
+            alert(errorMessage);
+        }
+        else {
+            var stockCode = $scope.selectedStockItem.stockManufacturer+"-"+$scope.selectedStockItem.stockModel+"-"+$scope.selectedStockItem.stockSeries;
+            StockService.saveStockItem({serverMethod:'saveStockItem', stockId:$scope.selectedStockItem.stockId, stockManufacturer:$scope.selectedStockItem.stockManufacturer, stockModel:$scope.selectedStockItem.stockModel, stockSeries:$scope.selectedStockItem.stockSeries, pricing:$scope.selectedStockItem.pricing, serialNumber:$scope.selectedStockItem.serialNumber, stockCode:stockCode, technicalSpecs:$scope.htmlTechnicalSpecs, description:$scope.selectedStockItem.stockDescription, stockUsed:$scope.selectedStockItem.stockUsed, stockMarkup:$scope.selectedStockItem.stockMarkup, stockShipping:$scope.selectedStockItem.stockShipping},
+                function(result) {
+                    var serverResult = result;
+                    if (serverResult.result === '1') {
+                        //everything is done - show alert to say done - then back home...
+                        alert('Stock Item saved successfully.');
+                        //$scope.setRoute('/stock');
+                    }
+                    else {
+                        //something has gone wrong with saving the user - need to show that...
+                        alert('Error saving the stock Item: '+serverResult.message);
+                    }
+                },
+                function(error){
 
-            }
-        );
+                }
+            );
+        }
     };
     $scope.cancel = function () {
         $scope.setRoute('/stock');

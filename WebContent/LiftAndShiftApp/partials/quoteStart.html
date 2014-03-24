@@ -59,7 +59,7 @@
             <tr>
                 <th>Series</th>
                 <th>Stock Code</th>
-                <th>Price (EUR)</th>
+                <th>Price</th>
                 <th>Select</th>
             </tr>
             </thead>
@@ -72,7 +72,7 @@
                     {{ stock.stockCode }}
                 </td>
                 <td>
-                    {{ stock.sellingPrice }}
+                    {{ stock.sellingPrice }} {{stock.currency}}
                 </td>
                 <td>
                     <button class="btn" ng-click="getStockForStockId(stock.stockId)">{{stock.stockId}}</button>

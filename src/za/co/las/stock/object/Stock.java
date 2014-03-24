@@ -108,6 +108,10 @@ public class Stock {
 	}
 	
 	public String toJSONString() {
+		String currency = "(EUR)";
+		if (this.stockUsed == 1) {
+			currency = "(ZAR)";
+		}
 		DecimalFormat df = new DecimalFormat("0.00");
 		double markup = 1.0 + (this.stockMarkup/100.0);
 		double shipping = 1.0 + (this.stockShipping/100.0);
@@ -124,7 +128,8 @@ public class Stock {
 				+ "'technicalSpecs':'"+this.technicalSpecs+"', "
 				+ "'stockMarkup':'"+this.stockMarkup+"', "
 				+ "'stockShipping':'"+this.stockShipping+"', "
-				+ "'sellingPrice':'"+sellingPrice+"', ";
+				+ "'sellingPrice':'"+sellingPrice+"', "
+				+ "'currency':'"+currency+"', ";
 		if (this.installLocations != null) {
 			returnString = returnString 
 					+ "'installLocation':"+utilityService.convertListOfInstallLocationsToJSONString(this.installLocations)+", ";

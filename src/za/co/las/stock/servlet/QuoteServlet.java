@@ -157,7 +157,14 @@ public class QuoteServlet extends HttpServlet{
 			String rate = df.format(factor);
 			double newRate = Double.parseDouble(rate);
 			
-			double pricing = Double.parseDouble(pricingStr) * newRate;
+			double pricing = 0.0;
+			
+			if (usedItem == 1) {
+				pricing = Double.parseDouble(pricingStr);
+			}
+			else {
+				pricing = Double.parseDouble(pricingStr) * newRate;
+			}
 			
 			ArrayList<String> stockItemIds = new ArrayList<String>();
 			stockItemIds.add(stockId);
