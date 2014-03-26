@@ -32,8 +32,8 @@ public class StockDAO extends AbstractDAO {
 			statement.setString(6,  newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
 			statement.setInt(8, newStock.getStockUsed());
-			statement.setInt(9, newStock.getStockMarkup());
-			statement.setInt(10, newStock.getStockShipping());
+			statement.setDouble(9, newStock.getStockMarkup());
+			statement.setDouble(10, newStock.getStockShipping());
 			statement.setInt(11, stockId);
 			
 			int result = statement.executeUpdate();
@@ -65,8 +65,8 @@ public class StockDAO extends AbstractDAO {
 			statement.setString(6, newStock.getTechnicalSpecs());
 			statement.setString(7, newStock.getStockDescription());
 			statement.setInt(8, newStock.getStockUsed());
-			statement.setInt(9, newStock.getStockMarkup());
-			statement.setInt(10, newStock.getStockShipping());
+			statement.setDouble(9, newStock.getStockMarkup());
+			statement.setDouble(10, newStock.getStockShipping());
 			
 			int result = statement.executeUpdate();			
 			
@@ -184,8 +184,8 @@ public class StockDAO extends AbstractDAO {
 				stock.setTechnicalSpecs(resultSet.getString("technical_specs"));
 				stock.setStockDescription(resultSet.getString("stock_description"));
 				stock.setStockUsed(resultSet.getInt("stock_used"));
-				stock.setStockMarkup(resultSet.getInt("stock_markup"));
-				stock.setStockShipping(resultSet.getInt("stock_shipping"));
+				stock.setStockMarkup(resultSet.getDouble("stock_markup"));
+				stock.setStockShipping(resultSet.getDouble("stock_shipping"));
 				stockItems.add(stock);
 			}
 		}

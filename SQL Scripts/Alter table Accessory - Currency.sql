@@ -1,0 +1,1 @@
+alter table las_stock.accessory add column currency VARCHAR(25)

@@ -649,16 +649,16 @@ function StockEditCtrl($scope, StockService) {
         $scope.showDelete = 1;
         $scope.htmlTechnicalSpecs = $scope.selectedStockItem.technicalSpecs;
         $scope.showSerialSection = 1;
+        if ($scope.selectedStockItem.stockUsed == '1') {
+            $scope.currencyCode = 'ZAR';
+        }
     }
     else
         $scope.showDelete = 0;
-    if ($scope.selectedStockItem.stockUsed == '1') {
-        $scope.currencyCode = 'ZAR';
-    }
     $scope.saveStockItem = function() {
         var htmlTechSpecs = $scope.htmlTechnicalSpecs;
         var errorMessage = '';
-        var reg = /[0-9]$/;
+        var reg = /^\d*\.?\d*$/;
         var test = reg.test($scope.selectedStockItem.stockMarkup);
         if (!$scope.selectedStockItem.stockManufacturer ||
             $scope.selectedStockItem.stockManufacturer == '') {

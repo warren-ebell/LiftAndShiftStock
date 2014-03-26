@@ -30,7 +30,7 @@ public class StockService {
 		return stockDAO.getAllStockForReport();
 	}
 	
-	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used, int markup, int shipping) {
+	public int updateStockItem(int stockId, double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used, double markup, double shipping) {
 		Stock stock = new Stock();
 		stock.setStockManufacturer(stockManufacturer);
 		stock.setStockModel(stockModel);
@@ -45,7 +45,7 @@ public class StockService {
 		return stockDAO.updateStock(stockId, stock);
 	}
 	
-	public int createStockItem(double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used, int markup, int shipping) {
+	public int createStockItem(double pricing, String stockManufacturer, String stockModel, String stockSeries, String stockCode, String technicalSpecs, String description, int used, double markup, double shipping) {
 		Stock stock = new Stock();
 		stock.setStockManufacturer(stockManufacturer);
 		stock.setStockModel(stockModel);

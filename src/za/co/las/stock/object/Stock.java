@@ -17,8 +17,8 @@ public class Stock {
 	private ArrayList<StockLevel> stockLevel;
 	private ArrayList<InstallationLocation> installLocations;
 	private int stockUsed;
-	private int stockMarkup;
-	private int stockShipping;
+	private double stockMarkup;
+	private double stockShipping;
 	
 	private UtilityService utilityService = new UtilityService();
 	
@@ -94,16 +94,16 @@ public class Stock {
 	public void setStockUsed(int stockUsed) {
 		this.stockUsed = stockUsed;
 	}
-	public int getStockMarkup() {
+	public double getStockMarkup() {
 		return stockMarkup;
 	}
-	public void setStockMarkup(int stockMarkup) {
+	public void setStockMarkup(double stockMarkup) {
 		this.stockMarkup = stockMarkup;
 	}
-	public int getStockShipping() {
+	public double getStockShipping() {
 		return stockShipping;
 	}
-	public void setStockShipping(int stockShipping) {
+	public void setStockShipping(double stockShipping) {
 		this.stockShipping = stockShipping;
 	}
 	
@@ -126,8 +126,8 @@ public class Stock {
 				+ "'pricing':'"+df.format(this.pricing)+"', "
 				+ "'stockUsed':'"+this.stockUsed+"', "
 				+ "'technicalSpecs':'"+this.technicalSpecs+"', "
-				+ "'stockMarkup':'"+this.stockMarkup+"', "
-				+ "'stockShipping':'"+this.stockShipping+"', "
+				+ "'stockMarkup':'"+df.format(this.stockMarkup)+"', "
+				+ "'stockShipping':'"+df.format(this.stockShipping)+"', "
 				+ "'sellingPrice':'"+sellingPrice+"', "
 				+ "'currency':'"+currency+"', ";
 		if (this.installLocations != null) {

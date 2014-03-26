@@ -90,10 +90,10 @@ public class StockServlet extends HttpServlet{
 			}
 			int result = 0;
 			if (stockId == null) {		
-				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Integer.parseInt(markup), Integer.parseInt(shipping));
+				result = stockService.createStockItem(Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Double.parseDouble(markup), Double.parseDouble(shipping));
 			}
 			else {
-				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Integer.parseInt(markup), Integer.parseInt(shipping));
+				result = stockService.updateStockItem(Integer.parseInt(stockId), Double.parseDouble(pricing),stockManufacturer, stockModel, stockSeries, stockCode, technicalSpecs, description, Integer.parseInt(stockUsed), Double.parseDouble(markup), Double.parseDouble(shipping));
 			}		
 			
 			if (result == 1)
