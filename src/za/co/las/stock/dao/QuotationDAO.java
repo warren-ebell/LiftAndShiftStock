@@ -311,12 +311,12 @@ public class QuotationDAO extends AbstractDAO {
 			resultSet = statement.executeQuery();
 			
 			while (resultSet.next()) {
-				quote.setNotes(resultSet.getString("notes"));
-				quote.setDelivery(resultSet.getString("delivery"));
-				quote.setInstallation(resultSet.getString("installation"));
-				quote.setWarranty(resultSet.getString("warranty"));
-				quote.setValidity(resultSet.getString("validity"));
-				quote.setVariation(resultSet.getString("variation"));
+				quote.setNotes(this.stripNBSP(resultSet.getString("notes")));
+				quote.setDelivery(this.stripNBSP(resultSet.getString("delivery")));
+				quote.setInstallation(this.stripNBSP(resultSet.getString("installation")));
+				quote.setWarranty(this.stripNBSP(resultSet.getString("warranty")));
+				quote.setValidity(this.stripNBSP(resultSet.getString("validity")));
+				quote.setVariation(this.stripNBSP(resultSet.getString("variation")));
 				quote.setQuotationDate(resultSet.getString("quotation_date"));
 				quote.setUserId(resultSet.getInt("user_id"));
 				quote.setRate(resultSet.getString("rate"));
@@ -386,7 +386,7 @@ public class QuotationDAO extends AbstractDAO {
 				stock.setStockSeries(resultSet2.getString("stock_series"));
 				stock.setStockCode(resultSet2.getString("stock_code"));
 				stock.setStockId(resultSet2.getInt("stock_id"));
-				stock.setTechnicalSpecs(resultSet2.getString("technical_specs"));
+				stock.setTechnicalSpecs(this.stripNBSP(resultSet2.getString("technical_specs")));
 				stock.setStockDescription(resultSet2.getString("stock_description"));
 			
 				stockItems.add(stock);
@@ -535,5 +535,9 @@ public class QuotationDAO extends AbstractDAO {
 			closeConnection(connection);
 		}
 		return result;
+	}
+	
+	private String stripNBSP(String original) {
+		return original.replaceAll("&nbsp;", "");
 	}
 }
