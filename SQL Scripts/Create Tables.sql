@@ -125,7 +125,7 @@ values (
     "<ul><li>Approximately 5-7 working days, however it's subject to factory workload at time of order, as well as the availability of labour and material.</li></ul>",
     "<ul><li>New equipment carries a 36 months warranty on all structural components.</li><li>Consumable parts such as seals, hoses etc, as well as general wear and tear of the platform carries a 12 months warranty.</li></ul>",
     "<ul><li>All prices quoted are not firm and are based on an exchange rate of Euro 1.00 = ZAR <<rate>></li><li>Changes to this rate as at date of dispatch ex our premises, together with the effect of such changes on landing/clearing charges, including surcharges and the like, will be for the customer's account.</li><li>Forward cover can be established at any time, upon customer's specific written request and adjusted price will be quantified, once this has been established.</li></ul>",
-    "<ul><li>Quotation will remain valid for a period of FOURTEEN (14) days and the Platform Price is subject to the Price Variation Clause.</li></ul>",
+    "<ul><li>The quotation will remain valid for a period of FOURTEEN (14) days and is subject to the price variation clause.</li></ul>",
     "<ul><li>Used equipment does not carry any warranty.</li></ul>" 
 );
 
