@@ -16,7 +16,7 @@ public class CustomerDAO extends AbstractDAO {
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement("update las_stock.customer set customer_name = ?, customer_address = ?, customer_email_address = ?, customer_phone_number = ?, customer_attention = ?, where customer_id = ?");
+			statement = connection.prepareStatement("update las_stock.customer set customer_name = ?, customer_address = ?, customer_email_address = ?, customer_phone_number = ?, customer_attention = ? where customer_id = ?");
 			
 			statement.setString(1, newCustomer.getName());
 			statement.setString(2, newCustomer.getAddress());

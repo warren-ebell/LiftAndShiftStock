@@ -19,11 +19,15 @@ public class QuotationService {
 	public int createQuotation(String customerAddress, String customerAttention, String customerEmailAddress, String customerName, String customerPhoneNumber, ArrayList<String> stockItemIds, ArrayList<TempAccessory> accessories, String notes, String delivery, String installation, String warranty, String variation, String validity, String date, int userId, String serialNumber, double pricing, String rate, InstallationLocation location, int companyId, String passedCustomerId, String showItemPrices, int usedItem) {
 		
 		int customerId;
-		if (customerName.length() > 0) {
+		if (passedCustomerId.length() == 0) {
+			// this customer has no ID associated with it...
 			customerId = customerService.insertCustomer(customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber);
 		}
 		else {
+			// we have a customer ID, so we need to update...
 			customerId = Integer.parseInt(passedCustomerId);
+			// might need to update the customer...
+			customerService.updateCustomer(customerId, customerAddress, customerAttention, customerEmailAddress, customerName, customerPhoneNumber);
 		}		
 		return quotationDAO.insertQuotation(customerId, stockItemIds, accessories, notes, delivery, installation, warranty, variation, validity, date, userId, serialNumber, pricing, rate, location, companyId, showItemPrices, usedItem);	
 	}

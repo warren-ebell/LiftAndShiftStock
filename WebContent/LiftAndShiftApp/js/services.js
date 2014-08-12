@@ -7,7 +7,7 @@ var serverURL = '/LiftAndShiftStock';
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('liftandshift.services', ['ngResource']).
-    value('version', '0.2').
+    value('version', '0.3').
     service('Util',function Util() {
         this.checkLoggedIn = function($scope){
             /*if (!DataManager.getInstance().validUser){

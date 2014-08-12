@@ -270,19 +270,17 @@ function QuoteNotesCtrl($scope, QuoteService) {
         var installLocation = DataManager.getInstance().selectedInstallLocation;
         var showItemPrices = DataManager.getInstance().showItemPrices;
 
-        var customerName = '';
+        var customerName;
         var customerAddress;
         var customerEmailAddress;
         var customerPhoneNumber;
         var customerAttention;
 
-        if (!DataManager.getInstance().oldCustomer) {
-            customerName = DataManager.getInstance().customerName;
-            customerAddress = DataManager.getInstance().customerAddress;
-            customerEmailAddress = DataManager.getInstance().customerEmailAddress;
-            customerPhoneNumber = DataManager.getInstance().customerPhoneNumber;
-            customerAttention = DataManager.getInstance().customerAttention;
-        }
+        customerName = DataManager.getInstance().customerName;
+        customerAddress = DataManager.getInstance().customerAddress;
+        customerEmailAddress = DataManager.getInstance().customerEmailAddress;
+        customerPhoneNumber = DataManager.getInstance().customerPhoneNumber;
+        customerAttention = DataManager.getInstance().customerAttention;
 
         var customerId = '';
         if (DataManager.getInstance().customerId)
@@ -351,13 +349,20 @@ function QuoteCustomerCtrl($scope, QuoteService) {
         }
     };
     $scope.next = function() {
-        DataManager.getInstance().customerName = $scope.customerName;
-        DataManager.getInstance().customerAddress = $scope.customerAddress;
-        DataManager.getInstance().customerEmailAddress = $scope.customerEmailAddress;
-        DataManager.getInstance().customerPhoneNumber = $scope.customerPhoneNumber;
-        DataManager.getInstance().customerAttention = $scope.customerAttention;
-
-        $scope.setRoute('/quoteNotes');
+        if ($scope.customerName.length == 0) {
+            // need to have at least a name to store this against...
+            alert('Customer Name cannot be empty\n\r');
+        }
+        else {
+            // we can store this customer information, and it will "save"...
+            DataManager.getInstance().customerName = $scope.customerName;
+            DataManager.getInstance().customerAddress = $scope.customerAddress;
+            DataManager.getInstance().customerEmailAddress = $scope.customerEmailAddress;
+            DataManager.getInstance().customerPhoneNumber = $scope.customerPhoneNumber;
+            DataManager.getInstance().customerAttention = $scope.customerAttention;
+            // move onto the next screen...
+            $scope.setRoute('/quoteNotes');
+        }
     }
     $scope.cancel = function() {
         $scope.setRoute('/home');

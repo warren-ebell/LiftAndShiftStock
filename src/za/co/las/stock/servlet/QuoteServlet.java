@@ -125,6 +125,7 @@ public class QuoteServlet extends HttpServlet{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			Date date = new Date();
 			
+			String customerId = req.getParameter("customerId");
 			int userId = Integer.parseInt(req.getParameter("userId")); 
 			String customerName = req.getParameter("name");
 			String customerAddress = null, customerAttention = null, customerEmailAddress = null, customerPhoneNumber = null;
@@ -144,7 +145,6 @@ public class QuoteServlet extends HttpServlet{
 			String installation = req.getParameter("installation");
 			String installationLocation = req.getParameter("installationLocation");
 			int companyId = Integer.parseInt(req.getParameter("companyId"));
-			String customerId = req.getParameter("customerId");
 			
 			quote.setNotes(notes);
 			quote.setDelivery(delivery);
